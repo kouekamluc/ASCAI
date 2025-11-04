@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Flag Content" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="flag-form">
+    <h1>{% trans "Report Content" %}</h1>
+    <p>{% trans "Please provide a reason for reporting this content. Our moderators will review it." %}</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if content_type_id and object_id %}
+            <input type="hidden" name="content_type" value="{{ content_type_id }}">
+            <input type="hidden" name="object_id" value="{{ object_id }}">
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.reason.id_for_label }}">{% trans "Reason" %}</label>
+            {{ form.reason }}
+            {% if form.reason.errors %}
+                <div class="error">{{ form.reason.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">{% trans "Additional Details" %}</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="error">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% trans "Submit Report" %}</button>
+            <a href="javascript:history.back()" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+
+
+
+

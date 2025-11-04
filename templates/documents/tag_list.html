@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Document Tags" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-list">
+        <div class="admin-header">
+            <h1>{% trans "Document Tags" %}</h1>
+            <a href="{% url 'documents:tag_create' %}" class="btn btn-primary">{% trans "Create Tag" %}</a>
+        </div>
+        
+        {% if tags %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Color" %}</th>
+                        <th>{% trans "Documents" %}</th>
+                        <th>{% trans "Created" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tag in tags %}
+                        <tr>
+                            <td><strong>{{ tag.name }}</strong></td>
+                            <td>
+                                <span style="display: inline-block; width: 30px; height: 30px; background-color: {{ tag.color }}; border: 1px solid #ccc; border-radius: 4px;"></span>
+                                <span style="margin-left: 8px;">{{ tag.color }}</span>
+                            </td>
+                            <td>{{ tag.document_count }}</td>
+                            <td>{{ tag.created_at|date:"Y-m-d" }}</td>
+                            <td class="actions">
+                                <a href="{% url 'documents:tag_edit' tag.pk %}" class="btn btn-small">{% trans "Edit" %}</a>
+                                <a href="{% url 'documents:tag_delete' tag.pk %}" class="btn btn-small btn-danger">{% trans "Delete" %}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="empty-state">{% trans "No tags yet. Create your first tag!" %}</p>
+        {% endif %}
+        
+        <div class="admin-footer">
+            <a href="{% url 'documents:list' %}" class="btn btn-secondary">{% trans "Back to Documents" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

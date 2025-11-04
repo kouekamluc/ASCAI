@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete Folder" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="folder-delete">
+    <h1>{% trans "Delete Folder" %}</h1>
+
+    <div class="delete-warning">
+        <p>{% trans "Are you sure you want to delete this folder?" %}</p>
+        <div class="folder-preview">
+            <h3>{{ folder.name }}</h3>
+            <p class="folder-meta">
+                {% trans "Created" %}: {{ folder.created_at|date:"F d, Y" }}
+                <br>
+                {% trans "Documents" %}: {{ folder.documents.count }}
+                <br>
+                {% trans "Subfolders" %}: {{ folder.children.count }}
+            </p>
+        </div>
+        <p class="warning-text">
+            <strong>{% trans "Warning" %}:</strong> 
+            {% trans "This folder must be empty (no documents or subfolders) before it can be deleted." %}
+        </p>
+    </div>
+
+    <form method="post" class="delete-form">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
+            <a href="{% url 'documents:list' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+
+
+
+

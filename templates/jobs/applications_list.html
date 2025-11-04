@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Applications" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="applications-list" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid rgba(0, 0, 0, 0.08);">
+        <h1 style="color: #1a1a1a; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">📋 {% trans "My Applications" %}</h1>
+        <p style="color: #5f6368; font-size: 1.0625rem; margin: 0;">
+            {% trans "Track the status of your job applications" %}
+        </p>
+    </div>
+    
+    <!-- Filters -->
+    <div class="jobs-filters">
+        <form method="get" class="filter-form">
+            <select name="status" class="filter-select" aria-label="{% trans 'Application status filter' %}">
+                <option value="">{% trans "All Statuses" %}</option>
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+            <a href="{% url 'jobs:list' %}" class="btn btn-secondary">{% trans "Browse Jobs" %}</a>
+        </form>
+    </div>
+    
+    <!-- Applications -->
+    <div class="applications-grid">
+        {% for application in page_obj %}
+        <article class="application-card">
+            <div class="application-header">
+                <h2><a href="{% url 'jobs:detail' application.job.slug %}">{{ application.job.title }}</a></h2>
+                <span class="status-badge status-{{ application.status }}">
+                    {{ application.get_status_display }}
+                </span>
+            </div>
+            <div class="application-info">
+                <p><strong>🏢 {% trans "Company" %}:</strong> {{ application.job.company_name }}</p>
+                <p><strong>📍 {% trans "Location" %}:</strong> {{ application.job.location }}</p>
+                <p><strong>📅 {% trans "Applied" %}:</strong> {{ application.applied_at|date:"F d, Y H:i" }}</p>
+                {% if application.reviewed_at %}
+                    <p><strong>✅ {% trans "Reviewed" %}:</strong> {{ application.reviewed_at|date:"F d, Y H:i" }}</p>
+                {% endif %}
+            </div>
+            <div class="application-actions">
+                <a href="{% url 'jobs:application_detail' application.pk %}" class="btn btn-primary btn-sm">👁️ {% trans "View Details" %}</a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="no-jobs">
+            <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">{% trans "No applications yet" %}</p>
+            <p>{% trans "Start browsing available jobs and submit your first application!" %}</p>
+            <div style="margin-top: 1.5rem;">
+                <a href="{% url 'jobs:list' %}" class="btn btn-primary">{% trans "Browse Jobs" %}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if status %}&status={{ status }}{% endif %}" 
+               class="btn btn-sm">{% trans "Previous" %}</a>
+        {% endif %}
+        <span class="page-info">
+            {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if status %}&status={{ status }}{% endif %}" 
+               class="btn btn-sm">{% trans "Next" %}</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ post.title }} - ASCAI{% endblock %}
+
+{% block content %}
+<article class="news-detail">
+    {% if post.featured_image %}
+    <div class="featured-image">
+        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+    </div>
+    {% endif %}
+    
+    <header class="post-header">
+        <div class="post-meta">
+            <span class="category-badge category-{{ post.category_type }}">
+                {{ post.get_category_type_display }}
+            </span>
+            <span class="post-date">{{ post.published_at|date:"F d, Y" }}</span>
+        </div>
+        <h1>{{ post.title }}</h1>
+        <div class="post-author-info">
+            <span>{% trans "By" %} {{ post.author.full_name }}</span>
+            <span class="post-views">{{ post.views_count }} {% trans "views" %}</span>
+        </div>
+        {% if user.is_board_member and post.author == user %}
+            <div class="post-actions">
+                <a href="{% url 'news:edit' post.slug %}" class="btn btn-secondary">{% trans "Edit" %}</a>
+                <a href="{% url 'news:delete' post.slug %}" class="btn btn-danger">{% trans "Delete" %}</a>
+            </div>
+        {% endif %}
+    </header>
+    
+    <div class="post-content">
+        {% if post.excerpt %}
+        <div class="post-excerpt">
+            <p><em>{{ post.excerpt }}</em></p>
+        </div>
+        {% endif %}
+        
+        <div class="post-body">
+            {{ post.content|linebreaks }}
+        </div>
+    </div>
+    
+    <!-- Related Posts -->
+    {% if related_posts %}
+    <section class="related-posts">
+        <h2>{% trans "Related Posts" %}</h2>
+        <div class="posts-grid">
+            {% for related_post in related_posts %}
+            <article class="post-card">
+                <h3><a href="{% url 'news:detail' related_post.slug %}">{{ related_post.title }}</a></h3>
+                <p class="post-date">{{ related_post.published_at|date:"F d, Y" }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    <div class="back-link">
+        <a href="{% url 'news:list' %}" class="btn btn-secondary">{% trans "Back to News" %}</a>
+    </div>
+</article>
+{% endblock %}
+
+
+
+
+
+

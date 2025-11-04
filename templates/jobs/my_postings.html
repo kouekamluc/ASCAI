@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Job Postings" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="my-postings">
+    <div class="postings-header">
+        <h1>{% trans "My Job Postings" %}</h1>
+        <a href="{% url 'jobs:create' %}" class="btn btn-primary">{% trans "Post a New Job" %}</a>
+    </div>
+    
+    <!-- Filters -->
+    <div class="postings-filters">
+        <form method="get" class="filter-form">
+            <select name="is_active" class="filter-select">
+                <option value="">{% trans "All" %}</option>
+                <option value="true" {% if is_active == True %}selected{% endif %}>{% trans "Active" %}</option>
+                <option value="false" {% if is_active == False %}selected{% endif %}>{% trans "Inactive" %}</option>
+            </select>
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+        </form>
+    </div>
+    
+    <!-- Job Postings -->
+    <div class="postings-grid">
+        {% for job in page_obj %}
+        <article class="posting-card">
+            <div class="posting-header">
+                <h2><a href="{% url 'jobs:detail' job.slug %}">{{ job.title }}</a></h2>
+                <span class="status-badge {% if job.is_active %}status-active{% else %}status-inactive{% endif %}">
+                    {% if job.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}
+                </span>
+            </div>
+            <div class="posting-info">
+                <p><strong>{% trans "Company" %}:</strong> {{ job.company_name }}</p>
+                <p><strong>{% trans "Location" %}:</strong> {{ job.location }}</p>
+                <p><strong>{% trans "Posted" %}:</strong> {{ job.posted_at|date:"F d, Y" }}</p>
+                <p><strong>{% trans "Applications" %}:</strong> {{ job.get_application_count }}</p>
+                <p><strong>{% trans "Views" %}:</strong> {{ job.views_count }}</p>
+            </div>
+            <div class="posting-actions">
+                <a href="{% url 'jobs:detail' job.slug %}" class="btn btn-sm">{% trans "View" %}</a>
+                <a href="{% url 'jobs:edit' job.slug %}" class="btn btn-sm">{% trans "Edit" %}</a>
+                <a href="{% url 'jobs:manage_applications' job.slug %}" class="btn btn-sm btn-primary">{% trans "Manage Applications" %}</a>
+            </div>
+        </article>
+        {% empty %}
+        <p class="no-postings">{% trans "You haven't posted any jobs yet." %}</p>
+        <a href="{% url 'jobs:create' %}" class="btn btn-primary">{% trans "Post Your First Job" %}</a>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if is_active is not None %}&is_active={{ is_active|lower }}{% endif %}" 
+               class="btn btn-sm">{% trans "Previous" %}</a>
+        {% endif %}
+        <span class="page-info">
+            {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if is_active is not None %}&is_active={{ is_active|lower }}{% endif %}" 
+               class="btn btn-sm">{% trans "Next" %}</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+
+
+
+

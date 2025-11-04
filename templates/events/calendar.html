@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Event Calendar" %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="events-calendar">
+    <div class="calendar-header">
+        <h1>{% trans "Event Calendar" %}</h1>
+        <div class="calendar-actions">
+            <a href="{% url 'events:list' %}" class="btn btn-secondary">{% trans "List View" %}</a>
+            {% if user.is_board_member %}
+                <a href="{% url 'events:create' %}" class="btn btn-primary">{% trans "Create Event" %}</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div id="calendar"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: '{{ request.LANGUAGE_CODE|default:"en" }}',
+        events: '{% url "events:calendar_feed" %}',
+        eventClick: function(info) {
+            info.jsEvent.preventDefault();
+            window.location.href = info.event.url;
+        },
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText: {
+            today: '{% trans "Today" %}',
+            month: '{% trans "Month" %}',
+            week: '{% trans "Week" %}',
+            day: '{% trans "Day" %}'
+        }
+    });
+    calendar.render();
+});
+</script>
+{% endblock %}
+

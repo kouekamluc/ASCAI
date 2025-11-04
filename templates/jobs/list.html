@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Job Board" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="jobs-list">
+    <div class="jobs-header">
+        <div>
+            <h1>{% trans "Job & Internship Board" %}</h1>
+            <p style="margin-top: 0.5rem; color: #5f6368; font-size: 1.0625rem;">
+                {% trans "Discover exciting career opportunities and internships" %}
+            </p>
+        </div>
+        {% if user.is_authenticated %}
+            <a href="{% url 'jobs:create' %}" class="btn btn-primary">+ {% trans "Post a Job" %}</a>
+        {% endif %}
+    </div>
+    
+    <!-- Filters -->
+    <div class="jobs-filters">
+        <form method="get" 
+              class="filter-form"
+              hx-get="{% url 'jobs:list' %}"
+              hx-target="#jobs-content"
+              hx-trigger="change delay:300ms, submit"
+              hx-select="#jobs-content"
+              hx-push-url="true">
+            <div style="position: relative;">
+                <input type="text" name="search" placeholder="🔍 {% trans 'Search jobs, companies, or keywords...' %}" 
+                       value="{{ search_query }}" class="search-input" 
+                       aria-label="{% trans 'Search jobs' %}">
+            </div>
+            <select name="job_type" class="filter-select" aria-label="{% trans 'Job type filter' %}">
+                <option value="">{% trans "All Types" %}</option>
+                {% for value, label in job_type_choices %}
+                    <option value="{{ value }}" {% if job_type == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <input type="text" name="location" placeholder="📍 {% trans 'Location (e.g., Rome, Italy)' %}" 
+                   value="{{ location }}" class="filter-input"
+                   aria-label="{% trans 'Location filter' %}">
+            <input type="text" name="company" placeholder="🏢 {% trans 'Company name' %}" 
+                   value="{{ company }}" class="filter-input"
+                   aria-label="{% trans 'Company filter' %}">
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+            <a href="{% url 'jobs:list' %}" class="btn btn-secondary">{% trans "Clear" %}</a>
+        </form>
+    </div>
+    
+    <!-- Job Listings -->
+    <div id="jobs-content">
+        <div class="jobs-grid">
+        {% for job in page_obj %}
+        <article class="job-card">
+            <div class="job-content">
+                <div class="job-meta">
+                    <span class="job-type-badge job-type-{{ job.job_type }}">
+                        {{ job.get_job_type_display }}
+                    </span>
+                    <span class="job-date">
+                        {{ job.posted_at|date:"F d, Y" }}
+                    </span>
+                </div>
+                <h2><a href="{% url 'jobs:detail' job.slug %}">{{ job.title }}</a></h2>
+                <div class="job-company">
+                    <strong>{{ job.company_name }}</strong> - {{ job.location }}
+                </div>
+                <p class="job-description">
+                    {{ job.description|truncatewords:30 }}
+                </p>
+                {% if job.salary_min or job.salary_max %}
+                    <div class="job-salary">
+                        {% if job.salary_min and job.salary_max %}
+                            €{{ job.salary_min|floatformat:0 }} - €{{ job.salary_max|floatformat:0 }}
+                        {% elif job.salary_min %}
+                            {% trans "From" %} €{{ job.salary_min|floatformat:0 }}
+                        {% elif job.salary_max %}
+                            {% trans "Up to" %} €{{ job.salary_max|floatformat:0 }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% if job.deadline %}
+                    <div class="job-deadline">
+                        <small>{% trans "Deadline" %}: {{ job.deadline|date:"F d, Y" }}</small>
+                    </div>
+                {% endif %}
+                <div class="job-footer">
+                    <span class="job-views">{{ job.views_count }} {% trans "views" %}</span>
+                    <span class="job-applications">{{ job.get_application_count }} {% trans "applications" %}</span>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <div class="no-jobs">
+            <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">{% trans "No jobs found" %}</p>
+            <p>{% trans "Try adjusting your search filters or check back later for new opportunities." %}</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if job_type %}&job_type={{ job_type }}{% endif %}{% if location %}&location={{ location }}{% endif %}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if job_type %}&job_type={{ job_type }}{% endif %}{% if location %}&location={{ location }}{% endif %}"
+                   hx-target="#jobs-content"
+                   hx-select="#jobs-content"
+                   hx-push-url="true">{% trans "Previous" %}</a>
+            {% endif %}
+            <span class="page-info">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if job_type %}&job_type={{ job_type }}{% endif %}{% if location %}&location={{ location }}{% endif %}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if job_type %}&job_type={{ job_type }}{% endif %}{% if location %}&location={{ location }}{% endif %}"
+                   hx-target="#jobs-content"
+                   hx-select="#jobs-content"
+                   hx-push-url="true">{% trans "Next" %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Application Details" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="application-detail">
+    <h1>{% trans "Application Details" %}</h1>
+    
+    <div class="application-header">
+        <h2>{{ application.job.title }}</h2>
+        <span class="status-badge status-{{ application.status }}">
+            {{ application.get_status_display }}
+        </span>
+    </div>
+    
+    <div class="application-info-section">
+        <h3>{% trans "Job Information" %}</h3>
+        <p><strong>{% trans "Company" %}:</strong> {{ application.job.company_name }}</p>
+        <p><strong>{% trans "Location" %}:</strong> {{ application.job.location }}</p>
+        <p><strong>{% trans "Job Type" %}:</strong> {{ application.job.get_job_type_display }}</p>
+        <a href="{% url 'jobs:detail' application.job.slug %}" class="btn btn-sm">{% trans "View Job Posting" %}</a>
+    </div>
+    
+    <div class="application-info-section">
+        <h3>{% trans "Application Information" %}</h3>
+        <p><strong>{% trans "Applicant" %}:</strong> {{ application.applicant.full_name }}</p>
+        <p><strong>{% trans "Email" %}:</strong> {{ application.applicant.email }}</p>
+        <p><strong>{% trans "Applied" %}:</strong> {{ application.applied_at|date:"F d, Y H:i" }}</p>
+        {% if application.reviewed_at %}
+            <p><strong>{% trans "Reviewed" %}:</strong> {{ application.reviewed_at|date:"F d, Y H:i" }}</p>
+        {% endif %}
+    </div>
+    
+    {% if application.cover_letter %}
+    <div class="application-info-section">
+        <h3>{% trans "Cover Letter" %}</h3>
+        <p>{{ application.cover_letter|linebreaks }}</p>
+    </div>
+    {% endif %}
+    
+    <div class="application-info-section">
+        <h3>{% trans "Resume" %}</h3>
+        {% if application.resume %}
+            <a href="{{ application.get_resume_url }}" target="_blank" class="btn btn-primary">
+                {% trans "Download Resume" %}
+            </a>
+        {% else %}
+            <p>{% trans "No resume uploaded." %}</p>
+        {% endif %}
+    </div>
+    
+    {% if application.job.posted_by == user or user.is_admin %}
+        {% if application.notes %}
+        <div class="application-info-section">
+            <h3>{% trans "Internal Notes" %}</h3>
+            <p>{{ application.notes|linebreaks }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="application-info-section">
+            <h3>{% trans "Update Status" %}</h3>
+            <form method="post" action="{% url 'jobs:update_application_status' application.pk %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="status">{% trans "Status" %}</label>
+                    <select name="status" id="status" class="form-control">
+                        {% for value, label in application.Status.choices %}
+                            <option value="{{ value }}" {% if application.status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">{% trans "Update Status" %}</button>
+            </form>
+        </div>
+    {% endif %}
+    
+    <div class="back-link">
+        {% if application.applicant == user %}
+            <a href="{% url 'jobs:my_applications' %}" class="btn btn-secondary">{% trans "Back to My Applications" %}</a>
+        {% else %}
+            <a href="{% url 'jobs:manage_applications' application.job.slug %}" class="btn btn-secondary">{% trans "Back to Applications" %}</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

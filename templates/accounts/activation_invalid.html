@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Activation Invalid - ASCAI{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>{% trans "Activation Link Invalid" %}</h2>
+    <p>{% trans "Sorry, the activation link is invalid or has expired." %}</p>
+    <p><a href="{% url 'accounts:login' %}">{% trans "Back to Login" %}</a></p>
+</div>
+{% endblock %}
+
+
+
+
+
+

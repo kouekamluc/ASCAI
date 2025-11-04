@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Manage Applications" %} - {{ job.title }} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="manage-applications" style="max-width: 1400px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <div class="manage-header" style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); padding: 2rem; border-radius: 16px; margin-bottom: 2rem; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); border: 1px solid rgba(0, 0, 0, 0.06);">
+        <h1 style="color: #1a1a1a; font-size: 2rem; font-weight: 700; margin-bottom: 0.75rem;">📋 {% trans "Manage Applications" %}</h1>
+        <h2 style="color: #1a1a1a; font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">{{ job.title }}</h2>
+        <p style="margin: 0.5rem 0; color: #5f6368;"><strong>🏢 {% trans "Company" %}:</strong> {{ job.company_name }}</p>
+        <div style="margin-top: 1.5rem;">
+            <a href="{% url 'jobs:detail' job.slug %}" class="btn btn-secondary">← {% trans "View Job Posting" %}</a>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="jobs-filters">
+        <form method="get" class="filter-form">
+            <select name="status" class="filter-select" aria-label="{% trans 'Application status filter' %}">
+                <option value="">{% trans "All Statuses" %}</option>
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+        </form>
+    </div>
+    
+    <!-- Applications -->
+    <div class="applications-grid">
+        {% for application in page_obj %}
+        <article class="application-card">
+            <div class="application-header">
+                <h3>{{ application.applicant.full_name }}</h3>
+                <span class="status-badge status-{{ application.status }}">
+                    {{ application.get_status_display }}
+                </span>
+            </div>
+            <div class="application-info">
+                <p><strong>✉️ {% trans "Email" %}:</strong> {{ application.applicant.email }}</p>
+                <p><strong>📅 {% trans "Applied" %}:</strong> {{ application.applied_at|date:"F d, Y H:i" }}</p>
+                {% if application.reviewed_at %}
+                    <p><strong>✅ {% trans "Reviewed" %}:</strong> {{ application.reviewed_at|date:"F d, Y H:i" }}</p>
+                {% endif %}
+            </div>
+            {% if application.cover_letter %}
+                <div class="application-cover-letter" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <p style="margin: 0 0 0.5rem 0;"><strong>✉️ {% trans "Cover Letter" %}:</strong></p>
+                    <p style="margin: 0; color: #5f6368; font-size: 0.9375rem;">{{ application.cover_letter|truncatewords:30 }}</p>
+                </div>
+            {% endif %}
+            <div class="application-actions">
+                <a href="{% url 'jobs:application_detail' application.pk %}" class="btn btn-primary">👁️ {% trans "View Details" %}</a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="no-jobs">
+            <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">{% trans "No applications yet" %}</p>
+            <p>{% trans "Applications for this job will appear here once candidates apply." %}</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if status %}&status={{ status }}{% endif %}" 
+               class="btn btn-sm">{% trans "Previous" %}</a>
+        {% endif %}
+        <span class="page-info">
+            {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if status %}&status={{ status }}{% endif %}" 
+               class="btn btn-sm">{% trans "Next" %}</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

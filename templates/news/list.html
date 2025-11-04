@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "News & Announcements" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="news-list">
+    <div class="news-header">
+        <h1>{% trans "News & Announcements" %}</h1>
+        {% if user.is_board_member %}
+            <a href="{% url 'news:category_list' %}" class="btn btn-secondary">{% trans "Manage Categories" %}</a>
+            <a href="{% url 'news:create' %}" class="btn btn-primary">{% trans "Create Post" %}</a>
+        {% endif %}
+    </div>
+    
+    <!-- Filters -->
+    <div class="news-filters">
+        <form method="get" 
+              class="filter-form"
+              hx-get="{% url 'news:list' %}"
+              hx-target="#news-content"
+              hx-trigger="change delay:300ms, submit"
+              hx-select="#news-content"
+              hx-push-url="true">
+            <input type="text" name="search" placeholder="{% trans 'Search...' %}" 
+                   value="{{ search_query }}" class="search-input">
+            <select name="type" class="filter-select">
+                <option value="">{% trans "All Types" %}</option>
+                {% for value, label in category_choices %}
+                    <option value="{{ value }}" {% if category_type == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+        </form>
+    </div>
+    
+    <!-- News Posts -->
+    <div id="news-content">
+        <div class="posts-grid">
+        {% for post in page_obj %}
+        <article class="post-card">
+            {% if post.featured_image %}
+                <div class="post-image">
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                </div>
+            {% endif %}
+            <div class="post-content">
+                <div class="post-meta">
+                    <span class="category-badge category-{{ post.category_type }}">
+                        {{ post.get_category_type_display }}
+                    </span>
+                    <span class="post-date">
+                        {{ post.published_at|date:"F d, Y" }}
+                    </span>
+                </div>
+                <h2><a href="{% url 'news:detail' post.slug %}">{{ post.title }}</a></h2>
+                {% if post.excerpt %}
+                    <p class="post-excerpt">{{ post.excerpt }}</p>
+                {% endif %}
+                <div class="post-footer">
+                    <span class="post-author">{% trans "By" %} {{ post.author.full_name }}</span>
+                    <span class="post-views">{{ post.views_count }} {% trans "views" %}</span>
+                </div>
+                {% if user.is_board_member and post.author == user %}
+                    <div class="post-actions">
+                        <a href="{% url 'news:edit' post.slug %}" class="btn btn-sm">{% trans "Edit" %}</a>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+        {% empty %}
+        <p class="no-posts">{% trans "No news posts found." %}</p>
+        {% endfor %}
+    </div>
+    
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_type %}&type={{ category_type }}{% endif %}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_type %}&type={{ category_type }}{% endif %}"
+                   hx-target="#news-content"
+                   hx-select="#news-content"
+                   hx-push-url="true">{% trans "Previous" %}</a>
+            {% endif %}
+            <span class="page-info">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_type %}&type={{ category_type }}{% endif %}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_type %}&type={{ category_type }}{% endif %}"
+                   hx-target="#news-content"
+                   hx-select="#news-content"
+                   hx-push-url="true">{% trans "Next" %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

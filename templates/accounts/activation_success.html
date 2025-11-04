@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Account Activated - ASCAI{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>{% trans "Account Activated" %}</h2>
+    <p>{% trans "Your account has been successfully activated!" %}</p>
+    <p><a href="{% url 'dashboard:home' %}" class="btn btn-primary">{% trans "Go to Dashboard" %}</a></p>
+</div>
+{% endblock %}
+
+
+
+
+
+

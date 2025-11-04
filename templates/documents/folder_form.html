@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans action %} {% trans "Folder" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="folder-form">
+    <h1>{% trans action %} {% trans "Folder" %}</h1>
+
+    <form method="post" class="folder-form-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">{% trans "Name" %} *</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="form-errors">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.slug.id_for_label }}">{% trans "Slug" %} *</label>
+            {{ form.slug }}
+            {% if form.slug.errors %}
+                <div class="form-errors">{{ form.slug.errors }}</div>
+            {% endif %}
+            <small class="form-text">{% trans "URL-friendly identifier (e.g., folder-name)" %}</small>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">{% trans "Description" %}</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="form-errors">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.parent.id_for_label }}">{% trans "Parent Folder" %}</label>
+            {{ form.parent }}
+            {% if form.parent.errors %}
+                <div class="form-errors">{{ form.parent.errors }}</div>
+            {% endif %}
+            <small class="form-text">{% trans "Leave blank to create in root" %}</small>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.default_access_level.id_for_label }}">{% trans "Default Access Level" %}</label>
+            {{ form.default_access_level }}
+            {% if form.default_access_level.errors %}
+                <div class="form-errors">{{ form.default_access_level.errors }}</div>
+            {% endif %}
+            <small class="form-text">{% trans "Default access level for documents in this folder" %}</small>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            <a href="{% url 'documents:list' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+
+
+
+

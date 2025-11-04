@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Event Categories" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-list">
+        <div class="admin-header">
+            <h1>{% trans "Event Categories" %}</h1>
+            <a href="{% url 'events:category_create' %}" class="btn btn-primary">{% trans "Create Category" %}</a>
+        </div>
+        
+        {% if categories %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Color" %}</th>
+                        <th>{% trans "Events" %}</th>
+                        <th>{% trans "Created" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td><strong>{{ category.name }}</strong></td>
+                            <td>
+                                <span style="display: inline-block; width: 30px; height: 30px; background-color: {{ category.color }}; border: 1px solid #ccc; border-radius: 4px;"></span>
+                                <span style="margin-left: 8px;">{{ category.color }}</span>
+                            </td>
+                            <td>{{ category.events.count }}</td>
+                            <td>{{ category.created_at|date:"Y-m-d" }}</td>
+                            <td class="actions">
+                                <a href="{% url 'events:category_edit' category.pk %}" class="btn btn-small">{% trans "Edit" %}</a>
+                                <a href="{% url 'events:category_delete' category.pk %}" class="btn btn-small btn-danger">{% trans "Delete" %}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="empty-state">{% trans "No categories yet. Create your first category!" %}</p>
+        {% endif %}
+        
+        <div class="admin-footer">
+            <a href="{% url 'events:list' %}" class="btn btn-secondary">{% trans "Back to Events" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

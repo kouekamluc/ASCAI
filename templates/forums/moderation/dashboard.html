@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load forum_tags %}
+
+{% block title %}{% trans "Moderation Dashboard" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="moderation-dashboard">
+    <h1>{% trans "Moderation Dashboard" %}</h1>
+    
+    <!-- Pending Content -->
+    <div class="pending-section">
+        <h2>{% trans "Pending Content" %}</h2>
+        
+        <h3>{% trans "Pending Threads" %}</h3>
+        {% if pending_threads %}
+        <ul>
+            {% for thread in pending_threads %}
+            <li>
+                <a href="{% url 'forums:thread_detail' thread.slug %}">{{ thread.title }}</a>
+                <form method="post" action="{% url 'forums:approve_content' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="content_type" value="{{ thread|content_type_id }}">
+                    <input type="hidden" name="object_id" value="{{ thread.pk }}">
+                    <button type="submit" class="btn btn-sm">{% trans "Approve" %}</button>
+                </form>
+                <form method="post" action="{% url 'forums:reject_content' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="content_type" value="{{ thread|content_type_id }}">
+                    <input type="hidden" name="object_id" value="{{ thread.pk }}">
+                    <button type="submit" class="btn btn-sm btn-danger">{% trans "Reject" %}</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>{% trans "No pending threads." %}</p>
+        {% endif %}
+        
+        <h3>{% trans "Pending Replies" %}</h3>
+        {% if pending_replies %}
+        <ul>
+            {% for reply in pending_replies %}
+            <li>
+                <a href="{% url 'forums:thread_detail' reply.thread.slug %}#reply-{{ reply.pk }}">
+                    {{ reply.content|truncatewords:10 }}
+                </a>
+                <form method="post" action="{% url 'forums:approve_content' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="content_type" value="{{ reply|content_type_id }}">
+                    <input type="hidden" name="object_id" value="{{ reply.pk }}">
+                    <button type="submit" class="btn btn-sm">{% trans "Approve" %}</button>
+                </form>
+                <form method="post" action="{% url 'forums:reject_content' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="content_type" value="{{ reply|content_type_id }}">
+                    <input type="hidden" name="object_id" value="{{ reply.pk }}">
+                    <button type="submit" class="btn btn-sm btn-danger">{% trans "Reject" %}</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>{% trans "No pending replies." %}</p>
+        {% endif %}
+    </div>
+    
+    <!-- Flagged Content -->
+    <div class="flagged-section">
+        <h2>{% trans "Flagged Content" %}</h2>
+        {% if flagged_content %}
+        <ul>
+            {% for flag in flagged_content %}
+            <li>
+                Reason: {{ flag.get_reason_display }}
+                - Reported by: {{ flag.reporter.full_name }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>{% trans "No flagged content." %}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

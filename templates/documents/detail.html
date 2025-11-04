@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load document_tags %}
+
+{% block title %}{{ document.title }} - {% trans "Document Library" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="document-detail">
+    <div class="document-header">
+        <a href="{% url 'documents:list' %}{% if document.folder %}?folder={{ document.folder.id }}{% endif %}" 
+           class="btn btn-secondary">{% trans "Back to Library" %}</a>
+        <div class="header-actions">
+            {% if document|can_edit:user %}
+                <a href="{% url 'documents:edit' document.pk %}" class="btn btn-secondary">{% trans "Edit" %}</a>
+                <a href="{% url 'documents:upload_version' document.pk %}" class="btn btn-secondary">{% trans "Upload New Version" %}</a>
+            {% endif %}
+            {% if document|can_delete:user %}
+                <a href="{% url 'documents:delete' document.pk %}" class="btn btn-danger">{% trans "Delete" %}</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="document-main">
+        <div class="document-info">
+            <h1>{{ document.title }}</h1>
+            
+            {% if document.description %}
+                <div class="document-description">
+                    <p>{{ document.description|linebreaks }}</p>
+                </div>
+            {% endif %}
+
+            <div class="document-meta-grid">
+                <div class="meta-item">
+                    <strong>{% trans "File Type" %}:</strong>
+                    <span>{{ document.get_file_type }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>{% trans "File Size" %}:</strong>
+                    <span>{{ document.file_size|filesizeformat }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>{% trans "Version" %}:</strong>
+                    <span>{{ document.version_number }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>{% trans "Uploaded By" %}:</strong>
+                    <span>{{ document.uploader.full_name|default:document.uploader.email }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>{% trans "Upload Date" %}:</strong>
+                    <span>{{ document.created_at|date:"F d, Y H:i" }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>{% trans "Last Updated" %}:</strong>
+                    <span>{{ document.updated_at|date:"F d, Y H:i" }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>{% trans "Downloads" %}:</strong>
+                    <span>{{ document.download_count }}</span>
+                </div>
+                {% if document.folder %}
+                <div class="meta-item">
+                    <strong>{% trans "Folder" %}:</strong>
+                    <a href="{% url 'documents:list' %}?folder={{ document.folder.id }}">{{ document.folder }}</a>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if document.tags.all %}
+                <div class="document-tags">
+                    <strong>{% trans "Tags" %}:</strong>
+                    {% for tag in document.tags.all %}
+                        <span class="tag" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="document-actions-main">
+                {% if document|can_download:user %}
+                    <a href="{% url 'documents:download' document.pk %}" class="btn btn-primary btn-large">
+                        {% trans "Download" %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Version History -->
+    {% if versions %}
+    <div class="versions-section">
+        <h2>{% trans "Version History" %}</h2>
+        <table class="versions-table">
+            <thead>
+                <tr>
+                    <th>{% trans "Version" %}</th>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Created By" %}</th>
+                    <th>{% trans "Changelog" %}</th>
+                    <th>{% trans "File Size" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for version in versions %}
+                <tr class="{% if version.version_number == document.version_number %}current-version{% endif %}">
+                    <td>{{ version.version_number }}</td>
+                    <td>{{ version.created_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ version.created_by.full_name|default:version.created_by.email }}</td>
+                    <td>{{ version.changelog|default:"—" }}</td>
+                    <td>{{ version.file_size|filesizeformat }}</td>
+                    <td>
+                        <a href="{% url 'documents:version_download' document.pk version.version_number %}" 
+                           class="btn btn-sm">{% trans "Download" %}</a>
+                        {% if version.version_number != document.version_number and document|can_edit:user %}
+                            <a href="{% url 'documents:version_rollback' document.pk version.version_number %}" 
+                               class="btn btn-sm btn-secondary">{% trans "Restore" %}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% if reply %}{% trans "Edit Reply" %}{% else %}{% trans "New Reply" %}{% endif %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="reply-form">
+    <h1>{% if reply %}{% trans "Edit Reply" %}{% else %}{% trans "Reply to Thread" %}{% endif %}</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {{ form.parent_reply }}
+        
+        <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">{% trans "Content" %}</label>
+            {{ form.content }}
+            {% if form.content.errors %}
+                <div class="error">{{ form.content.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions" style="display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(0, 0, 0, 0.08);">
+            <button type="submit" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                {% trans "Submit" %}
+            </button>
+            <a href="{% url 'forums:thread_detail' thread.slug %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    CKEDITOR.replace('{{ form.content.id_for_label }}');
+</script>
+{% endblock %}
+

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Apply for" %} {{ job.title }} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="job-apply">
+    <h1>📤 {% trans "Apply for" %}: {{ job.title }}</h1>
+    <p style="color: #5f6368; margin-bottom: 2rem; font-size: 1.0625rem;">
+        {% trans "Complete your application by uploading your resume and optional cover letter." %}
+    </p>
+    
+    <div class="job-info">
+        <p><strong>🏢 {% trans "Company" %}:</strong> {{ job.company_name }}</p>
+        <p><strong>📍 {% trans "Location" %}:</strong> {{ job.location }}</p>
+        {% if job.deadline %}
+            <p><strong>⏰ {% trans "Deadline" %}:</strong> {{ job.deadline|date:"F d, Y H:i" }}</p>
+        {% endif %}
+    </div>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+        <div class="alert alert-error">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.resume.id_for_label }}">📄 {% trans "Resume" %} *</label>
+            {{ form.resume }}
+            {% if form.resume.errors %}
+            <div class="field-errors">{{ form.resume.errors }}</div>
+            {% endif %}
+            <small class="form-hint">{% trans "Accepted formats: PDF, DOC, DOCX (max 10MB)" %}</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.cover_letter.id_for_label }}">✉️ {% trans "Cover Letter" %}</label>
+            {{ form.cover_letter }}
+            {% if form.cover_letter.errors %}
+            <div class="field-errors">{{ form.cover_letter.errors }}</div>
+            {% endif %}
+            <small class="form-hint">{% trans "Optional - tell us why you're interested in this position and what makes you a great fit." %}</small>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">📤 {% trans "Submit Application" %}</button>
+            <a href="{% url 'jobs:detail' job.slug %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

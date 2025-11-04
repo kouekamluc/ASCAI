@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ job.title }} - ASCAI{% endblock %}
+
+{% block content %}
+<article class="job-detail">
+    <header class="job-header">
+        <div class="job-meta">
+            <span class="job-type-badge job-type-{{ job.job_type }}">
+                {{ job.get_job_type_display }}
+            </span>
+            <span class="job-date">{{ job.posted_at|date:"F d, Y" }}</span>
+        </div>
+        <h1>{{ job.title }}</h1>
+        <div class="job-company-info">
+            <div>
+                <p style="margin: 0.5rem 0;"><strong>{% trans "Company" %}:</strong> {{ job.company_name }}</p>
+                <p style="margin: 0.5rem 0;"><strong>{% trans "Location" %}:</strong> 📍 {{ job.location }}</p>
+            </div>
+            <div class="job-stats">
+                <span>👁️ {{ job.views_count }} {% trans "views" %}</span>
+                <span>📝 {{ application_count }} {% trans "applications" %}</span>
+            </div>
+        </div>
+        {% if job.posted_by == user %}
+            <div class="job-actions">
+                <a href="{% url 'jobs:edit' job.slug %}" class="btn btn-secondary">✏️ {% trans "Edit" %}</a>
+                <a href="{% url 'jobs:delete' job.slug %}" class="btn btn-danger">🗑️ {% trans "Delete" %}</a>
+                <a href="{% url 'jobs:manage_applications' job.slug %}" class="btn btn-primary">📋 {% trans "Manage Applications" %}</a>
+            </div>
+        {% endif %}
+    </header>
+    
+    <div class="job-content">
+        {% if job.salary_min or job.salary_max %}
+        <div class="job-salary-info">
+            <strong>{% trans "Salary Range" %}:</strong>
+            {% if job.salary_min and job.salary_max %}
+                €{{ job.salary_min|floatformat:0 }} - €{{ job.salary_max|floatformat:0 }}
+            {% elif job.salary_min %}
+                {% trans "From" %} €{{ job.salary_min|floatformat:0 }}
+            {% elif job.salary_max %}
+                {% trans "Up to" %} €{{ job.salary_max|floatformat:0 }}
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% if job.deadline %}
+        <div class="job-deadline-info">
+            <strong>⏰ {% trans "Application Deadline" %}:</strong> {{ job.deadline|date:"F d, Y H:i" }}
+        </div>
+        {% endif %}
+        
+        <div class="job-description">
+            <h2>{% trans "Job Description" %}</h2>
+            <p>{{ job.description|linebreaks }}</p>
+        </div>
+        
+        {% if job.requirements %}
+        <div class="job-requirements">
+            <h2>{% trans "Requirements" %}</h2>
+            <p>{{ job.requirements|linebreaks }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="job-posted-by">
+            <small>{% trans "Posted by" %} {{ job.posted_by.full_name }}</small>
+        </div>
+    </div>
+    
+    <!-- Apply Section -->
+    {% if user.is_authenticated %}
+        {% if job.posted_by != user %}
+            {% if has_applied %}
+                <div class="apply-section already-applied">
+                    <p>{% trans "You have already applied to this job." %}</p>
+                    <a href="{% url 'jobs:my_applications' %}" class="btn btn-secondary">{% trans "View My Applications" %}</a>
+                </div>
+            {% elif can_apply %}
+                <div class="apply-section">
+                    <a href="{% url 'jobs:apply' job.slug %}" class="btn btn-primary btn-large">📤 {% trans "Apply Now" %}</a>
+                    <p style="margin-top: 1rem; font-size: 0.9375rem; color: #80868b;">
+                        {% trans "Submit your resume and cover letter to apply for this position" %}
+                    </p>
+                </div>
+            {% else %}
+                <div class="apply-section application-closed">
+                    <p>{% trans "This job is no longer accepting applications." %}</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <div class="apply-section login-required">
+            <p>{% trans "Please log in to apply for this job." %}</p>
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary">{% trans "Log In" %}</a>
+        </div>
+    {% endif %}
+    
+    <div class="back-link">
+        <a href="{% url 'jobs:list' %}" class="btn btn-secondary">← {% trans "Back to Job Board" %}</a>
+    </div>
+</article>
+{% endblock %}
+

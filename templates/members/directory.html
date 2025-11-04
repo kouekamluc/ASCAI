@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Member Directory" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="member-directory">
+    <h1>{% trans "Member Directory" %}</h1>
+    
+    <!-- Search and Filters -->
+    <form method="get" 
+          class="search-filters"
+          hx-get="{% url 'members:directory' %}"
+          hx-target="#members-content"
+          hx-trigger="change delay:300ms, submit"
+          hx-select="#members-content"
+          hx-push-url="true">
+        <div class="filter-row">
+            <input type="text" name="search" placeholder="{% trans 'Search by name, email, university...' %}" 
+                   value="{{ search_query }}" class="search-input">
+            <select name="status" class="filter-select">
+                <option value="">{% trans "All Statuses" %}</option>
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <select name="category" class="filter-select">
+                <option value="">{% trans "All Categories" %}</option>
+                {% for value, label in category_choices %}
+                    <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+            {% if user.is_admin or user.is_board_member %}
+                <a href="{% url 'members:export_csv' %}" class="btn btn-secondary">{% trans "Export CSV" %}</a>
+            {% endif %}
+        </div>
+    </form>
+    
+    <!-- Bulk Actions (Admin/Board only) -->
+    {% if user.is_admin or user.is_board_member %}
+    <form method="post" action="{% url 'members:bulk_update' %}" id="bulk-form">
+        {% csrf_token %}
+        <div class="bulk-actions">
+            <select name="new_status" class="filter-select">
+                <option value="">{% trans "Bulk Actions" %}</option>
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary">{% trans "Apply to Selected" %}</button>
+        </div>
+    {% endif %}
+    
+    <!-- Member List -->
+    <div id="members-content">
+        <div class="member-list">
+        {% if page_obj %}
+            <table class="member-table">
+                <thead>
+                    <tr>
+                        {% if user.is_admin or user.is_board_member %}
+                            <th><input type="checkbox" id="select-all"></th>
+                        {% endif %}
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Membership #" %}</th>
+                        <th>{% trans "University" %}</th>
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Category" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in page_obj %}
+                    <tr>
+                        {% if user.is_admin or user.is_board_member %}
+                            <td><input type="checkbox" name="member_ids" value="{{ member.id }}" form="bulk-form"></td>
+                        {% endif %}
+                        <td>{{ member.user.full_name }}</td>
+                        <td>{{ member.membership_number|default:"-" }}</td>
+                        <td>{{ member.university|default:"-" }}</td>
+                        <td>
+                            <span class="status-badge status-{{ member.status }}">
+                                {{ member.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ member.get_category_display }}</td>
+                        <td>
+                            <a href="{% url 'members:profile' member.user.id %}" class="btn btn-sm">{% trans "View" %}</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">{% trans "No members found." %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
+                       class="btn btn-sm"
+                       hx-get="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}"
+                       hx-target="#members-content"
+                       hx-select="#members-content"
+                       hx-push-url="true">{% trans "Previous" %}</a>
+                {% endif %}
+                <span class="page-info">
+                    {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
+                       class="btn btn-sm"
+                       hx-get="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}"
+                       hx-target="#members-content"
+                       hx-select="#members-content"
+                       hx-push-url="true">{% trans "Next" %}</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+            <p>{% trans "No members found." %}</p>
+        {% endif %}
+    </div>
+    
+    {% if user.is_admin or user.is_board_member %}
+    </form>
+    {% endif %}
+    </div>
+</div>
+
+<script>
+// Select all checkbox functionality
+document.getElementById('select-all')?.addEventListener('change', function(e) {
+    const checkboxes = document.querySelectorAll('input[name="member_ids"]');
+    checkboxes.forEach(cb => cb.checked = e.target.checked);
+});
+</script>
+{% endblock %}
+

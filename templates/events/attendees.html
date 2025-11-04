@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Event Attendees" %} - {{ event.title }} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="event-attendees">
+    <div class="attendees-header">
+        <h1>{% trans "Attendees" %}: {{ event.title }}</h1>
+        <div class="attendees-actions">
+            <a href="{% url 'events:detail' event.slug %}" class="btn btn-secondary">{% trans "Back to Event" %}</a>
+            <a href="?export=csv" class="btn btn-primary">{% trans "Export CSV" %}</a>
+        </div>
+    </div>
+    
+    <div class="attendees-summary">
+        <div class="summary-card">
+            <h3>{% trans "Registered" %}</h3>
+            <p class="count">{{ event.registered_count }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>{% trans "Waitlisted" %}</h3>
+            <p class="count">{{ event.waitlist_count }}</p>
+        </div>
+        {% if event.max_attendees %}
+        <div class="summary-card">
+            <h3>{% trans "Capacity" %}</h3>
+            <p class="count">{{ event.max_attendees }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>{% trans "Available" %}</h3>
+            <p class="count">{{ event.spaces_available }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="attendees-table-wrapper">
+        <table class="attendees-table">
+            <thead>
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Registered At" %}</th>
+                    <th>{% trans "Checked In" %}</th>
+                    <th>{% trans "Dietary Requirements" %}</th>
+                    <th>{% trans "Special Requests" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registration in registrations %}
+                <tr>
+                    <td>{{ registration.user.full_name }}</td>
+                    <td>{{ registration.user.email }}</td>
+                    <td>
+                        <span class="status-badge status-{{ registration.status }}">
+                            {{ registration.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ registration.registered_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if registration.checked_in_at %}
+                            ✓ {{ registration.checked_in_at|date:"M d, Y H:i" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ registration.dietary_requirements|default:"-" }}</td>
+                    <td>{{ registration.special_requests|default:"-" }}</td>
+                    <td>
+                        {% if registration.status != registration.Status.ATTENDED %}
+                            <form method="post" action="{% url 'events:check_in' event.slug registration.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success">{% trans "Check In" %}</button>
+                            </form>
+                        {% else %}
+                            <span class="text-success">✓ {% trans "Checked In" %}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">{% trans "No registrations yet." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

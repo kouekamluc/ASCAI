@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete Category" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="delete-confirm">
+        <h1>{% trans "Delete Category" %}</h1>
+        
+        <div class="warning-box">
+            <p><strong>{% trans "Warning:" %}</strong> {% trans "Are you sure you want to delete this category?" %}</p>
+            <ul>
+                <li><strong>{% trans "Category:" %}</strong> {{ category.name }}</li>
+                {% if event_count > 0 %}
+                    <li class="error"><strong>{% trans "Warning:" %}</strong> {% trans "This category is used by" %} {{ event_count }} {% trans "event(s). You cannot delete it." %}</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        {% if event_count == 0 %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">{% trans "Delete Category" %}</button>
+                    <a href="{% url 'events:category_list' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                </div>
+            </form>
+        {% else %}
+            <div class="form-actions">
+                <a href="{% url 'events:category_list' %}" class="btn btn-secondary">{% trans "Back" %}</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

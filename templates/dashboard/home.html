@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Dashboard" %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="user-dashboard">
+    <div class="dashboard-header">
+        <h1>{% trans "Welcome," %} {{ user.full_name }}!</h1>
+        <p class="dashboard-subtitle">{% trans "Your personal dashboard overview" %}</p>
+    </div>
+
+    <!-- Membership Status Card -->
+    {% if user_stats.member_profile %}
+    <div class="membership-card">
+        <div class="membership-header">
+            <h2>{% trans "Membership Status" %}</h2>
+        </div>
+        <div class="membership-content">
+            <div class="membership-info">
+                <div class="info-row">
+                    <span class="info-label">{% trans "Status:" %}</span>
+                    <span class="info-value status-{{ user_stats.member_profile.status }}">
+                        {{ user_stats.member_profile.get_status_display }}
+                    </span>
+                </div>
+                {% if user_stats.member_profile.membership_number %}
+                <div class="info-row">
+                    <span class="info-label">{% trans "Membership Number:" %}</span>
+                    <span class="info-value">{{ user_stats.member_profile.membership_number }}</span>
+                </div>
+                {% endif %}
+                <div class="info-row">
+                    <span class="info-label">{% trans "Category:" %}</span>
+                    <span class="info-value">{{ user_stats.member_profile.get_category_display }}</span>
+                </div>
+                {% if user_stats.member_profile.membership_expiry %}
+                <div class="info-row">
+                    <span class="info-label">{% trans "Expiry Date:" %}</span>
+                    <span class="info-value">{{ user_stats.member_profile.membership_expiry|date:"F d, Y" }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="membership-actions">
+                <a href="{% url 'accounts:profile' %}" class="btn btn-primary">{% trans "View Profile" %}</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Key Metrics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon">📅</div>
+            <div class="metric-content">
+                <h3>{% trans "Total Events" %}</h3>
+                <p class="metric-value">{{ user_stats.total_events_registered }}</p>
+                <p class="metric-change">{% trans "All time registrations" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">✓</div>
+            <div class="metric-content">
+                <h3>{% trans "Events Attended" %}</h3>
+                <p class="metric-value">{{ user_stats.events_attended }}</p>
+                <p class="metric-change">{% trans "Completed events" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">⏰</div>
+            <div class="metric-content">
+                <h3>{% trans "Upcoming Events" %}</h3>
+                <p class="metric-value">{{ user_stats.upcoming_events }}</p>
+                <p class="metric-change">{% trans "Registered events" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">💰</div>
+            <div class="metric-content">
+                <h3>{% trans "Total Payments" %}</h3>
+                <p class="metric-value">€{{ user_stats.total_paid|floatformat:2 }}</p>
+                <p class="metric-change">{{ user_stats.total_payments }} {% trans "completed payments" %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Activity Overview" %}</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{% trans "Event Participation Over Time" %}</h3>
+                <canvas id="eventParticipationChart"></canvas>
+            </div>
+            {% if user_stats.total_paid > 0 %}
+            <div class="stat-card">
+                <h3>{% trans "Payment History" %}</h3>
+                <canvas id="paymentHistoryChart"></canvas>
+            </div>
+            {% endif %}
+            <div class="stat-card">
+                <h3>{% trans "Event Status Distribution" %}</h3>
+                <canvas id="eventStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="dashboard-content-grid">
+        <!-- Upcoming Events Section -->
+        <div class="dashboard-widget">
+            <div class="widget-header">
+                <h2>{% trans "Upcoming Events" %}</h2>
+                <a href="{% url 'events:list' %}" class="btn btn-secondary btn-sm">{% trans "Browse All" %}</a>
+            </div>
+            <div class="widget-content">
+                {% if upcoming_events %}
+                <div class="event-list">
+                    {% for registration in upcoming_events %}
+                    <div class="event-item">
+                        <div class="event-info">
+                            <h4><a href="{% url 'events:detail' slug=registration.event.slug %}">{{ registration.event.title }}</a></h4>
+                            <p class="event-meta">
+                                <span class="event-date">📅 {{ registration.event.start_date|date:"M d, Y H:i" }}</span>
+                                <span class="event-location">📍 {{ registration.event.location }}</span>
+                            </p>
+                            <span class="event-status status-{{ registration.status }}">
+                                {{ registration.get_status_display }}
+                            </span>
+                        </div>
+                        <div class="event-actions">
+                            <a href="{% url 'events:detail' slug=registration.event.slug %}" class="btn btn-primary btn-sm">{% trans "View" %}</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">{% trans "No upcoming events. Browse available events to register." %}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent News Section -->
+        <div class="dashboard-widget">
+            <div class="widget-header">
+                <h2>{% trans "Recent News" %}</h2>
+                <a href="{% url 'news:list' %}" class="btn btn-secondary btn-sm">{% trans "View All" %}</a>
+            </div>
+            <div class="widget-content">
+                {% if news_feed %}
+                <div class="news-list">
+                    {% for news in news_feed %}
+                    <div class="news-item">
+                        <h4><a href="{% url 'news:detail' slug=news.slug %}">{{ news.title }}</a></h4>
+                        <p class="news-meta">
+                            <span class="news-date">📅 {{ news.published_at|date:"M d, Y"|default:news.created_at|date:"M d, Y" }}</span>
+                            {% if news.category %}
+                            <span class="news-category">🏷️ {{ news.category.name }}</span>
+                            {% endif %}
+                        </p>
+                        {% if news.excerpt %}
+                        <p class="news-excerpt">{{ news.excerpt|truncatewords:20 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">{% trans "No news available at the moment." %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Timeline Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Recent Activity" %}</h2>
+        <div class="activity-timeline">
+            {% if recent_activity %}
+            {% for activity in recent_activity %}
+            <div class="activity-item">
+                <div class="activity-icon">
+                    {% if activity.type == "event_registration" %}📅
+                    {% elif activity.type == "payment" %}💰
+                    {% elif activity.type == "document_upload" %}📄
+                    {% else %}⚙️{% endif %}
+                </div>
+                <div class="activity-content">
+                    <h4>{{ activity.title }}</h4>
+                    <p class="activity-meta">
+                        <span class="activity-date">{{ activity.date|date:"F d, Y H:i" }}</span>
+                        <span class="activity-status status-{{ activity.status|lower|slugify }}">{{ activity.status }}</span>
+                    </p>
+                    {% if activity.url %}
+                    <a href="{{ activity.url }}" class="activity-link">{% trans "View Details" %} →</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="empty-state">{% trans "No recent activity to display." %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Quick Actions" %}</h2>
+        <div class="quick-actions-grid">
+            <a href="{% url 'accounts:profile' %}" class="quick-action-card">
+                <div class="action-icon">👤</div>
+                <h3>{% trans "Edit Profile" %}</h3>
+                <p>{% trans "Update your personal information" %}</p>
+            </a>
+            
+            <a href="{% url 'events:list' %}" class="quick-action-card">
+                <div class="action-icon">📅</div>
+                <h3>{% trans "Browse Events" %}</h3>
+                <p>{% trans "View and register for upcoming events" %}</p>
+            </a>
+            
+            {% if user.is_member %}
+            <a href="{% url 'documents:list' %}" class="quick-action-card">
+                <div class="action-icon">📄</div>
+                <h3>{% trans "Documents" %}</h3>
+                <p>{% trans "View and upload documents" %}</p>
+            </a>
+            {% endif %}
+            
+            <a href="{% url 'jobs:list' %}" class="quick-action-card">
+                <div class="action-icon">💼</div>
+                <h3>{% trans "Job Board" %}</h3>
+                <p>{% trans "Browse and apply for job opportunities" %}</p>
+            </a>
+            
+            <a href="{% url 'members:directory' %}" class="quick-action-card">
+                <div class="action-icon">👥</div>
+                <h3>{% trans "Member Directory" %}</h3>
+                <p>{% trans "Connect with other members" %}</p>
+            </a>
+            
+            <a href="{% url 'forums:category_list' %}" class="quick-action-card">
+                <div class="action-icon">💬</div>
+                <h3>{% trans "Forums" %}</h3>
+                <p>{% trans "Join discussions and share ideas" %}</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Event Participation Chart
+const eventParticipationCtx = document.getElementById('eventParticipationChart');
+if (eventParticipationCtx) {
+    const months = {{ event_chart_months|safe }};
+    const counts = JSON.parse('{{ event_chart_counts|escapejs }}');
+    new Chart(eventParticipationCtx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: '{% trans "Event Registrations" %}',
+                data: counts,
+                borderColor: '#1B5E20',
+                backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Payment History Chart
+const paymentHistoryCtx = document.getElementById('paymentHistoryChart');
+if (paymentHistoryCtx) {
+    const months = {{ payment_chart_months|safe }};
+    const revenues = JSON.parse('{{ payment_chart_revenues|escapejs }}');
+    new Chart(paymentHistoryCtx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: '{% trans "Payments (€)" %}',
+                data: revenues,
+                backgroundColor: '#1B5E20'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Event Status Distribution Chart
+const eventStatusCtx = document.getElementById('eventStatusChart');
+if (eventStatusCtx) {
+    const labels = {{ event_status_labels|safe }};
+    const data = JSON.parse('{{ event_status_data|escapejs }}');
+    new Chart(eventStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#1B5E20',
+                    '#FFB300',
+                    '#388E3C',
+                    '#B71C1C',
+                    '#9E9E9E'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+        }
+    });
+}
+</script>
+{% endblock %}

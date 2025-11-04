@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Rollback Document" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="document-rollback">
+    <h1>{% trans "Rollback Document" %}</h1>
+
+    <div class="rollback-info">
+        <p>{% trans "Are you sure you want to rollback this document to version" %} {{ version.version_number }}?</p>
+        <div class="document-preview">
+            <h3>{{ document.title }}</h3>
+            <div class="version-details">
+                <p><strong>{% trans "Current Version" %}:</strong> {{ document.version_number }}</p>
+                <p><strong>{% trans "Target Version" %}:</strong> {{ version.version_number }}</p>
+                <p><strong>{% trans "Version Date" %}:</strong> {{ version.created_at|date:"F d, Y H:i" }}</p>
+                {% if version.changelog %}
+                    <p><strong>{% trans "Changelog" %}:</strong> {{ version.changelog }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <p class="warning-text">
+            <strong>{% trans "Note" %}:</strong> 
+            {% trans "A new version will be created from the selected version. The current version will remain in history." %}
+        </p>
+    </div>
+
+    <form method="post" class="rollback-form">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% trans "Rollback" %}</button>
+            <a href="{% url 'documents:detail' document.pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+
+
+
+

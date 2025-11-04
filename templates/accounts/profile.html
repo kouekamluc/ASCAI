@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Profile - ASCAI{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>{% trans "Profile" %}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">{% trans "Update Profile" %}</button>
+    </form>
+    <p><a href="{% url 'accounts:change_password' %}">{% trans "Change Password" %}</a></p>
+</div>
+{% endblock %}
+
+
+
+
+
+

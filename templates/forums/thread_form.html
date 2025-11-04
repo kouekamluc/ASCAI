@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% if thread %}{% trans "Edit Thread" %}{% else %}{% trans "New Thread" %}{% endif %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+{% load static %}
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="thread-form">
+    <h1>{% if thread %}{% trans "Edit Thread" %}{% else %}{% trans "Create New Thread" %}{% endif %}</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">{% trans "Title" %}</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="error">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+        
+        {% if not thread %}
+        <div class="form-group">
+            <label for="{{ form.category.id_for_label }}">{% trans "Category" %}</label>
+            {{ form.category }}
+            {% if form.category.errors %}
+                <div class="error">{{ form.category.errors }}</div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">{% trans "Content" %}</label>
+            {{ form.content }}
+            {% if form.content.errors %}
+                <div class="error">{{ form.content.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.tags.id_for_label }}">{% trans "Tags (optional)" %}</label>
+            {{ form.tags }}
+            {% if form.tags.errors %}
+                <div class="error">{{ form.tags.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions" style="display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(0, 0, 0, 0.08);">
+            <button type="submit" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                {% trans "Submit" %}
+            </button>
+            <a href="{% if thread %}{% url 'forums:thread_detail' thread.slug %}{% else %}{% url 'forums:category_detail' category.slug %}{% endif %}" 
+               class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    CKEDITOR.replace('{{ form.content.id_for_label }}');
+</script>
+{% endblock %}
+

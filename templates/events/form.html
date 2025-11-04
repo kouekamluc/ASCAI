@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if event %}{% trans "Edit Event" %}{% else %}{% trans "Create Event" %}{% endif %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h1>{% if event %}{% trans "Edit Event" %}{% else %}{% trans "Create Event" %}{% endif %}</h1>
+            <p class="form-subtitle">{% trans "Fill in the details below to create a new event" %}</p>
+        </div>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" class="modern-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📋</span>
+                    {% trans "Basic Information" %}
+                </h2>
+            
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">
+                        {% trans "Title" %} <span class="required">*</span>
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="field-errors">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">
+                        {% trans "Description" %} <span class="required">*</span>
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="field-errors">{{ form.description.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Provide a detailed description of the event" %}</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.location.id_for_label }}" class="form-label">
+                        {% trans "Location" %} <span class="required">*</span>
+                    </label>
+                    {{ form.location }}
+                    {% if form.location.errors %}
+                        <div class="field-errors">{{ form.location.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📅</span>
+                    {% trans "Date & Time" %}
+                </h2>
+            
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.start_date.id_for_label }}" class="form-label">
+                            {% trans "Start Date & Time" %} <span class="required">*</span>
+                        </label>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                            <div class="field-errors">{{ form.start_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.end_date.id_for_label }}" class="form-label">
+                            {% trans "End Date & Time" %} <span class="required">*</span>
+                        </label>
+                        {{ form.end_date }}
+                        {% if form.end_date.errors %}
+                            <div class="field-errors">{{ form.end_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">👥</span>
+                    {% trans "Organization" %}
+                </h2>
+            
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.organizer.id_for_label }}" class="form-label">
+                            {% trans "Organizer" %} <span class="required">*</span>
+                        </label>
+                        {{ form.organizer }}
+                        {% if form.organizer.errors %}
+                            <div class="field-errors">{{ form.organizer.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.category.id_for_label }}" class="form-label">
+                            {% trans "Category" %}
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="field-errors">{{ form.category.errors }}</div>
+                        {% endif %}
+                        {% if user.is_board_member %}
+                            <small class="form-hint">
+                                <a href="{% url 'events:category_create' %}" target="_blank">{% trans "Create a new category" %}</a>
+                            </small>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.visibility.id_for_label }}" class="form-label">
+                        {% trans "Visibility" %} <span class="required">*</span>
+                    </label>
+                    {{ form.visibility }}
+                    {% if form.visibility.errors %}
+                        <div class="field-errors">{{ form.visibility.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Control who can view this event" %}</small>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🎫</span>
+                    {% trans "Registration" %}
+                </h2>
+            
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        {{ form.is_registration_required }}
+                        <span>{% trans "Registration Required" %}</span>
+                    </label>
+                    {% if form.is_registration_required.errors %}
+                        <div class="field-errors">{{ form.is_registration_required.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.max_attendees.id_for_label }}" class="form-label">
+                            {% trans "Maximum Attendees" %}
+                        </label>
+                        {{ form.max_attendees }}
+                        {% if form.max_attendees.errors %}
+                            <div class="field-errors">{{ form.max_attendees.errors }}</div>
+                        {% endif %}
+                        <small class="form-hint">{% trans "Leave empty for unlimited capacity" %}</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.registration_deadline.id_for_label }}" class="form-label">
+                            {% trans "Registration Deadline" %}
+                        </label>
+                        {{ form.registration_deadline }}
+                        {% if form.registration_deadline.errors %}
+                            <div class="field-errors">{{ form.registration_deadline.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🖼️</span>
+                    {% trans "Media & Status" %}
+                </h2>
+            
+                <div class="form-group">
+                    <label for="{{ form.featured_image.id_for_label }}" class="form-label">
+                        {% trans "Featured Image" %}
+                    </label>
+                    {{ form.featured_image }}
+                    {% if form.featured_image.errors %}
+                        <div class="field-errors">{{ form.featured_image.errors }}</div>
+                    {% endif %}
+                    {% if event and event.featured_image %}
+                        <div class="current-image">
+                            <p class="current-image-label">{% trans "Current image:" %}</p>
+                            <img src="{{ event.featured_image.url }}" alt="Current image">
+                        </div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Upload an image to represent this event (optional)" %}</small>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        {{ form.is_published }}
+                        <span>{% trans "Publish Event" %}</span>
+                    </label>
+                    {% if form.is_published.errors %}
+                        <div class="field-errors">{{ form.is_published.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Unpublished events are only visible to board members" %}</small>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span>{% if event %}{% trans "Update Event" %}{% else %}{% trans "Create Event" %}{% endif %}</span>
+                </button>
+                <a href="{% if event %}{% url 'events:detail' event.slug %}{% else %}{% url 'events:list' %}{% endif %}" 
+                   class="btn btn-secondary">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/events.js' %}"></script>
+{% endblock %}
+

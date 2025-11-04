@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Upload Document" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h1>{% trans "Upload Document" %}</h1>
+            <p class="form-subtitle">{% trans "Upload a new document to the system" %}</p>
+        </div>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" class="modern-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📄</span>
+                    {% trans "Document Information" %}
+                </h2>
+                
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">
+                        {% trans "Title" %} <span class="required">*</span>
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="field-errors">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">
+                        {% trans "Description" %}
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="field-errors">{{ form.description.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Provide a brief description of the document (optional)" %}</small>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📁</span>
+                    {% trans "File & Organization" %}
+                </h2>
+                
+                <div class="form-group">
+                    <label for="{{ form.file.id_for_label }}" class="form-label">
+                        {% trans "File" %} <span class="required">*</span>
+                    </label>
+                    {{ form.file }}
+                    {% if form.file.errors %}
+                        <div class="field-errors">{{ form.file.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Maximum file size: 50MB" %}</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.folder.id_for_label }}" class="form-label">
+                        {% trans "Folder" %}
+                    </label>
+                    {{ form.folder }}
+                    {% if form.folder.errors %}
+                        <div class="field-errors">{{ form.folder.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Select a folder to organize this document (optional)" %}</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.tags.id_for_label }}" class="form-label">
+                        {% trans "Tags" %}
+                    </label>
+                    {{ form.tags }}
+                    {% if form.tags.errors %}
+                        <div class="field-errors">{{ form.tags.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Select tags to help categorize this document (optional)" %}</small>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🔒</span>
+                    {% trans "Access & Visibility" %}
+                </h2>
+                
+                <div class="form-group">
+                    <label for="{{ form.access_level.id_for_label }}" class="form-label">
+                        {% trans "Access Level" %}
+                    </label>
+                    {{ form.access_level }}
+                    {% if form.access_level.errors %}
+                        <div class="field-errors">{{ form.access_level.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Leave blank to inherit from folder. Public: everyone, Members: logged-in members, Board: board members only" %}</small>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        {{ form.is_published }}
+                        <span>{% trans "Published" %}</span>
+                    </label>
+                    {% if form.is_published.errors %}
+                        <div class="field-errors">{{ form.is_published.errors }}</div>
+                    {% endif %}
+                    <small class="form-hint">{% trans "Unpublished documents are only visible to board members" %}</small>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span>{% trans "Upload Document" %}</span>
+                </button>
+                <a href="{% url 'documents:list' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

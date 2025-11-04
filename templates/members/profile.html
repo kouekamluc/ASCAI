@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ member.user.full_name }} - {% trans "Member Profile" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="member-profile">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {% if member.user.profile_picture %}
+                <img src="{{ member.user.profile_picture.url }}" alt="{{ member.user.full_name }}">
+            {% else %}
+                <div class="avatar-placeholder">{{ member.user.first_name.0 }}{{ member.user.last_name.0 }}</div>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1>{{ member.user.full_name }}</h1>
+            <p class="profile-email">
+                {% if member.email_public or can_edit %}
+                    {{ member.user.email }}
+                {% endif %}
+            </p>
+            <span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span>
+            <span class="category-badge">{{ member.get_category_display }}</span>
+        </div>
+        {% if can_edit %}
+            <div class="profile-actions">
+                <a href="{% url 'admin:members_member_change' member.id %}" class="btn btn-secondary">{% trans "Edit" %}</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="profile-content">
+        <div class="profile-section">
+            <h2>{% trans "Membership Information" %}</h2>
+            <dl class="info-list">
+                <dt>{% trans "Membership Number" %}:</dt>
+                <dd>{{ member.membership_number|default:"-" }}</dd>
+                
+                <dt>{% trans "Status" %}:</dt>
+                <dd>{{ member.get_status_display }}</dd>
+                
+                <dt>{% trans "Category" %}:</dt>
+                <dd>{{ member.get_category_display }}</dd>
+                
+                <dt>{% trans "Joined Date" %}:</dt>
+                <dd>{{ member.joined_date|date:"F d, Y" }}</dd>
+                
+                {% if member.membership_expiry %}
+                <dt>{% trans "Membership Expiry" %}:</dt>
+                <dd>{{ member.membership_expiry|date:"F d, Y" }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+        
+        <div class="profile-section">
+            <h2>{% trans "Academic Information" %}</h2>
+            <dl class="info-list">
+                {% if member.university %}
+                <dt>{% trans "University" %}:</dt>
+                <dd>{{ member.university }}</dd>
+                {% endif %}
+                
+                {% if member.course %}
+                <dt>{% trans "Course of Study" %}:</dt>
+                <dd>{{ member.course }}</dd>
+                {% endif %}
+                
+                {% if member.year_of_study %}
+                <dt>{% trans "Year of Study" %}:</dt>
+                <dd>{{ member.year_of_study }}</dd>
+                {% endif %}
+                
+                {% if member.graduation_year %}
+                <dt>{% trans "Graduation Year" %}:</dt>
+                <dd>{{ member.graduation_year }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+        
+        <div class="profile-section">
+            <h2>{% trans "Personal Information" %}</h2>
+            <dl class="info-list">
+                {% if member.city %}
+                <dt>{% trans "City" %}:</dt>
+                <dd>{{ member.city }}</dd>
+                {% endif %}
+                
+                <dt>{% trans "Country of Origin" %}:</dt>
+                <dd>{{ member.country_of_origin }}</dd>
+                
+                {% if member.date_of_birth %}
+                <dt>{% trans "Date of Birth" %}:</dt>
+                <dd>{{ member.date_of_birth|date:"F d, Y" }}</dd>
+                {% endif %}
+                
+                {% if member.user.phone %}
+                <dt>{% trans "Phone" %}:</dt>
+                <dd>{{ member.user.phone }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+        
+        {% if member.user.bio %}
+        <div class="profile-section">
+            <h2>{% trans "Bio" %}</h2>
+            <p>{{ member.user.bio }}</p>
+        </div>
+        {% endif %}
+        
+        {% if member.linkedin or member.website %}
+        <div class="profile-section">
+            <h2>{% trans "Links" %}</h2>
+            <ul class="links-list">
+                {% if member.linkedin %}
+                <li><a href="{{ member.linkedin }}" target="_blank">LinkedIn</a></li>
+                {% endif %}
+                {% if member.website %}
+                <li><a href="{{ member.website }}" target="_blank">{% trans "Website" %}</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

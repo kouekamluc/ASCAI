@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Login - ASCAI{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>{% trans "Login" %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
+    </form>
+    <p><a href="{% url 'accounts:register' %}">{% trans "Don't have an account? Register here" %}</a></p>
+</div>
+{% endblock %}
+
+
+
+
+
+

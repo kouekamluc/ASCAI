@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "News Categories" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-list">
+        <div class="admin-header">
+            <h1>{% trans "News Categories" %}</h1>
+            <a href="{% url 'news:category_create' %}" class="btn btn-primary">{% trans "Create Category" %}</a>
+        </div>
+        
+        {% if categories %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Posts" %}</th>
+                        <th>{% trans "Created" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td><strong>{{ category.name }}</strong></td>
+                            <td>{{ category.posts.count }}</td>
+                            <td>{{ category.created_at|date:"Y-m-d" }}</td>
+                            <td class="actions">
+                                <a href="{% url 'news:category_edit' category.pk %}" class="btn btn-small">{% trans "Edit" %}</a>
+                                <a href="{% url 'news:category_delete' category.pk %}" class="btn btn-small btn-danger">{% trans "Delete" %}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="empty-state">{% trans "No categories yet. Create your first category!" %}</p>
+        {% endif %}
+        
+        <div class="admin-footer">
+            <a href="{% url 'news:list' %}" class="btn btn-secondary">{% trans "Back to News" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

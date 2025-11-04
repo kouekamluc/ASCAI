@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #17a2b8; color: white; padding: 20px; text-align: center; }
+        .content { background: #f9f9f9; padding: 20px; }
+        .event-info { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #17a2b8; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 0.9em; }
+        .btn { display: inline-block; padding: 12px 24px; background: #17a2b8; color: white; text-decoration: none; border-radius: 4px; margin-top: 15px; }
+        .highlight { background: #fff3cd; padding: 10px; border-radius: 4px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{% load i18n %}{% trans "Event Reminder" %}</h1>
+        </div>
+        <div class="content">
+            <p>{% trans "Hello" %} {{ user.first_name }},</p>
+            
+            <div class="highlight">
+                <p><strong>{% trans "This is a friendly reminder that you are registered for an upcoming event!" %}</strong></p>
+            </div>
+            
+            <div class="event-info">
+                <h2>{{ event.title }}</h2>
+                <p><strong>{% trans "Date" %}:</strong> {{ event.start_date|date:"F d, Y" }} {% trans "at" %} {{ event.start_date|date:"g:i A" }}</p>
+                <p><strong>{% trans "Location" %}:</strong> {{ event.location }}</p>
+                {% if days_before == 1 %}
+                    <p><strong>{% trans "The event is tomorrow!" %}</strong></p>
+                {% else %}
+                    <p><strong>{% trans "The event is in" %} {{ days_before }} {% trans "days" %}.</strong></p>
+                {% endif %}
+            </div>
+            
+            <p>{% trans "We look forward to seeing you there!" %}</p>
+            
+            <a href="{{ event_url }}" class="btn">{% trans "View Event Details" %}</a>
+        </div>
+        <div class="footer">
+            <p>{% trans "ASCAI - Association of Cameroonian Students in Lazio" %}</p>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ event.title }} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
+
+{% block content %}
+<article class="event-detail">
+    {% if event.featured_image %}
+    <div class="featured-image">
+        <img src="{{ event.featured_image.url }}" alt="{{ event.title }}">
+    </div>
+    {% endif %}
+    
+    <header class="event-header">
+        <div class="event-meta">
+            {% if event.category %}
+                <span class="category-badge" style="background-color: {{ event.category.color }};">
+                    {{ event.category.name }}
+                </span>
+            {% endif %}
+            <span class="event-date">{{ event.start_date|date:"F d, Y" }}</span>
+        </div>
+        <h1>{{ event.title }}</h1>
+        <div class="event-info-bar">
+            <span>📍 {{ event.location }}</span>
+            <span>🕐 {{ event.start_date|date:"g:i A" }} - {{ event.end_date|date:"g:i A" }}</span>
+            <span>👤 {% trans "Organized by" %} {{ event.organizer.full_name }}</span>
+        </div>
+        {% if user.is_board_member and event.organizer == user %}
+            <div class="event-actions">
+                <a href="{% url 'events:edit' event.slug %}" class="btn btn-secondary">{% trans "Edit" %}</a>
+                <a href="{% url 'events:delete' event.slug %}" class="btn btn-danger">{% trans "Delete" %}</a>
+                <a href="{% url 'events:attendees' event.slug %}" class="btn btn-primary">{% trans "View Attendees" %}</a>
+            </div>
+        {% endif %}
+    </header>
+    
+    <div class="event-content">
+        <div class="event-description">
+            {{ event.description|linebreaks }}
+        </div>
+        
+        <!-- Registration Info -->
+        {% if event.is_registration_required %}
+        <div class="registration-info">
+            <h3>{% trans "Registration Information" %}</h3>
+            <ul>
+                {% if event.max_attendees %}
+                    <li>
+                        <strong>{% trans "Capacity:" %}</strong> 
+                        {% if event.is_full %}
+                            {% trans "Event is full" %}
+                            {% if event.waitlist_count > 0 %}
+                                ({{ event.waitlist_count }} {% trans "on waitlist" %})
+                            {% endif %}
+                        {% else %}
+                            {{ event.spaces_available }} {% trans "of" %} {{ event.max_attendees }} {% trans "spaces available" %}
+                        {% endif %}
+                    </li>
+                {% else %}
+                    <li><strong>{% trans "Capacity:" %}</strong> {% trans "Unlimited" %}</li>
+                {% endif %}
+                {% if event.registration_deadline %}
+                    <li><strong>{% trans "Registration Deadline:" %}</strong> {{ event.registration_deadline|date:"F d, Y g:i A" }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- Registration Status -->
+        {% if user.is_authenticated %}
+            {% if registration %}
+                <div class="registration-status">
+                    {% if registration.status == registration.Status.REGISTERED %}
+                        <div class="alert alert-success">
+                            <strong>✓ {% trans "You are registered for this event!" %}</strong>
+                            <p>{% trans "Registered on" %} {{ registration.registered_at|date:"F d, Y" }}</p>
+                            {% if registration.dietary_requirements or registration.special_requests %}
+                                <details>
+                                    <summary>{% trans "Your registration details" %}</summary>
+                                    {% if registration.dietary_requirements %}
+                                        <p><strong>{% trans "Dietary Requirements:" %}</strong> {{ registration.dietary_requirements }}</p>
+                                    {% endif %}
+                                    {% if registration.special_requests %}
+                                        <p><strong>{% trans "Special Requests:" %}</strong> {{ registration.special_requests }}</p>
+                                    {% endif %}
+                                </details>
+                            {% endif %}
+                            <form method="post" action="{% url 'events:unregister' event.slug %}" style="margin-top: 10px;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">{% trans "Cancel Registration" %}</button>
+                            </form>
+                        </div>
+                    {% elif registration.status == registration.Status.WAITLISTED %}
+                        <div class="alert alert-warning">
+                            <strong>⏳ {% trans "You are on the waitlist for this event." %}</strong>
+                            <p>{% trans "You will be notified if a space becomes available." %}</p>
+                            <form method="post" action="{% url 'events:unregister' event.slug %}" style="margin-top: 10px;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">{% trans "Remove from Waitlist" %}</button>
+                            </form>
+                        </div>
+                    {% elif registration.status == registration.Status.ATTENDED %}
+                        <div class="alert alert-info">
+                            <strong>✓ {% trans "You attended this event!" %}</strong>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif cancelled_registration %}
+                <div class="alert alert-warning">
+                    <strong>⚠ {% trans "Your registration was cancelled." %}</strong>
+                    <p>{% trans "You can re-register for this event if registration is still open." %}</p>
+                </div>
+                {% if can_register and registration_form %}
+                    <div class="registration-form-section">
+                        <h3>{% trans "Re-register for this Event" %}</h3>
+                        <form method="post" action="{% url 'events:register' event.slug %}" class="registration-form">
+                            {% csrf_token %}
+                            {{ registration_form.as_p }}
+                            <button type="submit" class="btn btn-primary">
+                                {% if event.is_full %}
+                                    {% trans "Join Waitlist" %}
+                                {% else %}
+                                    {% trans "Re-register" %}
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% elif can_register and registration_form %}
+                <div class="registration-form-section">
+                    <h3>{% trans "Register for this Event" %}</h3>
+                    <form method="post" action="{% url 'events:register' event.slug %}" class="registration-form">
+                        {% csrf_token %}
+                        {{ registration_form.as_p }}
+                        <button type="submit" class="btn btn-primary">
+                            {% if event.is_full %}
+                                {% trans "Join Waitlist" %}
+                            {% else %}
+                                {% trans "Register" %}
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            {% elif not can_register %}
+                <div class="alert alert-info">
+                    {% if not user.is_authenticated %}
+                        <p>{% trans "Please log in to register for this event." %}</p>
+                        <a href="{% url 'accounts:login' %}" class="btn btn-primary">{% trans "Log In" %}</a>
+                    {% elif event.registration_deadline and event.registration_deadline < now %}
+                        <p>{% trans "Registration deadline has passed." %}</p>
+                    {% elif event.start_date < now %}
+                        <p>{% trans "This event has already started." %}</p>
+                    {% elif not user.is_member and event.visibility == event.Visibility.MEMBERS_ONLY %}
+                        <p>{% trans "This event is for members only." %}</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="registration-form-section">
+                <div class="alert alert-info">
+                    <p>{% trans "Please log in to register for this event." %}</p>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-primary">{% trans "Log In" %}</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="back-link">
+        <a href="{% url 'events:list' %}" class="btn btn-secondary">{% trans "Back to Events" %}</a>
+    </div>
+</article>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/events.js' %}"></script>
+{% endblock %}
+

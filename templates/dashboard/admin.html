@@ -1,0 +1,758 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Admin Dashboard" %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <div>
+            <h1>{% trans "Admin Dashboard" %}</h1>
+            <p class="dashboard-subtitle">{% trans "Key metrics and analytics for ASCAI platform" %}</p>
+        </div>
+        <div class="dashboard-actions">
+            <button id="refreshDashboard" class="btn btn-secondary" title="{% trans 'Refresh Data' %}">
+                🔄 <span>{% trans "Refresh" %}</span>
+            </button>
+            <small id="lastUpdate" class="last-update">{% trans "Auto-refreshing every 30 seconds" %}</small>
+        </div>
+    </div>
+
+    <!-- Date Range Filter -->
+    <div class="dashboard-filters">
+        <form method="get" 
+              action="{% url 'dashboard:admin' %}" 
+              class="date-filter-form"
+              hx-get="{% url 'dashboard:admin' %}"
+              hx-target="#dashboard-stats"
+              hx-select="#dashboard-stats"
+              hx-trigger="submit"
+              hx-push-url="true">
+            <label for="date_from">{% trans "From:" %}</label>
+            <input type="date" id="date_from" name="date_from" value="{{ date_from|date:'Y-m-d' }}">
+            <label for="date_to">{% trans "To:" %}</label>
+            <input type="date" id="date_to" name="date_to" value="{{ date_to|date:'Y-m-d' }}">
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+            <a href="{% url 'dashboard:admin' %}" class="btn btn-secondary">{% trans "Reset" %}</a>
+        </form>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon">👥</div>
+            <div class="metric-content">
+                <h3>{% trans "Total Members" %}</h3>
+                <p class="metric-value">{{ member_stats.total }}</p>
+                <p class="metric-change">+{{ member_stats.recent_registrations }} {% trans "last 30 days" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">✓</div>
+            <div class="metric-content">
+                <h3>{% trans "Active Members" %}</h3>
+                <p class="metric-value">{{ member_stats.active }}</p>
+                <p class="metric-change">{{ member_stats.active|floatformat:0|default:"0" }}% {% trans "of total" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">⏳</div>
+            <div class="metric-content">
+                <h3>{% trans "Pending Members" %}</h3>
+                <p class="metric-value">{{ member_stats.pending }}</p>
+                <p class="metric-change">{% trans "Awaiting approval" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">💰</div>
+            <div class="metric-content">
+                <h3>{% trans "Total Revenue" %}</h3>
+                <p class="metric-value">€{{ revenue_stats.total_revenue|floatformat:2 }}</p>
+                <p class="metric-change">{% trans "Period revenue" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">📅</div>
+            <div class="metric-content">
+                <h3>{% trans "Total Events" %}</h3>
+                <p class="metric-value">{{ event_stats.total }}</p>
+                <p class="metric-change">{{ event_stats.upcoming }} {% trans "upcoming" %}</p>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">📰</div>
+            <div class="metric-content">
+                <h3>{% trans "News Posts" %}</h3>
+                <p class="metric-value">{{ news_stats.total }}</p>
+                <p class="metric-change">{{ news_stats.published }} {% trans "published" %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Statistics Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Member Statistics" %}</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{% trans "By Status" %}</h3>
+                <canvas id="memberStatusChart"></canvas>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "By Category" %}</h3>
+                <canvas id="memberCategoryChart"></canvas>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Monthly Growth" %}</h3>
+                <canvas id="memberGrowthChart"></canvas>
+            </div>
+        </div>
+
+        <div class="stats-table">
+            <h3>{% trans "Status Breakdown" %}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Count" %}</th>
+                        <th>{% trans "Percentage" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for status, count in member_stats.by_status.items %}
+                    <tr>
+                        <td>
+                            {% if status == 'active' %}{% trans "Active" %}
+                            {% elif status == 'inactive' %}{% trans "Inactive" %}
+                            {% elif status == 'pending' %}{% trans "Pending" %}
+                            {% elif status == 'suspended' %}{% trans "Suspended" %}
+                            {% else %}{{ status|title }}{% endif %}
+                        </td>
+                        <td>{{ count }}</td>
+                        <td>
+                            {% if member_stats.total > 0 %}
+                                {% widthratio count member_stats.total 100 %}%
+                            {% else %}0%{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Event Analytics Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Event Analytics" %}</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{% trans "Events Overview" %}</h3>
+                <ul class="stat-list">
+                    <li><strong>{% trans "Total:" %}</strong> {{ event_stats.total }}</li>
+                    <li><strong>{% trans "Upcoming:" %}</strong> {{ event_stats.upcoming }}</li>
+                    <li><strong>{% trans "Past:" %}</strong> {{ event_stats.past }}</li>
+                    <li><strong>{% trans "Total Registrations:" %}</strong> {{ event_stats.total_registrations }}</li>
+                    <li><strong>{% trans "Attendance Rate:" %}</strong> {{ event_stats.attendance_rate }}%</li>
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Upcoming Events" %}</h3>
+                {% if event_stats.upcoming_list %}
+                <ul class="event-list">
+                    {% for event in event_stats.upcoming_list %}
+                    <li>
+                        <strong>{{ event.title }}</strong><br>
+                        <small>{{ event.start_date|date:"M d, Y" }} - {{ event.location|default:"TBA" }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>{% trans "No upcoming events" %}</p>
+                {% endif %}
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Popular Events" %}</h3>
+                {% if event_stats.popular_events %}
+                <ul class="event-list">
+                    {% for event in event_stats.popular_events %}
+                    <li>
+                        <strong>{{ event.title }}</strong><br>
+                        <small>{{ event.registration_count }} {% trans "registrations" %}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>{% trans "No events yet" %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Tracking Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Revenue Tracking" %}</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{% trans "Monthly Revenue" %}</h3>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Revenue by Type" %}</h3>
+                <canvas id="revenueTypeChart"></canvas>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Recent Payments" %}</h3>
+                {% if revenue_stats.recent_payments %}
+                <ul class="payment-list">
+                    {% for payment in revenue_stats.recent_payments %}
+                    <li>
+                        <strong>{{ payment.user.full_name }}</strong><br>
+                        <small>€{{ payment.amount }} - {{ payment.get_status_display }}</small><br>
+                        <small>{{ payment.created_at|date:"M d, Y" }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>{% trans "No payments yet" %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Recent Activity" %}</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{% trans "Recent Member Registrations" %}</h3>
+                <ul class="activity-list" id="recentMembersList">
+                    {% if recent_activity.recent_members %}
+                        {% for member in recent_activity.recent_members %}
+                        <li>
+                            <strong>{{ member.user.full_name }}</strong><br>
+                            <small>{{ member.get_status_display }} - {{ member.joined_date|date:"M d, Y" }}</small>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>{% trans "No recent registrations" %}</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Recent News Posts" %}</h3>
+                <ul class="activity-list" id="recentNewsList">
+                    {% if recent_activity.recent_news %}
+                        {% for news in recent_activity.recent_news %}
+                        <li>
+                            <strong>{{ news.title }}</strong><br>
+                            <small>{% trans "By" %} {{ news.author.full_name }} - {{ news.created_at|date:"M d, Y" }}</small>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>{% trans "No recent news" %}</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Recent Event Registrations" %}</h3>
+                <ul class="activity-list" id="recentEventRegistrationsList">
+                    {% if recent_activity.recent_event_registrations %}
+                        {% for reg in recent_activity.recent_event_registrations %}
+                        <li>
+                            <strong>{{ reg.user.full_name }}</strong><br>
+                            <small>{% trans "Registered for" %} {{ reg.event.title }} - {{ reg.registered_at|date:"M d, Y H:i" }}</small>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>{% trans "No recent registrations" %}</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Recent Events Created" %}</h3>
+                <ul class="activity-list" id="recentEventsList">
+                    {% if recent_activity.recent_events %}
+                        {% for event in recent_activity.recent_events %}
+                        <li>
+                            <strong>{{ event.title }}</strong><br>
+                            <small>{% trans "By" %} {{ event.organizer.full_name|default:"Unknown" }} - {{ event.created_at|date:"M d, Y" }}</small>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>{% trans "No recent events" %}</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Recent Payments" %}</h3>
+                <ul class="activity-list" id="recentPaymentsActivityList">
+                    {% if recent_activity.recent_payments %}
+                        {% for payment in recent_activity.recent_payments %}
+                        <li>
+                            <strong>{{ payment.user.full_name }}</strong><br>
+                            <small>€{{ payment.amount }} - {{ payment.get_status_display }} - {{ payment.created_at|date:"M d, Y" }}</small>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>{% trans "No recent payments" %}</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3>{% trans "Forum Activity" %}</h3>
+                <ul class="activity-list" id="recentForumPostsList">
+                    {% if recent_activity.recent_forum_posts %}
+                        {% for post in recent_activity.recent_forum_posts %}
+                        <li>
+                            <strong>{{ post.title }}</strong><br>
+                            <small>{% trans "By" %} {{ post.author }} - {{ post.date|date:"M d, Y H:i" }}</small>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>{% trans "No forum activity" %}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Reports Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Custom Reports" %}</h2>
+        <div class="reports-section">
+            <p>{% trans "Export data reports for the selected date range:" %}</p>
+            <div class="report-buttons">
+                <a href="{% url 'dashboard:export_report' %}?type=members&date_from={{ date_from|date:'Y-m-d' }}&date_to={{ date_to|date:'Y-m-d' }}" 
+                   class="btn btn-primary">{% trans "Export Members Report" %}</a>
+                <a href="{% url 'dashboard:export_report' %}?type=events&date_from={{ date_from|date:'Y-m-d' }}&date_to={{ date_to|date:'Y-m-d' }}" 
+                   class="btn btn-primary">{% trans "Export Events Report" %}</a>
+                <a href="{% url 'dashboard:export_report' %}?type=revenue&date_from={{ date_from|date:'Y-m-d' }}&date_to={{ date_to|date:'Y-m-d' }}" 
+                   class="btn btn-primary">{% trans "Export Revenue Report" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Store chart instances globally for updates
+let memberStatusChart = null;
+let memberCategoryChart = null;
+let memberGrowthChart = null;
+let revenueChart = null;
+let revenueTypeChart = null;
+
+// Initialize charts with initial data
+function initializeCharts(data) {
+    const chartData = data.chart_data;
+    
+    // Member Status Chart
+    const memberStatusCtx = document.getElementById('memberStatusChart');
+    if (memberStatusCtx) {
+        if (memberStatusChart) {
+            memberStatusChart.destroy();
+        }
+        memberStatusChart = new Chart(memberStatusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.member_status_labels,
+                datasets: [{
+                    data: chartData.member_status_data,
+                    backgroundColor: [
+                        '#1B5E20',
+                        '#B71C1C',
+                        '#FFB300',
+                        '#003082',
+                        '#9E9E9E'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+            }
+        });
+    }
+
+    // Member Category Chart
+    const memberCategoryCtx = document.getElementById('memberCategoryChart');
+    if (memberCategoryCtx) {
+        if (memberCategoryChart) {
+            memberCategoryChart.destroy();
+        }
+        memberCategoryChart = new Chart(memberCategoryCtx, {
+            type: 'bar',
+            data: {
+                labels: chartData.member_category_labels,
+                datasets: [{
+                    label: '{% trans "Members" %}',
+                    data: chartData.member_category_data,
+                    backgroundColor: '#1B5E20'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Member Growth Chart
+    const memberGrowthCtx = document.getElementById('memberGrowthChart');
+    if (memberGrowthCtx) {
+        if (memberGrowthChart) {
+            memberGrowthChart.destroy();
+        }
+        memberGrowthChart = new Chart(memberGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: chartData.member_growth_months,
+                datasets: [{
+                    label: '{% trans "New Members" %}',
+                    data: chartData.member_growth_data,
+                    borderColor: '#1B5E20',
+                    backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+        if (revenueChart) {
+            revenueChart.destroy();
+        }
+        revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: chartData.revenue_months,
+                datasets: [{
+                    label: '{% trans "Revenue (€)" %}',
+                    data: chartData.revenue_data,
+                    borderColor: '#1B5E20',
+                    backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Revenue by Type Chart
+    const revenueTypeCtx = document.getElementById('revenueTypeChart');
+    if (revenueTypeCtx && chartData.revenue_type_labels.length > 0) {
+        if (revenueTypeChart) {
+            revenueTypeChart.destroy();
+        }
+        revenueTypeChart = new Chart(revenueTypeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.revenue_type_labels,
+                datasets: [{
+                    data: chartData.revenue_type_data,
+                    backgroundColor: [
+                        '#1B5E20',
+                        '#B71C1C',
+                        '#FFB300',
+                        '#003082',
+                        '#9E9E9E'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+            }
+        });
+    }
+}
+
+// Update dashboard metrics
+function updateMetrics(data) {
+    const memberStats = data.member_stats;
+    const eventStats = data.event_stats;
+    const revenueStats = data.revenue_stats;
+    const newsStats = data.news_stats;
+
+    // Update metric cards
+    const totalMembersEl = document.querySelector('.metric-card:first-child .metric-value');
+    if (totalMembersEl) totalMembersEl.textContent = memberStats.total;
+    
+    const recentRegEl = document.querySelector('.metric-card:first-child .metric-change');
+    if (recentRegEl) recentRegEl.textContent = `+${memberStats.recent_registrations} {% trans "last 30 days" %}`;
+    
+    const activeMembersEl = document.querySelectorAll('.metric-card .metric-value')[1];
+    if (activeMembersEl) activeMembersEl.textContent = memberStats.active;
+    
+    const pendingMembersEl = document.querySelectorAll('.metric-card .metric-value')[2];
+    if (pendingMembersEl) pendingMembersEl.textContent = memberStats.pending;
+    
+    const revenueEl = document.querySelectorAll('.metric-card .metric-value')[3];
+    if (revenueEl) revenueEl.textContent = `€${revenueStats.total_revenue.toFixed(2)}`;
+    
+    const totalEventsEl = document.querySelectorAll('.metric-card .metric-value')[4];
+    if (totalEventsEl) totalEventsEl.textContent = eventStats.total;
+    
+    const upcomingEventsEl = document.querySelectorAll('.metric-card .metric-change')[4];
+    if (upcomingEventsEl) upcomingEventsEl.textContent = `${eventStats.upcoming} {% trans "upcoming" %}`;
+    
+    const newsTotalEl = document.querySelectorAll('.metric-card .metric-value')[5];
+    if (newsTotalEl) newsTotalEl.textContent = newsStats.total;
+    
+    const newsPublishedEl = document.querySelectorAll('.metric-card .metric-change')[5];
+    if (newsPublishedEl) newsPublishedEl.textContent = `${newsStats.published} {% trans "published" %}`;
+
+    // Update event stats
+    const eventTotalLi = document.querySelector('.stat-list li:first-child');
+    if (eventTotalLi) eventTotalLi.innerHTML = `<strong>{% trans "Total:" %}</strong> ${eventStats.total}`;
+    
+    const eventUpcomingLi = document.querySelectorAll('.stat-list li')[1];
+    if (eventUpcomingLi) eventUpcomingLi.innerHTML = `<strong>{% trans "Upcoming:" %}</strong> ${eventStats.upcoming}`;
+    
+    const eventPastLi = document.querySelectorAll('.stat-list li')[2];
+    if (eventPastLi) eventPastLi.innerHTML = `<strong>{% trans "Past:" %}</strong> ${eventStats.past}`;
+    
+    const eventRegistrationsLi = document.querySelectorAll('.stat-list li')[3];
+    if (eventRegistrationsLi) eventRegistrationsLi.innerHTML = `<strong>{% trans "Total Registrations:" %}</strong> ${eventStats.total_registrations}`;
+    
+    const attendanceRateLi = document.querySelectorAll('.stat-list li')[4];
+    if (attendanceRateLi) attendanceRateLi.innerHTML = `<strong>{% trans "Attendance Rate:" %}</strong> ${eventStats.attendance_rate}%`;
+
+    // Update upcoming events list
+    const upcomingEventsList = document.querySelector('.event-list');
+    if (upcomingEventsList && eventStats.upcoming_list) {
+        upcomingEventsList.innerHTML = eventStats.upcoming_list.map(event => 
+            `<li><strong>${event.title}</strong><br><small>${event.start_date} - ${event.location}</small></li>`
+        ).join('');
+    }
+
+    // Update popular events list
+    const popularEventsList = document.querySelectorAll('.event-list')[1];
+    if (popularEventsList && eventStats.popular_events) {
+        popularEventsList.innerHTML = eventStats.popular_events.map(event => 
+            `<li><strong>${event.title}</strong><br><small>${event.registration_count} {% trans "registrations" %}</small></li>`
+        ).join('');
+    }
+
+    // Update recent payments
+    const paymentsList = document.querySelector('.payment-list');
+    if (paymentsList && revenueStats.recent_payments) {
+        paymentsList.innerHTML = revenueStats.recent_payments.map(payment => 
+            `<li><strong>${payment.user_name}</strong><br><small>€${payment.amount} - ${payment.status}</small><br><small>${payment.created_at}</small></li>`
+        ).join('');
+    }
+
+    // Update recent members
+    const membersList = document.getElementById('recentMembersList');
+    if (membersList) {
+        if (data.recent_activity.recent_members && data.recent_activity.recent_members.length > 0) {
+            membersList.innerHTML = data.recent_activity.recent_members.map(member => 
+                `<li><strong>${member.name}</strong><br><small>${member.status} - ${member.joined_date}</small></li>`
+            ).join('');
+        } else {
+            membersList.innerHTML = '<li>{% trans "No recent registrations" %}</li>';
+        }
+    }
+
+    // Update recent news
+    const newsList = document.getElementById('recentNewsList');
+    if (newsList) {
+        if (data.recent_activity.recent_news && data.recent_activity.recent_news.length > 0) {
+            newsList.innerHTML = data.recent_activity.recent_news.map(news => 
+                `<li><strong>${news.title}</strong><br><small>{% trans "By" %} ${news.author} - ${news.created_at}</small></li>`
+            ).join('');
+        } else {
+            newsList.innerHTML = '<li>{% trans "No recent news" %}</li>';
+        }
+    }
+
+    // Update recent event registrations
+    const eventRegList = document.getElementById('recentEventRegistrationsList');
+    if (eventRegList) {
+        if (data.recent_activity.recent_event_registrations && data.recent_activity.recent_event_registrations.length > 0) {
+            eventRegList.innerHTML = data.recent_activity.recent_event_registrations.map(reg => 
+                `<li><strong>${reg.user_name}</strong><br><small>{% trans "Registered for" %} ${reg.event_title} - ${reg.registered_at}</small></li>`
+            ).join('');
+        } else {
+            eventRegList.innerHTML = '<li>{% trans "No recent registrations" %}</li>';
+        }
+    }
+
+    // Update recent events created
+    const eventsList = document.getElementById('recentEventsList');
+    if (eventsList) {
+        if (data.recent_activity.recent_events && data.recent_activity.recent_events.length > 0) {
+            eventsList.innerHTML = data.recent_activity.recent_events.map(event => 
+                `<li><strong>${event.title}</strong><br><small>{% trans "By" %} ${event.organizer || 'Unknown'} - ${event.created_at}</small></li>`
+            ).join('');
+        } else {
+            eventsList.innerHTML = '<li>{% trans "No recent events" %}</li>';
+        }
+    }
+
+    // Update recent payments (activity section)
+    const paymentsActivityList = document.getElementById('recentPaymentsActivityList');
+    if (paymentsActivityList) {
+        if (data.recent_activity.recent_payments && data.recent_activity.recent_payments.length > 0) {
+            paymentsActivityList.innerHTML = data.recent_activity.recent_payments.map(payment => 
+                `<li><strong>${payment.user_name}</strong><br><small>€${payment.amount.toFixed(2)} - ${payment.status} - ${payment.created_at}</small></li>`
+            ).join('');
+        } else {
+            paymentsActivityList.innerHTML = '<li>{% trans "No recent payments" %}</li>';
+        }
+    }
+
+    // Update forum posts
+    const forumList = document.getElementById('recentForumPostsList');
+    if (forumList) {
+        if (data.recent_activity.recent_forum_posts && data.recent_activity.recent_forum_posts.length > 0) {
+            forumList.innerHTML = data.recent_activity.recent_forum_posts.map(post => 
+                `<li><strong>${post.title}</strong><br><small>{% trans "By" %} ${post.author} - ${post.date}</small></li>`
+            ).join('');
+        } else {
+            forumList.innerHTML = '<li>{% trans "No forum activity" %}</li>';
+        }
+    }
+}
+
+// Fetch dashboard data from API
+async function fetchDashboardData() {
+    try {
+        // Get date range from form if present
+        const dateFrom = document.getElementById('date_from')?.value || '';
+        const dateTo = document.getElementById('date_to')?.value || '';
+        
+        let apiUrl = '{% url "dashboard:admin_api" %}';
+        if (dateFrom || dateTo) {
+            const params = new URLSearchParams();
+            if (dateFrom) params.append('date_from', dateFrom);
+            if (dateTo) params.append('date_to', dateTo);
+            apiUrl += '?' + params.toString();
+        }
+        
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch dashboard data');
+        }
+        
+        const data = await response.json();
+        
+        // Update dashboard
+        updateMetrics(data);
+        initializeCharts(data);
+        
+        // Show last update time
+        const timestamp = new Date(data.timestamp);
+        const timeString = timestamp.toLocaleTimeString();
+        const lastUpdateEl = document.getElementById('lastUpdate');
+        if (lastUpdateEl) {
+            lastUpdateEl.textContent = `{% trans "Last updated:" %} ${timeString}`;
+            lastUpdateEl.style.color = '#4CAF50';
+        }
+        console.log('Dashboard updated at:', timeString);
+        
+    } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        const lastUpdateEl = document.getElementById('lastUpdate');
+        if (lastUpdateEl) {
+            lastUpdateEl.textContent = '{% trans "Error updating data" %}';
+            lastUpdateEl.style.color = '#f44336';
+        }
+    }
+}
+
+// Manual refresh button
+const refreshButton = document.getElementById('refreshDashboard');
+if (refreshButton) {
+    refreshButton.addEventListener('click', function() {
+        refreshButton.disabled = true;
+        refreshButton.querySelector('span').textContent = '{% trans "Refreshing..." %}';
+        fetchDashboardData().finally(() => {
+            refreshButton.disabled = false;
+            refreshButton.querySelector('span').textContent = '{% trans "Refresh" %}';
+        });
+    });
+}
+
+// Initialize charts with server-rendered data
+const initialData = {
+    chart_data: {
+        member_status_labels: {{ member_status_labels|safe }},
+        member_status_data: JSON.parse('{{ member_status_data|escapejs }}'),
+        member_category_labels: {{ member_category_labels|safe }},
+        member_category_data: JSON.parse('{{ member_category_data|escapejs }}'),
+        member_growth_months: {{ member_growth_months|safe }},
+        member_growth_data: JSON.parse('{{ member_growth_data|escapejs }}'),
+        revenue_months: {{ revenue_months|safe }},
+        revenue_data: JSON.parse('{{ revenue_data|escapejs }}'),
+        revenue_type_labels: {{ revenue_type_labels|safe }},
+        revenue_type_data: JSON.parse('{{ revenue_type_data|escapejs }}'),
+    }
+};
+
+// Initialize on page load
+initializeCharts(initialData);
+
+// Auto-refresh every 30 seconds
+let refreshInterval = setInterval(fetchDashboardData, 30000);
+
+// Also refresh when date filters change
+const dateFilterForm = document.querySelector('.date-filter-form');
+if (dateFilterForm) {
+    dateFilterForm.addEventListener('submit', function(e) {
+        // Wait for form submission, then refresh
+        setTimeout(fetchDashboardData, 500);
+    });
+}
+
+// Refresh on page visibility change (when user returns to tab)
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        fetchDashboardData();
+    }
+});
+</script>
+{% endblock %}
+

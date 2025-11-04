@@ -1,0 +1,3040 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ASCAI Platform 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 18:37\n"
+"PO-Revision-Date: 2025-11-01 18:37\n"
+"Last-Translator: \n"
+"Language-Team: en\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "%(user)s mentioned you in a reply"
+msgstr "%(user)s mentioned you in a reply"
+
+msgid "A new version will be automatically created."
+msgstr "A new version will be automatically created."
+
+msgid "A new version will be created from the selected version. The current version will remain in history."
+msgstr "A new version will be created from the selected version. The current version will remain in history."
+
+msgid "ASCAI - Association of Cameroonian Students in Lazio"
+msgstr "ASCAI - Association of Cameroonian Students in Lazio"
+
+msgid "ASCAI Team"
+msgstr "ASCAI Team"
+
+msgid "Academic"
+msgstr "Academic"
+
+msgid "Academic Information"
+msgstr "Academic Information"
+
+msgid "Accepted"
+msgstr "Accepted"
+
+msgid "Accepted formats: PDF, DOC, DOCX (max 10MB)"
+msgstr "Accepted formats: PDF, DOC, DOCX (max 10MB)"
+
+msgid "Access"
+msgstr "Access"
+
+msgid "Access & Visibility"
+msgstr "Access & Visibility"
+
+msgid "Access Level"
+msgstr "Access Level"
+
+msgid "Access academic and career resources"
+msgstr "Access academic and career resources"
+
+msgid "Account Activated"
+msgstr "Account Activated"
+
+msgid "Action Details"
+msgstr "Action Details"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Activate Account"
+msgstr "Activate Account"
+
+msgid "Activate selected bans"
+msgstr "Activate selected bans"
+
+msgid "Activate your ASCAI account"
+msgstr "Activate your ASCAI account"
+
+msgid "Activation Link Invalid"
+msgstr "Activation Link Invalid"
+
+msgid "Active"
+msgstr "Active"
+
+msgid "Active Members"
+msgstr "Active Members"
+
+msgid "Activity Overview"
+msgstr "Activity Overview"
+
+msgid "Add Your Reply"
+msgstr "Add Your Reply"
+
+msgid "Additional Details"
+msgstr "Additional Details"
+
+msgid "Additional Information"
+msgstr "Additional Information"
+
+msgid "Additional details"
+msgstr "Additional details"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Admin Dashboard"
+msgstr "Admin Dashboard"
+
+msgid "Admin Notes"
+msgstr "Admin Notes"
+
+msgid "Admin Only"
+msgstr "Admin Only"
+
+msgid "All"
+msgstr "All"
+
+msgid "All Categories"
+msgstr "All Categories"
+
+msgid "All File Types"
+msgstr "All File Types"
+
+msgid "All Statuses"
+msgstr "All Statuses"
+
+msgid "All Tags"
+msgstr "All Tags"
+
+msgid "All Types"
+msgstr "All Types"
+
+msgid "All time registrations"
+msgstr "All time registrations"
+
+msgid "Already have an account? Login here"
+msgstr "Already have an account? Login here"
+
+msgid "Alumni"
+msgstr "Alumni"
+
+msgid "Any dietary requirements or restrictions"
+msgstr "Any dietary requirements or restrictions"
+
+msgid "Any special requests or accommodations needed"
+msgstr "Any special requests or accommodations needed"
+
+msgid "Applicant"
+msgstr "Applicant"
+
+msgid "Applicant Information"
+msgstr "Applicant Information"
+
+msgid "Application Deadline"
+msgstr "Application Deadline"
+
+msgid "Application Details"
+msgstr "Application Details"
+
+msgid "Application Information"
+msgstr "Application Information"
+
+msgid "Application Status Update"
+msgstr "Application Status Update"
+
+msgid "Application Status Update - {job_title}"
+msgstr "Application Status Update - {job_title}"
+
+msgid "Application Submitted"
+msgstr "Application Submitted"
+
+msgid "Application Submitted - {job_title}"
+msgstr "Application Submitted - {job_title}"
+
+msgid "Application Submitted Successfully"
+msgstr "Application Submitted Successfully"
+
+msgid "Application status filter"
+msgstr "Application status filter"
+
+msgid "Application status updated successfully."
+msgstr "Application status updated successfully."
+
+msgid "Applications"
+msgstr "Applications"
+
+msgid "Applications for this job will appear here once candidates apply."
+msgstr "Applications for this job will appear here once candidates apply."
+
+msgid "Applied"
+msgstr "Applied"
+
+msgid "Apply Now"
+msgstr "Apply Now"
+
+msgid "Apply for"
+msgstr "Apply for"
+
+msgid "Apply to Selected"
+msgstr "Apply to Selected"
+
+msgid "Approve"
+msgstr "Approve"
+
+msgid "Approve Content"
+msgstr "Approve Content"
+
+msgid "Approve selected replies"
+msgstr "Approve selected replies"
+
+msgid "Approve selected threads"
+msgstr "Approve selected threads"
+
+msgid "Are you sure you want to delete this category?"
+msgstr "Are you sure you want to delete this category?"
+
+msgid "Are you sure you want to delete this document?"
+msgstr "Are you sure you want to delete this document?"
+
+msgid "Are you sure you want to delete this event?"
+msgstr "Are you sure you want to delete this event?"
+
+msgid "Are you sure you want to delete this folder?"
+msgstr "Are you sure you want to delete this folder?"
+
+msgid "Are you sure you want to delete this job posting?"
+msgstr "Are you sure you want to delete this job posting?"
+
+msgid "Are you sure you want to delete this news post?"
+msgstr "Are you sure you want to delete this news post?"
+
+msgid "Are you sure you want to delete this reply?"
+msgstr "Are you sure you want to delete this reply?"
+
+msgid "Are you sure you want to delete this tag?"
+msgstr "Are you sure you want to delete this tag?"
+
+msgid "Are you sure you want to delete this thread?"
+msgstr "Are you sure you want to delete this thread?"
+
+msgid "Are you sure you want to rollback this document to version"
+msgstr "Are you sure you want to rollback this document to version"
+
+msgid "Association of Cameroonian Students in Lazio, Italy"
+msgstr "Association of Cameroonian Students in Lazio, Italy"
+
+msgid "Attendance Rate:"
+msgstr "Attendance Rate:"
+
+msgid "Attended"
+msgstr "Attended"
+
+msgid "Attendee checked in successfully."
+msgstr "Attendee checked in successfully."
+
+msgid "Attendees"
+msgstr "Attendees"
+
+msgid "Author"
+msgstr "Author"
+
+msgid "Auto-refreshing every 30 seconds"
+msgstr "Auto-refreshing every 30 seconds"
+
+msgid "Available"
+msgstr "Available"
+
+msgid "Awaiting approval"
+msgstr "Awaiting approval"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "Back to Applications"
+msgstr "Back to Applications"
+
+msgid "Back to Documents"
+msgstr "Back to Documents"
+
+msgid "Back to Event"
+msgstr "Back to Event"
+
+msgid "Back to Events"
+msgstr "Back to Events"
+
+msgid "Back to Job Board"
+msgstr "Back to Job Board"
+
+msgid "Back to Library"
+msgstr "Back to Library"
+
+msgid "Back to Login"
+msgstr "Back to Login"
+
+msgid "Back to My Applications"
+msgstr "Back to My Applications"
+
+msgid "Back to News"
+msgstr "Back to News"
+
+msgid "Back to Profile"
+msgstr "Back to Profile"
+
+msgid "Ban Details"
+msgstr "Ban Details"
+
+msgid "Ban User"
+msgstr "Ban User"
+
+msgid "Basic Information"
+msgstr "Basic Information"
+
+msgid "Best regards,"
+msgstr "Best regards,"
+
+msgid "Bio"
+msgstr "Bio"
+
+msgid "Board Member"
+msgstr "Board Member"
+
+msgid "Board Only"
+msgstr "Board Only"
+
+msgid "Brief summary (optional)"
+msgstr "Brief summary (optional)"
+
+msgid "Brief summary that will appear in lists (optional)"
+msgstr "Brief summary that will appear in lists (optional)"
+
+msgid "Browse All"
+msgstr "Browse All"
+
+msgid "Browse Events"
+msgstr "Browse Events"
+
+msgid "Browse Jobs"
+msgstr "Browse Jobs"
+
+msgid "Browse and apply for job opportunities"
+msgstr "Browse and apply for job opportunities"
+
+msgid "Bulk Actions"
+msgstr "Bulk Actions"
+
+msgid "By"
+msgstr "By"
+
+msgid "By Category"
+msgstr "By Category"
+
+msgid "By Status"
+msgstr "By Status"
+
+msgid "Calendar View"
+msgstr "Calendar View"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Cancel Registration"
+msgstr "Cancel Registration"
+
+msgid "Cancel selected registrations"
+msgstr "Cancel selected registrations"
+
+msgid "Cancelled"
+msgstr "Cancelled"
+
+msgid "Cannot create circular folder references."
+msgstr "Cannot create circular folder references."
+
+msgid "Cannot delete category. It is used by %(count)s event(s)."
+msgstr "Cannot delete category. It is used by %(count)s event(s)."
+
+msgid "Cannot delete category. It is used by %(count)s post(s)."
+msgstr "Cannot delete category. It is used by %(count)s post(s)."
+
+msgid "Cannot delete folder. It contains subfolders or documents."
+msgstr "Cannot delete folder. It contains subfolders or documents."
+
+msgid "Cannot delete tag. It is used by %(count)s document(s)."
+msgstr "Cannot delete tag. It is used by %(count)s document(s)."
+
+msgid "Capacity"
+msgstr "Capacity"
+
+msgid "Capacity:"
+msgstr "Capacity:"
+
+msgid "Categorization"
+msgstr "Categorization"
+
+msgid "Category"
+msgstr "Category"
+
+msgid "Category Type"
+msgstr "Category Type"
+
+msgid "Category created successfully."
+msgstr "Category created successfully."
+
+msgid "Category deleted successfully."
+msgstr "Category deleted successfully."
+
+msgid "Category description (optional)"
+msgstr "Category description (optional)"
+
+msgid "Category name"
+msgstr "Category name"
+
+msgid "Category updated successfully."
+msgstr "Category updated successfully."
+
+msgid "Category:"
+msgstr "Category:"
+
+msgid "Change Password"
+msgstr "Change Password"
+
+msgid "Changelog"
+msgstr "Changelog"
+
+msgid "Check In"
+msgstr "Check In"
+
+msgid "Check-in"
+msgstr "Check-in"
+
+msgid "Checked In"
+msgstr "Checked In"
+
+msgid "Checked In At"
+msgstr "Checked In At"
+
+msgid "City"
+msgstr "City"
+
+msgid "Classification"
+msgstr "Classification"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Color used for calendar display"
+msgstr "Color used for calendar display"
+
+msgid "Color used for tag display"
+msgstr "Color used for tag display"
+
+msgid "Company"
+msgstr "Company"
+
+msgid "Company Name"
+msgstr "Company Name"
+
+msgid "Company filter"
+msgstr "Company filter"
+
+msgid "Company name"
+msgstr "Company name"
+
+msgid "Complete your application by uploading your resume and optional cover letter."
+msgstr "Complete your application by uploading your resume and optional cover letter."
+
+msgid "Completed"
+msgstr "Completed"
+
+msgid "Completed events"
+msgstr "Completed events"
+
+msgid "Congratulations! Your application has been accepted."
+msgstr "Congratulations! Your application has been accepted."
+
+msgid "Connect with fellow students and alumni"
+msgstr "Connect with fellow students and alumni"
+
+msgid "Connect with other members"
+msgstr "Connect with other members"
+
+msgid "Connecting Cameroonian students in the Lazio region, fostering community, and supporting academic excellence."
+msgstr "Connecting Cameroonian students in the Lazio region, fostering community, and supporting academic excellence."
+
+msgid "Content"
+msgstr "Content"
+
+msgid "Content Approved"
+msgstr "Content Approved"
+
+msgid "Content Rejected"
+msgstr "Content Rejected"
+
+msgid "Content approved."
+msgstr "Content approved."
+
+msgid "Content flagged. Thank you for your report."
+msgstr "Content flagged. Thank you for your report."
+
+msgid "Content not found"
+msgstr "Content not found"
+
+msgid "Content rejected and deleted."
+msgstr "Content rejected and deleted."
+
+msgid "Contract"
+msgstr "Contract"
+
+msgid "Control who can view this event"
+msgstr "Control who can view this event"
+
+msgid "Control who can view this post"
+msgstr "Control who can view this post"
+
+msgid "Copyright Violation"
+msgstr "Copyright Violation"
+
+msgid "Count"
+msgstr "Count"
+
+msgid "Country"
+msgstr "Country"
+
+msgid "Country of Origin"
+msgstr "Country of Origin"
+
+msgid "Course"
+msgstr "Course"
+
+msgid "Course of Study"
+msgstr "Course of Study"
+
+msgid "Cover Letter"
+msgstr "Cover Letter"
+
+msgid "Create"
+msgstr "Create"
+
+msgid "Create Category"
+msgstr "Create Category"
+
+msgid "Create Documents"
+msgstr "Create Documents"
+
+msgid "Create Event"
+msgstr "Create Event"
+
+msgid "Create New Thread"
+msgstr "Create New Thread"
+
+msgid "Create Post"
+msgstr "Create Post"
+
+msgid "Create Tag"
+msgstr "Create Tag"
+
+msgid "Create a Category"
+msgstr "Create a Category"
+
+msgid "Create a new category"
+msgstr "Create a new category"
+
+msgid "Create or edit a news announcement"
+msgstr "Create or edit a news announcement"
+
+msgid "Created"
+msgstr "Created"
+
+msgid "Created By"
+msgstr "Created By"
+
+msgid "Cultural"
+msgstr "Cultural"
+
+msgid "Current Version"
+msgstr "Current Version"
+
+msgid "Current image:"
+msgstr "Current image:"
+
+msgid "Custom Reports"
+msgstr "Custom Reports"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Date & Time"
+msgstr "Date & Time"
+
+msgid "Date of Birth"
+msgstr "Date of Birth"
+
+msgid "Day"
+msgstr "Day"
+
+msgid "Days Before Event"
+msgstr "Days Before Event"
+
+msgid "Days before event (for DAYS_BEFORE type)"
+msgstr "Days before event (for DAYS_BEFORE type)"
+
+msgid "Deactivate selected bans"
+msgstr "Deactivate selected bans"
+
+msgid "Deadline"
+msgstr "Deadline"
+
+msgid "Deadline must be in the future."
+msgstr "Deadline must be in the future."
+
+msgid "Default Access Level"
+msgstr "Default Access Level"
+
+msgid "Default access level for documents in this folder"
+msgstr "Default access level for documents in this folder"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Delete Category"
+msgstr "Delete Category"
+
+msgid "Delete Document"
+msgstr "Delete Document"
+
+msgid "Delete Event"
+msgstr "Delete Event"
+
+msgid "Delete Folder"
+msgstr "Delete Folder"
+
+msgid "Delete Job Posting"
+msgstr "Delete Job Posting"
+
+msgid "Delete News Post"
+msgstr "Delete News Post"
+
+msgid "Delete Reply"
+msgstr "Delete Reply"
+
+msgid "Delete Tag"
+msgstr "Delete Tag"
+
+msgid "Delete Thread"
+msgstr "Delete Thread"
+
+msgid "Describe what changed in this version (optional)"
+msgstr "Describe what changed in this version (optional)"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Dietary Requirements"
+msgstr "Dietary Requirements"
+
+msgid "Dietary Requirements:"
+msgstr "Dietary Requirements:"
+
+msgid "Discover exciting career opportunities and internships"
+msgstr "Discover exciting career opportunities and internships"
+
+msgid "Dismiss flags"
+msgstr "Dismiss flags"
+
+msgid "Dismissed"
+msgstr "Dismissed"
+
+msgid "Display"
+msgstr "Display"
+
+msgid "Document Information"
+msgstr "Document Information"
+
+msgid "Document Library"
+msgstr "Document Library"
+
+msgid "Document Tag"
+msgstr "Document Tag"
+
+msgid "Document Tags"
+msgstr "Document Tags"
+
+msgid "Document description (optional)"
+msgstr "Document description (optional)"
+
+msgid "Document rolled back to version %(version)s."
+msgstr "Document rolled back to version %(version)s."
+
+msgid "Document updated successfully."
+msgstr "Document updated successfully."
+
+msgid "Document uploaded successfully."
+msgstr "Document uploaded successfully."
+
+msgid "Documents"
+msgstr "Documents"
+
+msgid "Donation"
+msgstr "Donation"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Download Resume"
+msgstr "Download Resume"
+
+msgid "Downloads"
+msgstr "Downloads"
+
+msgid "Downvote"
+msgstr "Downvote"
+
+msgid "Duration"
+msgstr "Duration"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Edit Document"
+msgstr "Edit Document"
+
+msgid "Edit Event"
+msgstr "Edit Event"
+
+msgid "Edit Profile"
+msgstr "Edit Profile"
+
+msgid "Edit Reply"
+msgstr "Edit Reply"
+
+msgid "Edit Thread"
+msgstr "Edit Thread"
+
+msgid "Edited"
+msgstr "Edited"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "End Date & Time"
+msgstr "End Date & Time"
+
+msgid "End date must be after start date."
+msgstr "End date must be after start date."
+
+msgid "English"
+msgstr "English"
+
+msgid "Enter company name"
+msgstr "Enter company name"
+
+msgid "Enter document title"
+msgstr "Enter document title"
+
+msgid "Enter event title"
+msgstr "Enter event title"
+
+msgid "Enter job title"
+msgstr "Enter job title"
+
+msgid "Enter location (e.g., Rome, Italy)"
+msgstr "Enter location (e.g., Rome, Italy)"
+
+msgid "Enter post title"
+msgstr "Enter post title"
+
+msgid "Enter the same password as above, for verification."
+msgstr "Enter the same password as above, for verification."
+
+msgid "Enter thread title"
+msgstr "Enter thread title"
+
+msgid "Error updating data"
+msgstr "Error updating data"
+
+msgid "Event"
+msgstr "Event"
+
+msgid "Event Analytics"
+msgstr "Event Analytics"
+
+msgid "Event Attendees"
+msgstr "Event Attendees"
+
+msgid "Event Calendar"
+msgstr "Event Calendar"
+
+msgid "Event Categories"
+msgstr "Event Categories"
+
+msgid "Event Category"
+msgstr "Event Category"
+
+msgid "Event Date"
+msgstr "Event Date"
+
+msgid "Event Participation Over Time"
+msgstr "Event Participation Over Time"
+
+msgid "Event Registration"
+msgstr "Event Registration"
+
+msgid "Event Registration Available"
+msgstr "Event Registration Available"
+
+msgid "Event Registration Available: {}"
+msgstr "Event Registration Available: {}"
+
+msgid "Event Registration Confirmation"
+msgstr "Event Registration Confirmation"
+
+msgid "Event Registrations"
+msgstr "Event Registrations"
+
+msgid "Event Reminder"
+msgstr "Event Reminder"
+
+msgid "Event Reminder: {} ({} days)"
+msgstr "Event Reminder: {} ({} days)"
+
+msgid "Event Status Distribution"
+msgstr "Event Status Distribution"
+
+msgid "Event Update"
+msgstr "Event Update"
+
+msgid "Event Update: {}"
+msgstr "Event Update: {}"
+
+msgid "Event created successfully."
+msgstr "Event created successfully."
+
+msgid "Event deleted successfully."
+msgstr "Event deleted successfully."
+
+msgid "Event description"
+msgstr "Event description"
+
+msgid "Event is full"
+msgstr "Event is full"
+
+msgid "Event is full. You have been added to the waitlist."
+msgstr "Event is full. You have been added to the waitlist."
+
+msgid "Event location"
+msgstr "Event location"
+
+msgid "Event updated successfully."
+msgstr "Event updated successfully."
+
+msgid "Event:"
+msgstr "Event:"
+
+msgid "Events"
+msgstr "Events"
+
+msgid "Events Attended"
+msgstr "Events Attended"
+
+msgid "Events Overview"
+msgstr "Events Overview"
+
+msgid "Excerpt"
+msgstr "Excerpt"
+
+msgid "Expiry Date:"
+msgstr "Expiry Date:"
+
+msgid "Export CSV"
+msgstr "Export CSV"
+
+msgid "Export Events Report"
+msgstr "Export Events Report"
+
+msgid "Export Members Report"
+msgstr "Export Members Report"
+
+msgid "Export Revenue Report"
+msgstr "Export Revenue Report"
+
+msgid "Export data reports for the selected date range:"
+msgstr "Export data reports for the selected date range:"
+
+msgid "Export selected to CSV"
+msgstr "Export selected to CSV"
+
+msgid "Failed"
+msgstr "Failed"
+
+msgid "Featured Image"
+msgstr "Featured Image"
+
+msgid "File"
+msgstr "File"
+
+msgid "File & Organization"
+msgstr "File & Organization"
+
+msgid "File Size"
+msgstr "File Size"
+
+msgid "File Type"
+msgstr "File Type"
+
+msgid "File not found"
+msgstr "File not found"
+
+msgid "File size cannot exceed 10MB."
+msgstr "File size cannot exceed 10MB."
+
+msgid "File size exceeds maximum allowed size of %(size)sMB"
+msgstr "File size exceeds maximum allowed size of %(size)sMB"
+
+msgid "Fill in the details below to create a new event"
+msgstr "Fill in the details below to create a new event"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Flag Content"
+msgstr "Flag Content"
+
+msgid "Flagged Content"
+msgstr "Flagged Content"
+
+msgid "Folder"
+msgstr "Folder"
+
+msgid "Folder created successfully."
+msgstr "Folder created successfully."
+
+msgid "Folder description (optional)"
+msgstr "Folder description (optional)"
+
+msgid "Folder name"
+msgstr "Folder name"
+
+msgid "Folder updated successfully."
+msgstr "Folder updated successfully."
+
+msgid "Folders"
+msgstr "Folders"
+
+msgid "Forum"
+msgstr "Forum"
+
+msgid "Forum Activity"
+msgstr "Forum Activity"
+
+msgid "Forum Categories"
+msgstr "Forum Categories"
+
+msgid "Forums"
+msgstr "Forums"
+
+msgid "French"
+msgstr "French"
+
+msgid "From"
+msgstr "From"
+
+msgid "From:"
+msgstr "From:"
+
+msgid "Full"
+msgstr "Full"
+
+msgid "Full Time"
+msgstr "Full Time"
+
+msgid "General"
+msgstr "General"
+
+msgid "Get help and guidance from the community"
+msgstr "Get help and guidance from the community"
+
+msgid "Go to Dashboard"
+msgstr "Go to Dashboard"
+
+msgid "Good news! A space has become available for the event you were on the waitlist for."
+msgstr "Good news! A space has become available for the event you were on the waitlist for."
+
+msgid "Good news! A space has become available for the event:"
+msgstr "Good news! A space has become available for the event:"
+
+msgid "Graduation Year"
+msgstr "Graduation Year"
+
+msgid "Harassment"
+msgstr "Harassment"
+
+msgid "Hello"
+msgstr "Hello"
+
+msgid "Hex color code"
+msgstr "Hex color code"
+
+msgid "Hex color code (e.g., #3498db)"
+msgstr "Hex color code (e.g., #3498db)"
+
+msgid "Honorary Member"
+msgstr "Honorary Member"
+
+msgid "If a space becomes available, you will be automatically registered and notified by email."
+msgstr "If a space becomes available, you will be automatically registered and notified by email."
+
+msgid "If you did not register for this account, please ignore this email."
+msgstr "If you did not register for this account, please ignore this email."
+
+msgid "Important"
+msgstr "Important"
+
+msgid "Important dates"
+msgstr "Important dates"
+
+msgid "Inactive"
+msgstr "Inactive"
+
+msgid "Inappropriate Content"
+msgstr "Inappropriate Content"
+
+msgid "Inherit from folder"
+msgstr "Inherit from folder"
+
+msgid "Initial version"
+msgstr "Initial version"
+
+msgid "Internal Notes"
+msgstr "Internal Notes"
+
+msgid "Internal notes for the employer"
+msgstr "Internal notes for the employer"
+
+msgid "Internal notes visible only to admins"
+msgstr "Internal notes visible only to admins"
+
+msgid "Internship"
+msgstr "Internship"
+
+msgid "Invalid request."
+msgstr "Invalid request."
+
+msgid "Invalid status selected."
+msgstr "Invalid status selected."
+
+msgid "Issuer"
+msgstr "Issuer"
+
+msgid "Italian"
+msgstr "Italian"
+
+msgid "Job & Internship Board"
+msgstr "Job & Internship Board"
+
+msgid "Job Board"
+msgstr "Job Board"
+
+msgid "Job Description"
+msgstr "Job Description"
+
+msgid "Job Information"
+msgstr "Job Information"
+
+msgid "Job Posting"
+msgstr "Job Posting"
+
+msgid "Job Title"
+msgstr "Job Title"
+
+msgid "Job Type"
+msgstr "Job Type"
+
+msgid "Job description"
+msgstr "Job description"
+
+msgid "Job posting created successfully."
+msgstr "Job posting created successfully."
+
+msgid "Job posting deleted successfully."
+msgstr "Job posting deleted successfully."
+
+msgid "Job posting updated successfully."
+msgstr "Job posting updated successfully."
+
+msgid "Job requirements (optional)"
+msgstr "Job requirements (optional)"
+
+msgid "Job type filter"
+msgstr "Job type filter"
+
+msgid "Jobs"
+msgstr "Jobs"
+
+msgid "Join Us"
+msgstr "Join Us"
+
+msgid "Join Waitlist"
+msgstr "Join Waitlist"
+
+msgid "Join discussions and share ideas"
+msgstr "Join discussions and share ideas"
+
+msgid "Join discussions and share your thoughts"
+msgstr "Join discussions and share your thoughts"
+
+msgid "Joined Date"
+msgstr "Joined Date"
+
+msgid "Key metrics and analytics for ASCAI platform"
+msgstr "Key metrics and analytics for ASCAI platform"
+
+msgid "Last Activity"
+msgstr "Last Activity"
+
+msgid "Last Updated"
+msgstr "Last Updated"
+
+msgid "Last updated:"
+msgstr "Last updated:"
+
+msgid "Leave blank to create in root"
+msgstr "Leave blank to create in root"
+
+msgid "Leave blank to inherit from folder"
+msgstr "Leave blank to inherit from folder"
+
+msgid "Leave blank to inherit from folder. Public: everyone, Members: logged-in members, Board: board members only"
+msgstr "Leave blank to inherit from folder. Public: everyone, Members: logged-in members, Board: board members only"
+
+msgid "Leave empty for unlimited"
+msgstr "Leave empty for unlimited"
+
+msgid "Leave empty for unlimited capacity"
+msgstr "Leave empty for unlimited capacity"
+
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+msgid "Links"
+msgstr "Links"
+
+msgid "List View"
+msgstr "List View"
+
+msgid "List the required skills, qualifications, and experience for this position."
+msgstr "List the required skills, qualifications, and experience for this position."
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Location (e.g., Rome, Italy)"
+msgstr "Location (e.g., Rome, Italy)"
+
+msgid "Location filter"
+msgstr "Location filter"
+
+msgid "Lock"
+msgstr "Lock"
+
+msgid "Lock Thread"
+msgstr "Lock Thread"
+
+msgid "Lock selected threads"
+msgstr "Lock selected threads"
+
+msgid "Locked"
+msgstr "Locked"
+
+msgid "Log In"
+msgstr "Log In"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "MIME type"
+msgstr "MIME type"
+
+msgid "Manage Applications"
+msgstr "Manage Applications"
+
+msgid "Manage Categories"
+msgstr "Manage Categories"
+
+msgid "Manage Tags"
+msgstr "Manage Tags"
+
+msgid "Mark as Read"
+msgstr "Mark as Read"
+
+msgid "Mark as read"
+msgstr "Mark as read"
+
+msgid "Mark as resolved"
+msgstr "Mark as resolved"
+
+msgid "Mark as reviewed"
+msgstr "Mark as reviewed"
+
+msgid "Mark as unread"
+msgstr "Mark as unread"
+
+msgid "Mark selected as attended"
+msgstr "Mark selected as attended"
+
+msgid "Maximum Attendees"
+msgstr "Maximum Attendees"
+
+msgid "Maximum Salary"
+msgstr "Maximum Salary"
+
+msgid "Maximum file size: 50MB"
+msgstr "Maximum file size: 50MB"
+
+msgid "Maximum salary (optional)"
+msgstr "Maximum salary (optional)"
+
+msgid "Media & Publishing"
+msgstr "Media & Publishing"
+
+msgid "Media & Status"
+msgstr "Media & Status"
+
+msgid "Member"
+msgstr "Member"
+
+msgid "Member Directory"
+msgstr "Member Directory"
+
+msgid "Member Profile"
+msgstr "Member Profile"
+
+msgid "Member Statistics"
+msgstr "Member Statistics"
+
+msgid "Member profile not found."
+msgstr "Member profile not found."
+
+msgid "Member status updated successfully."
+msgstr "Member status updated successfully."
+
+msgid "Members"
+msgstr "Members"
+
+msgid "Members Only"
+msgstr "Members Only"
+
+msgid "Membership"
+msgstr "Membership"
+
+msgid "Membership #"
+msgstr "Membership #"
+
+msgid "Membership Expiry"
+msgstr "Membership Expiry"
+
+msgid "Membership Fee"
+msgstr "Membership Fee"
+
+msgid "Membership Information"
+msgstr "Membership Information"
+
+msgid "Membership Number"
+msgstr "Membership Number"
+
+msgid "Membership Number:"
+msgstr "Membership Number:"
+
+msgid "Membership Status"
+msgstr "Membership Status"
+
+msgid "Mention"
+msgstr "Mention"
+
+msgid "Metadata"
+msgstr "Metadata"
+
+msgid "Minimum Salary"
+msgstr "Minimum Salary"
+
+msgid "Minimum salary (optional)"
+msgstr "Minimum salary (optional)"
+
+msgid "Minimum salary cannot be greater than maximum salary."
+msgstr "Minimum salary cannot be greater than maximum salary."
+
+msgid "Missing parameters"
+msgstr "Missing parameters"
+
+msgid "Moderation"
+msgstr "Moderation"
+
+msgid "Moderation Dashboard"
+msgstr "Moderation Dashboard"
+
+msgid "Month"
+msgstr "Month"
+
+msgid "Monthly Growth"
+msgstr "Monthly Growth"
+
+msgid "Monthly Revenue"
+msgstr "Monthly Revenue"
+
+msgid "My Applications"
+msgstr "My Applications"
+
+msgid "My Job Postings"
+msgstr "My Job Postings"
+
+msgid "My Notifications"
+msgstr "My Notifications"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Network"
+msgstr "Network"
+
+msgid "New Application Received"
+msgstr "New Application Received"
+
+msgid "New Application for {job_title}"
+msgstr "New Application for {job_title}"
+
+msgid "New File"
+msgstr "New File"
+
+msgid "New Folder"
+msgstr "New Folder"
+
+msgid "New Members"
+msgstr "New Members"
+
+msgid "New Reply"
+msgstr "New Reply"
+
+msgid "New Reply to Your Thread"
+msgstr "New Reply to Your Thread"
+
+msgid "New Status"
+msgstr "New Status"
+
+msgid "New Thread"
+msgstr "New Thread"
+
+msgid "New file"
+msgstr "New file"
+
+msgid "New password"
+msgstr "New password"
+
+msgid "New password confirmation"
+msgstr "New password confirmation"
+
+msgid "New version uploaded successfully."
+msgstr "New version uploaded successfully."
+
+msgid "News"
+msgstr "News"
+
+msgid "News & Announcements"
+msgstr "News & Announcements"
+
+msgid "News Categories"
+msgstr "News Categories"
+
+msgid "News Category"
+msgstr "News Category"
+
+msgid "News Post"
+msgstr "News Post"
+
+msgid "News Posts"
+msgstr "News Posts"
+
+msgid "News post created successfully."
+msgstr "News post created successfully."
+
+msgid "News post deleted successfully."
+msgstr "News post deleted successfully."
+
+msgid "News post updated successfully."
+msgstr "News post updated successfully."
+
+msgid "Next"
+msgstr "Next"
+
+msgid "No applications yet"
+msgstr "No applications yet"
+
+msgid "No categories available yet."
+msgstr "No categories available yet."
+
+msgid "No categories yet. Create your first category!"
+msgstr "No categories yet. Create your first category!"
+
+msgid "No documents found."
+msgstr "No documents found."
+
+msgid "No events found."
+msgstr "No events found."
+
+msgid "No events yet"
+msgstr "No events yet"
+
+msgid "No flagged content."
+msgstr "No flagged content."
+
+msgid "No forum activity"
+msgstr "No forum activity"
+
+msgid "No jobs found"
+msgstr "No jobs found"
+
+msgid "No members found."
+msgstr "No members found."
+
+msgid "No news available at the moment."
+msgstr "No news available at the moment."
+
+msgid "No news posts found."
+msgstr "No news posts found."
+
+msgid "No notifications."
+msgstr "No notifications."
+
+msgid "No payments yet"
+msgstr "No payments yet"
+
+msgid "No pending replies."
+msgstr "No pending replies."
+
+msgid "No pending threads."
+msgstr "No pending threads."
+
+msgid "No recent activity to display."
+msgstr "No recent activity to display."
+
+msgid "No recent events"
+msgstr "No recent events"
+
+msgid "No recent news"
+msgstr "No recent news"
+
+msgid "No recent payments"
+msgstr "No recent payments"
+
+msgid "No recent registrations"
+msgstr "No recent registrations"
+
+msgid "No registrations yet."
+msgstr "No registrations yet."
+
+msgid "No replies yet."
+msgstr "No replies yet."
+
+msgid "No resume uploaded."
+msgstr "No resume uploaded."
+
+msgid "No tags yet. Create your first tag!"
+msgstr "No tags yet. Create your first tag!"
+
+msgid "No threads yet."
+msgstr "No threads yet."
+
+msgid "No upcoming events"
+msgstr "No upcoming events"
+
+msgid "No upcoming events. Browse available events to register."
+msgstr "No upcoming events. Browse available events to register."
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Old password"
+msgstr "Old password"
+
+msgid "Only PDF, DOC, and DOCX files are allowed."
+msgstr "Only PDF, DOC, and DOCX files are allowed."
+
+msgid "Optional - leave blank for no deadline"
+msgstr "Optional - leave blank for no deadline"
+
+msgid "Organization"
+msgstr "Organization"
+
+msgid "Organized by"
+msgstr "Organized by"
+
+msgid "Organizer"
+msgstr "Organizer"
+
+msgid "Other"
+msgstr "Other"
+
+msgid "Our Community"
+msgstr "Our Community"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Parent Folder"
+msgstr "Parent Folder"
+
+msgid "Part Time"
+msgstr "Part Time"
+
+msgid "Participate in cultural and academic events"
+msgstr "Participate in cultural and academic events"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Password confirmation"
+msgstr "Password confirmation"
+
+msgid "Past"
+msgstr "Past"
+
+msgid "Past:"
+msgstr "Past:"
+
+msgid "Payment History"
+msgstr "Payment History"
+
+msgid "Payments (€)"
+msgstr "Payments (€)"
+
+msgid "Pending"
+msgstr "Pending"
+
+msgid "Pending Content"
+msgstr "Pending Content"
+
+msgid "Pending Members"
+msgstr "Pending Members"
+
+msgid "Pending Replies"
+msgstr "Pending Replies"
+
+msgid "Pending Threads"
+msgstr "Pending Threads"
+
+msgid "Percentage"
+msgstr "Percentage"
+
+msgid "Period revenue"
+msgstr "Period revenue"
+
+msgid "Permanent"
+msgstr "Permanent"
+
+msgid "Permission denied."
+msgstr "Permission denied."
+
+msgid "Permissions"
+msgstr "Permissions"
+
+msgid "Personal Information"
+msgstr "Personal Information"
+
+msgid "Personal info"
+msgstr "Personal info"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Pin"
+msgstr "Pin"
+
+msgid "Pin Thread"
+msgstr "Pin Thread"
+
+msgid "Pin selected threads"
+msgstr "Pin selected threads"
+
+msgid "Please check the event page for more details."
+msgstr "Please check the event page for more details."
+
+msgid "Please check your email and click the activation link to activate your account."
+msgstr "Please check your email and click the activation link to activate your account."
+
+msgid "Please log in to apply for this job."
+msgstr "Please log in to apply for this job."
+
+msgid "Please log in to register for this event."
+msgstr "Please log in to register for this event."
+
+msgid "Please provide a reason for reporting this content. Our moderators will review it."
+msgstr "Please provide a reason for reporting this content. Our moderators will review it."
+
+msgid "Please provide additional details (optional)"
+msgstr "Please provide additional details (optional)"
+
+msgid "Please review the application and update its status accordingly."
+msgstr "Please review the application and update its status accordingly."
+
+msgid "Please select a file to upload."
+msgstr "Please select a file to upload."
+
+msgid "Please visit the event page to view the updated details."
+msgstr "Please visit the event page to view the updated details."
+
+msgid "Popular Events"
+msgstr "Popular Events"
+
+msgid "Post Reply"
+msgstr "Post Reply"
+
+msgid "Post Your First Job"
+msgstr "Post Your First Job"
+
+msgid "Post a Job"
+msgstr "Post a Job"
+
+msgid "Post a New Job"
+msgstr "Post a New Job"
+
+msgid "Post content"
+msgstr "Post content"
+
+msgid "Posted"
+msgstr "Posted"
+
+msgid "Posted by"
+msgstr "Posted by"
+
+msgid "Posts"
+msgstr "Posts"
+
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Previous Status"
+msgstr "Previous Status"
+
+msgid "Privacy Settings"
+msgstr "Privacy Settings"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Provide a brief description of the document (optional)"
+msgstr "Provide a brief description of the document (optional)"
+
+msgid "Provide a detailed description of the event"
+msgstr "Provide a detailed description of the event"
+
+msgid "Provide a detailed description of the role, responsibilities, and what makes this opportunity special."
+msgstr "Provide a detailed description of the role, responsibilities, and what makes this opportunity special."
+
+msgid "Public"
+msgstr "Public"
+
+msgid "Publication"
+msgstr "Publication"
+
+msgid "Publish Date/Time"
+msgstr "Publish Date/Time"
+
+msgid "Publish Event"
+msgstr "Publish Event"
+
+msgid "Publish immediately"
+msgstr "Publish immediately"
+
+msgid "Publish selected events"
+msgstr "Publish selected events"
+
+msgid "Published"
+msgstr "Published"
+
+msgid "Quick Actions"
+msgstr "Quick Actions"
+
+msgid "Re-register"
+msgstr "Re-register"
+
+msgid "Re-register for this Event"
+msgstr "Re-register for this Event"
+
+msgid "Read"
+msgstr "Read"
+
+msgid "Reason"
+msgstr "Reason"
+
+msgid "Reason for reporting"
+msgstr "Reason for reporting"
+
+msgid "Recent Activity"
+msgstr "Recent Activity"
+
+msgid "Recent Event Registrations"
+msgstr "Recent Event Registrations"
+
+msgid "Recent Events Created"
+msgstr "Recent Events Created"
+
+msgid "Recent Member Registrations"
+msgstr "Recent Member Registrations"
+
+msgid "Recent News"
+msgstr "Recent News"
+
+msgid "Recent News Posts"
+msgstr "Recent News Posts"
+
+msgid "Recent Payments"
+msgstr "Recent Payments"
+
+msgid "Refresh"
+msgstr "Refresh"
+
+msgid "Refresh Data"
+msgstr "Refresh Data"
+
+msgid "Refreshing..."
+msgstr "Refreshing..."
+
+msgid "Refunded"
+msgstr "Refunded"
+
+msgid "Register"
+msgstr "Register"
+
+msgid "Register for this Event"
+msgstr "Register for this Event"
+
+msgid "Registered"
+msgstr "Registered"
+
+msgid "Registered At"
+msgstr "Registered At"
+
+msgid "Registered events"
+msgstr "Registered events"
+
+msgid "Registered for"
+msgstr "Registered for"
+
+msgid "Registered on"
+msgstr "Registered on"
+
+msgid "Registration"
+msgstr "Registration"
+
+msgid "Registration Available!"
+msgstr "Registration Available!"
+
+msgid "Registration Confirmation"
+msgstr "Registration Confirmation"
+
+msgid "Registration Confirmation: {}"
+msgstr "Registration Confirmation: {}"
+
+msgid "Registration Confirmed"
+msgstr "Registration Confirmed"
+
+msgid "Registration Deadline"
+msgstr "Registration Deadline"
+
+msgid "Registration Deadline:"
+msgstr "Registration Deadline:"
+
+msgid "Registration Information"
+msgstr "Registration Information"
+
+msgid "Registration Required"
+msgstr "Registration Required"
+
+msgid "Registration Successful"
+msgstr "Registration Successful"
+
+msgid "Registration cancelled successfully."
+msgstr "Registration cancelled successfully."
+
+msgid "Registration deadline has passed."
+msgstr "Registration deadline has passed."
+
+msgid "Registration deadline must be before event start date."
+msgstr "Registration deadline must be before event start date."
+
+msgid "Registrations"
+msgstr "Registrations"
+
+msgid "Reject"
+msgstr "Reject"
+
+msgid "Reject Content"
+msgstr "Reject Content"
+
+msgid "Rejected"
+msgstr "Rejected"
+
+msgid "Related Posts"
+msgstr "Related Posts"
+
+msgid "Reminders sent for {} events."
+msgstr "Reminders sent for {} events."
+
+msgid "Remove from Waitlist"
+msgstr "Remove from Waitlist"
+
+msgid "Replies"
+msgstr "Replies"
+
+msgid "Reply"
+msgstr "Reply"
+
+msgid "Reply deleted successfully."
+msgstr "Reply deleted successfully."
+
+msgid "Reply posted successfully."
+msgstr "Reply posted successfully."
+
+msgid "Reply to Thread"
+msgstr "Reply to Thread"
+
+msgid "Reply updated successfully."
+msgstr "Reply updated successfully."
+
+msgid "Report"
+msgstr "Report"
+
+msgid "Report Content"
+msgstr "Report Content"
+
+msgid "Report Details"
+msgstr "Report Details"
+
+msgid "Requirements"
+msgstr "Requirements"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Resolved"
+msgstr "Resolved"
+
+msgid "Resources"
+msgstr "Resources"
+
+msgid "Restore"
+msgstr "Restore"
+
+msgid "Resume"
+msgstr "Resume"
+
+msgid "Resume is required."
+msgstr "Resume is required."
+
+msgid "Revenue (€)"
+msgstr "Revenue (€)"
+
+msgid "Revenue Tracking"
+msgstr "Revenue Tracking"
+
+msgid "Revenue by Type"
+msgstr "Revenue by Type"
+
+msgid "Review"
+msgstr "Review"
+
+msgid "Review Information"
+msgstr "Review Information"
+
+msgid "Reviewed"
+msgstr "Reviewed"
+
+msgid "Rollback"
+msgstr "Rollback"
+
+msgid "Rollback Document"
+msgstr "Rollback Document"
+
+msgid "Rolled back to version %(version)s"
+msgstr "Rolled back to version %(version)s"
+
+msgid "Root"
+msgstr "Root"
+
+msgid "Salary & Deadline"
+msgstr "Salary & Deadline"
+
+msgid "Salary Range"
+msgstr "Salary Range"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Save Changes"
+msgstr "Save Changes"
+
+msgid "Save Post"
+msgstr "Save Post"
+
+msgid "Schedule publication for a specific date/time (optional)"
+msgstr "Schedule publication for a specific date/time (optional)"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Search by name, email, university..."
+msgstr "Search by name, email, university..."
+
+msgid "Search documents..."
+msgstr "Search documents..."
+
+msgid "Search events..."
+msgstr "Search events..."
+
+msgid "Search jobs"
+msgstr "Search jobs"
+
+msgid "Search jobs, companies, or keywords..."
+msgstr "Search jobs, companies, or keywords..."
+
+msgid "Search..."
+msgstr "Search..."
+
+msgid "Select a category (optional)"
+msgstr "Select a category (optional)"
+
+msgid "Select a folder to organize this document (optional)"
+msgstr "Select a folder to organize this document (optional)"
+
+msgid "Select tags to help categorize this document (optional)"
+msgstr "Select tags to help categorize this document (optional)"
+
+msgid "Send reminders for selected events"
+msgstr "Send reminders for selected events"
+
+msgid "Share your job opportunity with the ASCAI community"
+msgstr "Share your job opportunity with the ASCAI community"
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "Social"
+msgstr "Social"
+
+msgid "Sorry, the activation link is invalid or has expired."
+msgstr "Sorry, the activation link is invalid or has expired."
+
+msgid "Spam"
+msgstr "Spam"
+
+msgid "Special Requests"
+msgstr "Special Requests"
+
+msgid "Special Requests:"
+msgstr "Special Requests:"
+
+msgid "Start Date & Time"
+msgstr "Start Date & Time"
+
+msgid "Start browsing available jobs and submit your first application!"
+msgstr "Start browsing available jobs and submit your first application!"
+
+msgid "Statistics"
+msgstr "Statistics"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Status Breakdown"
+msgstr "Status Breakdown"
+
+msgid "Status:"
+msgstr "Status:"
+
+msgid "Student"
+msgstr "Student"
+
+msgid "Subfolders"
+msgstr "Subfolders"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Submit Application"
+msgstr "Submit Application"
+
+msgid "Submit Report"
+msgstr "Submit Report"
+
+msgid "Submit your resume and cover letter to apply for this position"
+msgstr "Submit your resume and cover letter to apply for this position"
+
+msgid "Successfully re-registered for the event!"
+msgstr "Successfully re-registered for the event!"
+
+msgid "Successfully registered for the event!"
+msgstr "Successfully registered for the event!"
+
+msgid "Superuser must have is_staff=True."
+msgstr "Superuser must have is_staff=True."
+
+msgid "Superuser must have is_superuser=True."
+msgstr "Superuser must have is_superuser=True."
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Suspended"
+msgstr "Suspended"
+
+msgid "Tag created successfully."
+msgstr "Tag created successfully."
+
+msgid "Tag deleted successfully."
+msgstr "Tag deleted successfully."
+
+msgid "Tag name"
+msgstr "Tag name"
+
+msgid "Tag updated successfully."
+msgstr "Tag updated successfully."
+
+msgid "Tag:"
+msgstr "Tag:"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Tags (optional)"
+msgstr "Tags (optional)"
+
+msgid "Target Version"
+msgstr "Target Version"
+
+msgid "Temporary"
+msgstr "Temporary"
+
+msgid "Thank you for applying to the following position:"
+msgstr "Thank you for applying to the following position:"
+
+msgid "Thank you for registering for our event!"
+msgstr "Thank you for registering for our event!"
+
+msgid "Thank you for registering with ASCAI. Please click the link below to activate your account:"
+msgstr "Thank you for registering with ASCAI. Please click the link below to activate your account:"
+
+msgid "Thank you for registering! A verification email has been sent to"
+msgstr "Thank you for registering! A verification email has been sent to"
+
+msgid "Thank you for your interest in our event!"
+msgstr "Thank you for your interest in our event!"
+
+msgid "Thank you for your interest, and we encourage you to apply for other opportunities."
+msgstr "Thank you for your interest, and we encourage you to apply for other opportunities."
+
+msgid "Thank you for your report. Our moderators will review it."
+msgstr "Thank you for your report. Our moderators will review it."
+
+msgid "The Email field must be set"
+msgstr "The Email field must be set"
+
+msgid "The event is in"
+msgstr "The event is in"
+
+msgid "The event is tomorrow!"
+msgstr "The event is tomorrow!"
+
+msgid "The event you are registered for has been updated."
+msgstr "The event you are registered for has been updated."
+
+msgid "The event you are registered for has been updated:"
+msgstr "The event you are registered for has been updated:"
+
+msgid "There was an error with your registration."
+msgstr "There was an error with your registration."
+
+msgid "This action cannot be undone."
+msgstr "This action cannot be undone."
+
+msgid "This action cannot be undone. All registrations and reminders associated with this event will also be deleted."
+msgstr "This action cannot be undone. All registrations and reminders associated with this event will also be deleted."
+
+msgid "This action cannot be undone. All versions of this document will be permanently deleted."
+msgstr "This action cannot be undone. All versions of this document will be permanently deleted."
+
+msgid "This category is used by"
+msgstr "This category is used by"
+
+msgid "This event has already started."
+msgstr "This event has already started."
+
+msgid "This event is for members only."
+msgstr "This event is for members only."
+
+msgid "This folder must be empty (no documents or subfolders) before it can be deleted."
+msgstr "This folder must be empty (no documents or subfolders) before it can be deleted."
+
+msgid "This is a friendly reminder that you are registered for an upcoming event!"
+msgstr "This is a friendly reminder that you are registered for an upcoming event!"
+
+msgid "This is a reminder that you are registered for:"
+msgstr "This is a reminder that you are registered for:"
+
+msgid "This job is no longer accepting applications."
+msgstr "This job is no longer accepting applications."
+
+msgid "This profile is private."
+msgstr "This profile is private."
+
+msgid "This tag is used by"
+msgstr "This tag is used by"
+
+msgid "This thread is locked."
+msgstr "This thread is locked."
+
+msgid "This thread is locked. No new replies can be posted."
+msgstr "This thread is locked. No new replies can be posted."
+
+msgid "Thread"
+msgstr "Thread"
+
+msgid "Thread Locked"
+msgstr "Thread Locked"
+
+msgid "Thread Pinned"
+msgstr "Thread Pinned"
+
+msgid "Thread created successfully."
+msgstr "Thread created successfully."
+
+msgid "Thread deleted successfully."
+msgstr "Thread deleted successfully."
+
+msgid "Thread locked."
+msgstr "Thread locked."
+
+msgid "Thread pinned."
+msgstr "Thread pinned."
+
+msgid "Thread unlocked."
+msgstr "Thread unlocked."
+
+msgid "Thread unpinned."
+msgstr "Thread unpinned."
+
+msgid "Thread updated successfully."
+msgstr "Thread updated successfully."
+
+msgid "Threads"
+msgstr "Threads"
+
+msgid "Timestamps"
+msgstr "Timestamps"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "To:"
+msgstr "To:"
+
+msgid "Today"
+msgstr "Today"
+
+msgid "Total Events"
+msgstr "Total Events"
+
+msgid "Total Members"
+msgstr "Total Members"
+
+msgid "Total Payments"
+msgstr "Total Payments"
+
+msgid "Total Registrations:"
+msgstr "Total Registrations:"
+
+msgid "Total Revenue"
+msgstr "Total Revenue"
+
+msgid "Total:"
+msgstr "Total:"
+
+msgid "Track the status of your job applications"
+msgstr "Track the status of your job applications"
+
+msgid "Try adjusting your search filters or check back later for new opportunities."
+msgstr "Try adjusting your search filters or check back later for new opportunities."
+
+msgid "URL-friendly identifier (e.g., category-name)"
+msgstr "URL-friendly identifier (e.g., category-name)"
+
+msgid "URL-friendly identifier (e.g., folder-name)"
+msgstr "URL-friendly identifier (e.g., folder-name)"
+
+msgid "URL-friendly identifier (e.g., tag-name)"
+msgstr "URL-friendly identifier (e.g., tag-name)"
+
+msgid "Unban User"
+msgstr "Unban User"
+
+msgid "Under Review"
+msgstr "Under Review"
+
+msgid "University"
+msgstr "University"
+
+msgid "Unlimited"
+msgstr "Unlimited"
+
+msgid "Unlimited capacity"
+msgstr "Unlimited capacity"
+
+msgid "Unlock"
+msgstr "Unlock"
+
+msgid "Unlock Thread"
+msgstr "Unlock Thread"
+
+msgid "Unlock selected threads"
+msgstr "Unlock selected threads"
+
+msgid "Unpin"
+msgstr "Unpin"
+
+msgid "Unpin Thread"
+msgstr "Unpin Thread"
+
+msgid "Unpin selected threads"
+msgstr "Unpin selected threads"
+
+msgid "Unpublish selected events"
+msgstr "Unpublish selected events"
+
+msgid "Unpublished documents are only visible to board members"
+msgstr "Unpublished documents are only visible to board members"
+
+msgid "Unpublished events are only visible to board members"
+msgstr "Unpublished events are only visible to board members"
+
+msgid "Up to"
+msgstr "Up to"
+
+msgid "Upcoming"
+msgstr "Upcoming"
+
+msgid "Upcoming Events"
+msgstr "Upcoming Events"
+
+msgid "Upcoming:"
+msgstr "Upcoming:"
+
+msgid "Update Event"
+msgstr "Update Event"
+
+msgid "Update Profile"
+msgstr "Update Profile"
+
+msgid "Update Status"
+msgstr "Update Status"
+
+msgid "Update your job posting information"
+msgstr "Update your job posting information"
+
+msgid "Update your personal information"
+msgstr "Update your personal information"
+
+msgid "Upload Date"
+msgstr "Upload Date"
+
+msgid "Upload Document"
+msgstr "Upload Document"
+
+msgid "Upload First Document"
+msgstr "Upload First Document"
+
+msgid "Upload New Version"
+msgstr "Upload New Version"
+
+msgid "Upload Version"
+msgstr "Upload Version"
+
+msgid "Upload a featured image for this post (optional)"
+msgstr "Upload a featured image for this post (optional)"
+
+msgid "Upload a new document to the system"
+msgstr "Upload a new document to the system"
+
+msgid "Upload an image to represent this event (optional)"
+msgstr "Upload an image to represent this event (optional)"
+
+msgid "Upload your resume (PDF, DOC, or DOCX, max 10MB)"
+msgstr "Upload your resume (PDF, DOC, or DOCX, max 10MB)"
+
+msgid "Uploaded"
+msgstr "Uploaded"
+
+msgid "Uploaded By"
+msgstr "Uploaded By"
+
+msgid "Upvote"
+msgstr "Upvote"
+
+msgid "User"
+msgstr "User"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Version Date"
+msgstr "Version Date"
+
+msgid "Version History"
+msgstr "Version History"
+
+msgid "Version not found"
+msgstr "Version not found"
+
+msgid "View"
+msgstr "View"
+
+msgid "View All"
+msgstr "View All"
+
+msgid "View Attendees"
+msgstr "View Attendees"
+
+msgid "View Details"
+msgstr "View Details"
+
+msgid "View Event Details"
+msgstr "View Event Details"
+
+msgid "View Job Posting"
+msgstr "View Job Posting"
+
+msgid "View My Applications"
+msgstr "View My Applications"
+
+msgid "View News"
+msgstr "View News"
+
+msgid "View Profile"
+msgstr "View Profile"
+
+msgid "View Updated Event Details"
+msgstr "View Updated Event Details"
+
+msgid "View and register for upcoming events"
+msgstr "View and register for upcoming events"
+
+msgid "View and upload documents"
+msgstr "View and upload documents"
+
+msgid "Views"
+msgstr "Views"
+
+msgid "Visibility"
+msgstr "Visibility"
+
+msgid "Vote"
+msgstr "Vote"
+
+msgid "Waitlist Confirmation"
+msgstr "Waitlist Confirmation"
+
+msgid "Waitlist Confirmation: {}"
+msgstr "Waitlist Confirmation: {}"
+
+msgid "Waitlisted"
+msgstr "Waitlisted"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Warning:"
+msgstr "Warning:"
+
+msgid "We look forward to seeing you at the event!"
+msgstr "We look forward to seeing you at the event!"
+
+msgid "We look forward to seeing you there!"
+msgstr "We look forward to seeing you there!"
+
+msgid "We regret to inform you that your application was not selected for this position."
+msgstr "We regret to inform you that your application was not selected for this position."
+
+msgid "We will notify you when there are any updates to your application status."
+msgstr "We will notify you when there are any updates to your application status."
+
+msgid "Website"
+msgstr "Website"
+
+msgid "Week"
+msgstr "Week"
+
+msgid "Welcome to ASCAI"
+msgstr "Welcome to ASCAI"
+
+msgid "Welcome to ASCAI!"
+msgstr "Welcome to ASCAI!"
+
+msgid "Welcome,"
+msgstr "Welcome,"
+
+msgid "What changed in this version"
+msgstr "What changed in this version"
+
+msgid "Year of Study"
+msgstr "Year of Study"
+
+msgid "Yes, Delete"
+msgstr "Yes, Delete"
+
+msgid "Yes, Delete Event"
+msgstr "Yes, Delete Event"
+
+msgid "You are banned from posting. Reason: %(reason)s"
+msgstr "You are banned from posting. Reason: %(reason)s"
+
+msgid "You are not registered for this event."
+msgstr "You are not registered for this event."
+
+msgid "You are on the waitlist for this event."
+msgstr "You are on the waitlist for this event."
+
+msgid "You are registered for this event!"
+msgstr "You are registered for this event!"
+
+msgid "You attended this event!"
+msgstr "You attended this event!"
+
+msgid "You can only delete events you organized."
+msgstr "You can only delete events you organized."
+
+msgid "You can only delete your own job postings."
+msgstr "You can only delete your own job postings."
+
+msgid "You can only delete your own posts."
+msgstr "You can only delete your own posts."
+
+msgid "You can only edit events you organized."
+msgstr "You can only edit events you organized."
+
+msgid "You can only edit your own job postings."
+msgstr "You can only edit your own job postings."
+
+msgid "You can only edit your own posts."
+msgstr "You can only edit your own posts."
+
+msgid "You can only manage applications for your own job postings."
+msgstr "You can only manage applications for your own job postings."
+
+msgid "You can re-register for this event if registration is still open."
+msgstr "You can re-register for this event if registration is still open."
+
+msgid "You cannot apply to your own job posting."
+msgstr "You cannot apply to your own job posting."
+
+msgid "You cannot register for this event."
+msgstr "You cannot register for this event."
+
+msgid "You do not have permission to perform this action."
+msgstr "You do not have permission to perform this action."
+
+msgid "You have already applied to this job."
+msgstr "You have already applied to this job."
+
+msgid "You have been added to the waitlist for this event."
+msgstr "You have been added to the waitlist for this event."
+
+msgid "You have been automatically registered for this event."
+msgstr "You have been automatically registered for this event."
+
+msgid "You have been automatically registered for this event. We look forward to seeing you there!"
+msgstr "You have been automatically registered for this event. We look forward to seeing you there!"
+
+msgid "You have received a new application for your job posting:"
+msgstr "You have received a new application for your job posting:"
+
+msgid "You have successfully registered for this event."
+msgstr "You have successfully registered for this event."
+
+msgid "You must be a member to perform this action."
+msgstr "You must be a member to perform this action."
+
+msgid "You must be logged in to perform this action."
+msgstr "You must be logged in to perform this action."
+
+msgid "You will be notified if a space becomes available."
+msgstr "You will be notified if a space becomes available."
+
+msgid "Your %(type)s has been approved."
+msgstr "Your %(type)s has been approved."
+
+msgid "Your %(type)s has been rejected. %(reason)s"
+msgstr "Your %(type)s has been rejected. %(reason)s"
+
+msgid "Your account has been successfully activated!"
+msgstr "Your account has been successfully activated!"
+
+msgid "Your application has been received and is being reviewed."
+msgstr "Your application has been received and is being reviewed."
+
+msgid "Your application has been submitted successfully."
+msgstr "Your application has been submitted successfully."
+
+msgid "Your application is being reviewed. We will keep you updated on any further changes."
+msgstr "Your application is being reviewed. We will keep you updated on any further changes."
+
+msgid "Your application status has been updated:"
+msgstr "Your application status has been updated:"
+
+msgid "Your cover letter (optional)"
+msgstr "Your cover letter (optional)"
+
+msgid "Your personal dashboard overview"
+msgstr "Your personal dashboard overview"
+
+msgid "Your post reached %(count)s upvotes!"
+msgstr "Your post reached %(count)s upvotes!"
+
+msgid "Your registration details"
+msgstr "Your registration details"
+
+msgid "Your registration was cancelled."
+msgstr "Your registration was cancelled."
+
+msgid "Your reply is pending approval."
+msgstr "Your reply is pending approval."
+
+msgid "Your thread is pending approval."
+msgstr "Your thread is pending approval."
+
+msgid "access level"
+msgstr "access level"
+
+msgid "active"
+msgstr "active"
+
+msgid "admin notes"
+msgstr "admin notes"
+
+msgid "amount"
+msgstr "amount"
+
+msgid "applicant"
+msgstr "applicant"
+
+msgid "application deadline"
+msgstr "application deadline"
+
+msgid "applications"
+msgstr "applications"
+
+msgid "applied at"
+msgstr "applied at"
+
+msgid "approved"
+msgstr "approved"
+
+msgid "at"
+msgstr "at"
+
+msgid "bio"
+msgstr "bio"
+
+msgid "categories"
+msgstr "categories"
+
+msgid "category"
+msgstr "category"
+
+msgid "category-slug"
+msgstr "category-slug"
+
+msgid "changelog"
+msgstr "changelog"
+
+msgid "checked in at"
+msgstr "checked in at"
+
+msgid "city"
+msgstr "city"
+
+msgid "color"
+msgstr "color"
+
+msgid "company name"
+msgstr "company name"
+
+msgid "completed payments"
+msgstr "completed payments"
+
+msgid "content"
+msgstr "content"
+
+msgid "country of origin"
+msgstr "country of origin"
+
+msgid "course of study"
+msgstr "course of study"
+
+msgid "cover letter"
+msgstr "cover letter"
+
+msgid "created at"
+msgstr "created at"
+
+msgid "created by"
+msgstr "created by"
+
+msgid "date joined"
+msgstr "date joined"
+
+msgid "date of birth"
+msgstr "date of birth"
+
+msgid "day(s)"
+msgstr "day(s)"
+
+msgid "days"
+msgstr "days"
+
+msgid "days before"
+msgstr "days before"
+
+msgid "default access level"
+msgstr "default access level"
+
+msgid "description"
+msgstr "description"
+
+msgid "dietary requirements"
+msgstr "dietary requirements"
+
+msgid "document"
+msgstr "document"
+
+msgid "document folder"
+msgstr "document folder"
+
+msgid "document folders"
+msgstr "document folders"
+
+msgid "document permission"
+msgstr "document permission"
+
+msgid "document permissions"
+msgstr "document permissions"
+
+msgid "document tag"
+msgstr "document tag"
+
+msgid "document tags"
+msgstr "document tags"
+
+msgid "document version"
+msgstr "document version"
+
+msgid "document versions"
+msgstr "document versions"
+
+msgid "document(s). You cannot delete it."
+msgstr "document(s). You cannot delete it."
+
+msgid "documents"
+msgstr "documents"
+
+msgid "download count"
+msgstr "download count"
+
+msgid "downloads"
+msgstr "downloads"
+
+msgid "edited"
+msgstr "edited"
+
+msgid "email address"
+msgstr "email address"
+
+msgid "emailed"
+msgstr "emailed"
+
+msgid "end date"
+msgstr "end date"
+
+msgid "event"
+msgstr "event"
+
+msgid "event categories"
+msgstr "event categories"
+
+msgid "event category"
+msgstr "event category"
+
+msgid "event registration"
+msgstr "event registration"
+
+msgid "event registrations"
+msgstr "event registrations"
+
+msgid "event reminder"
+msgstr "event reminder"
+
+msgid "event reminders"
+msgstr "event reminders"
+
+msgid "event(s). You cannot delete it."
+msgstr "event(s). You cannot delete it."
+
+msgid "events"
+msgstr "events"
+
+msgid "excerpt"
+msgstr "excerpt"
+
+msgid "featured image"
+msgstr "featured image"
+
+msgid "file"
+msgstr "file"
+
+msgid "file size"
+msgstr "file size"
+
+msgid "first name"
+msgstr "first name"
+
+msgid "flag"
+msgstr "flag"
+
+msgid "flags"
+msgstr "flags"
+
+msgid "folder"
+msgstr "folder"
+
+msgid "folder permission"
+msgstr "folder permission"
+
+msgid "folder permissions"
+msgstr "folder permissions"
+
+msgid "folder-slug"
+msgstr "folder-slug"
+
+msgid "graduation year"
+msgstr "graduation year"
+
+msgid "granted"
+msgstr "granted"
+
+msgid "icon"
+msgstr "icon"
+
+msgid "job"
+msgstr "job"
+
+msgid "job application"
+msgstr "job application"
+
+msgid "job applications"
+msgstr "job applications"
+
+msgid "job posting"
+msgstr "job posting"
+
+msgid "job postings"
+msgstr "job postings"
+
+msgid "joined date"
+msgstr "joined date"
+
+msgid "last 30 days"
+msgstr "last 30 days"
+
+msgid "last activity"
+msgstr "last activity"
+
+msgid "last login"
+msgstr "last login"
+
+msgid "last name"
+msgstr "last name"
+
+msgid "location"
+msgstr "location"
+
+msgid "locked"
+msgstr "locked"
+
+msgid "max attendees"
+msgstr "max attendees"
+
+msgid "maximum salary"
+msgstr "maximum salary"
+
+msgid "member"
+msgstr "member"
+
+msgid "members"
+msgstr "members"
+
+msgid "membership expiry"
+msgstr "membership expiry"
+
+msgid "message"
+msgstr "message"
+
+msgid "minimum salary"
+msgstr "minimum salary"
+
+msgid "moderator action"
+msgstr "moderator action"
+
+msgid "moderator actions"
+msgstr "moderator actions"
+
+msgid "name"
+msgstr "name"
+
+msgid "news categories"
+msgstr "news categories"
+
+msgid "news category"
+msgstr "news category"
+
+msgid "news post"
+msgstr "news post"
+
+msgid "news posts"
+msgstr "news posts"
+
+msgid "notes"
+msgstr "notes"
+
+msgid "notification"
+msgstr "notification"
+
+msgid "notifications"
+msgstr "notifications"
+
+msgid "of"
+msgstr "of"
+
+msgid "of total"
+msgstr "of total"
+
+msgid "on waitlist"
+msgstr "on waitlist"
+
+msgid "order"
+msgstr "order"
+
+msgid "organizer"
+msgstr "organizer"
+
+msgid "paid at"
+msgstr "paid at"
+
+msgid "parent folder"
+msgstr "parent folder"
+
+msgid "payment"
+msgstr "payment"
+
+msgid "payments"
+msgstr "payments"
+
+msgid "permission type"
+msgstr "permission type"
+
+msgid "phone"
+msgstr "phone"
+
+msgid "pinned"
+msgstr "pinned"
+
+msgid "post(s). You cannot delete it."
+msgstr "post(s). You cannot delete it."
+
+msgid "posted at"
+msgstr "posted at"
+
+msgid "posted by"
+msgstr "posted by"
+
+msgid "public email"
+msgstr "public email"
+
+msgid "public profile"
+msgstr "public profile"
+
+msgid "published"
+msgstr "published"
+
+msgid "published at"
+msgstr "published at"
+
+msgid "read"
+msgstr "read"
+
+msgid "reason"
+msgstr "reason"
+
+msgid "recipient email"
+msgstr "recipient email"
+
+msgid "registered at"
+msgstr "registered at"
+
+msgid "registration"
+msgstr "registration"
+
+msgid "registration deadline"
+msgstr "registration deadline"
+
+msgid "registration required"
+msgstr "registration required"
+
+msgid "registrations"
+msgstr "registrations"
+
+msgid "reminder type"
+msgstr "reminder type"
+
+msgid "replies"
+msgstr "replies"
+
+msgid "reply"
+msgstr "reply"
+
+msgid "requirements"
+msgstr "requirements"
+
+msgid "resume"
+msgstr "resume"
+
+msgid "reviewed at"
+msgstr "reviewed at"
+
+msgid "sent at"
+msgstr "sent at"
+
+msgid "spaces available"
+msgstr "spaces available"
+
+msgid "special requests"
+msgstr "special requests"
+
+msgid "start date"
+msgstr "start date"
+
+msgid "status"
+msgstr "status"
+
+msgid "tag-slug"
+msgstr "tag-slug"
+
+msgid "tags"
+msgstr "tags"
+
+msgid "tags, separated, by, commas"
+msgstr "tags, separated, by, commas"
+
+msgid "thread"
+msgstr "thread"
+
+msgid "threads"
+msgstr "threads"
+
+msgid "title"
+msgstr "title"
+
+msgid "transaction ID"
+msgstr "transaction ID"
+
+msgid "university"
+msgstr "university"
+
+msgid "upcoming"
+msgstr "upcoming"
+
+msgid "updated at"
+msgstr "updated at"
+
+msgid "uploader"
+msgstr "uploader"
+
+msgid "user"
+msgstr "user"
+
+msgid "user ban"
+msgstr "user ban"
+
+msgid "user bans"
+msgstr "user bans"
+
+msgid "users"
+msgstr "users"
+
+msgid "version number"
+msgstr "version number"
+
+msgid "views"
+msgstr "views"
+
+msgid "visibility"
+msgstr "visibility"
+
+msgid "vote"
+msgstr "vote"
+
+msgid "votes"
+msgstr "votes"
+
+msgid "website"
+msgstr "website"
+
+msgid "year of study"
+msgstr "year of study"
+
+msgid "{} events published."
+msgstr "{} events published."
+
+msgid "{} events unpublished."
+msgstr "{} events unpublished."
+
+msgid "{} registrations cancelled."
+msgstr "{} registrations cancelled."
+
+msgid "{} registrations marked as attended."
+msgstr "{} registrations marked as attended."
+

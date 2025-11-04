@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ASCAI - Association of Cameroonian Students in Lazio{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+    <style>
+        .form-hint a {
+            color: var(--primary-green);
+            text-decoration: underline;
+        }
+        .form-hint a:hover {
+            color: var(--primary-red);
+        }
+    </style>
+</head>
+<body>
+    {% load i18n %}
+    <nav class="navbar">
+        <div class="container">
+            <a href="{% url 'dashboard:index' %}" class="navbar-brand">ASCAI</a>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard:home' %}">{% trans "Dashboard" %}</a></li>
+                    {% if user.is_admin or user.is_board_member %}
+                    <li><a href="{% url 'dashboard:admin' %}">{% trans "Admin" %}</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'events:list' %}">{% trans "Events" %}</a></li>
+                    <li><a href="{% url 'news:list' %}">{% trans "News" %}</a></li>
+                    <li><a href="{% url 'forums:category_list' %}">{% trans "Forum" %}</a></li>
+                    <li><a href="{% url 'documents:list' %}">{% trans "Documents" %}</a></li>
+                    <li><a href="{% url 'jobs:list' %}">{% trans "Jobs" %}</a></li>
+                    <li><a href="{% url 'members:directory' %}">{% trans "Members" %}</a></li>
+                    <li><a href="{% url 'messaging:chat_list' %}">{% trans "Messages" %}</a></li>
+                    <li><a href="{% url 'accounts:profile' %}">{% trans "Profile" %}</a></li>
+                    <li><a href="{% url 'accounts:logout' %}">{% trans "Logout" %}</a></li>
+                {% else %}
+                    <li><a href="{% url 'accounts:login' %}">{% trans "Login" %}</a></li>
+                    <li><a href="{% url 'accounts:register' %}">{% trans "Register" %}</a></li>
+                {% endif %}
+                <li>{% include "includes/language_switcher.html" %}</li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; {% now "Y" %} ASCAI - Association of Cameroonian Students in Lazio, Italy</p>
+        </div>
+    </footer>
+
+    <!-- HTMX Library -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

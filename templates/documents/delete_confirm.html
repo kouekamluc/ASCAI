@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete Document" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="document-delete">
+    <h1>{% trans "Delete Document" %}</h1>
+
+    <div class="delete-warning">
+        <p>{% trans "Are you sure you want to delete this document?" %}</p>
+        <div class="document-preview">
+            <h3>{{ document.title }}</h3>
+            <p class="document-meta">
+                {% trans "File" %}: {{ document.get_file_type }} 
+                ({{ document.file_size|filesizeformat }})
+                <br>
+                {% trans "Uploaded" %}: {{ document.created_at|date:"F d, Y" }}
+            </p>
+        </div>
+        <p class="warning-text">
+            <strong>{% trans "Warning" %}:</strong> 
+            {% trans "This action cannot be undone. All versions of this document will be permanently deleted." %}
+        </p>
+    </div>
+
+    <form method="post" class="delete-form">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
+            <a href="{% url 'documents:detail' document.pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+
+
+
+

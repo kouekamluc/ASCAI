@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Upload New Version" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="document-upload-version">
+    <h1>{% trans "Upload New Version" %}: {{ document.title }}</h1>
+
+    <div class="current-version-info">
+        <p><strong>{% trans "Current Version" %}:</strong> {{ document.version_number }}</p>
+        <p><strong>{% trans "Note" %}:</strong> {% trans "A new version will be automatically created." %}</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="document-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.file.id_for_label }}">{% trans "New File" %} *</label>
+            {{ form.file }}
+            {% if form.file.errors %}
+                <div class="form-errors">{{ form.file.errors }}</div>
+            {% endif %}
+            <small class="form-text">{% trans "Maximum file size: 50MB" %}</small>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.changelog.id_for_label }}">{% trans "Changelog" %}</label>
+            {{ form.changelog }}
+            {% if form.changelog.errors %}
+                <div class="form-errors">{{ form.changelog.errors }}</div>
+            {% endif %}
+            <small class="form-text">{% trans "Describe what changed in this version (optional)" %}</small>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% trans "Upload Version" %}</button>
+            <a href="{% url 'documents:detail' document.pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

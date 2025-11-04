@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Chat" %} - {{ other_user.full_name }} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="{% url 'messaging:chat_list' %}" style="text-decoration: none; color: inherit;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </a>
+            <div>
+                <h1 style="margin: 0; font-size: 1.25rem; font-weight: 600;">{{ other_user.full_name }}</h1>
+                <span id="user-status" style="font-size: 0.875rem; color: #666;">
+                    <span id="status-indicator" class="status-indicator"></span>
+                    <span id="status-text">{% trans "Checking..." %}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-messages" id="chat-messages">
+        {% for message in messages %}
+        <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+            <div class="message-content">
+                {{ message.content|linebreaks }}
+            </div>
+            <div class="message-time">{{ message.created_at|date:"H:i" }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="chat-input-container">
+        <div id="typing-indicator" class="typing-indicator" style="display: none;">
+            <span>{{ other_user.first_name }} {% trans "is typing..." %}</span>
+        </div>
+        <form id="message-form" class="chat-input-form">
+            {% csrf_token %}
+            <textarea id="message-input" name="content" rows="2" placeholder='{% trans "Type your message..." %}' required></textarea>
+            <button type="submit" class="send-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const conversationId = {{ conversation.id }};
+    const currentUserId = {{ user.id }};
+    const otherUserId = {{ other_user.id }};
+</script>
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load document_tags %}
+
+{% block title %}{% trans "Document Library" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="documents-list">
+    <div class="documents-header">
+        <h1>{% trans "Document Library" %}</h1>
+        <div class="header-actions">
+            {% if user.is_authenticated %}
+                {% if user.is_board_member %}
+                    <a href="{% url 'documents:tag_list' %}" class="btn btn-secondary">{% trans "Manage Tags" %}</a>
+                    <a href="{% url 'documents:folder_create' %}" class="btn btn-secondary">{% trans "New Folder" %}</a>
+                {% endif %}
+                <a href="{% url 'documents:upload' %}" class="btn btn-primary">{% trans "Upload Document" %}</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    {% if current_folder %}
+    <nav class="breadcrumbs">
+        <a href="{% url 'documents:list' %}">{% trans "Root" %}</a>
+        {% for folder in current_folder.get_breadcrumbs %}
+            {% if not forloop.last %}
+                <span> / </span>
+                <a href="{% url 'documents:list' %}?folder={{ folder.id }}">{{ folder.name }}</a>
+            {% else %}
+                <span> / </span>
+                <span>{{ folder.name }}</span>
+            {% endif %}
+        {% endfor %}
+    </nav>
+    {% endif %}
+
+    <!-- Filters and Search -->
+    <div class="documents-filters">
+        <form method="get" 
+              class="filter-form"
+              hx-get="{% url 'documents:list' %}"
+              hx-target="#documents-content"
+              hx-trigger="change delay:300ms, submit"
+              hx-select="#documents-content"
+              hx-push-url="true">
+            {% if current_folder %}
+                <input type="hidden" name="folder" value="{{ current_folder.id }}">
+            {% endif %}
+            <input type="text" name="search" placeholder="{% trans 'Search documents...' %}" 
+                   value="{{ search_query }}" class="search-input">
+            <select name="tag" class="filter-select">
+                <option value="">{% trans "All Tags" %}</option>
+                {% for tag in tags %}
+                    <option value="{{ tag.id }}" {% if tag_id == tag.id|stringformat:"s" %}selected{% endif %}>
+                        {{ tag.name }} ({{ tag.document_count }})
+                    </option>
+                {% endfor %}
+            </select>
+            <select name="file_type" class="filter-select">
+                <option value="">{% trans "All File Types" %}</option>
+                <option value="pdf" {% if file_type == "pdf" %}selected{% endif %}>PDF</option>
+                <option value="doc" {% if file_type == "doc" %}selected{% endif %}>Word</option>
+                <option value="docx" {% if file_type == "docx" %}selected{% endif %}>Word (DOCX)</option>
+                <option value="xls" {% if file_type == "xls" %}selected{% endif %}>Excel</option>
+                <option value="xlsx" {% if file_type == "xlsx" %}selected{% endif %}>Excel (XLSX)</option>
+                <option value="txt" {% if file_type == "txt" %}selected{% endif %}>Text</option>
+            </select>
+            <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
+            {% if search_query or tag_id or file_type %}
+                <a href="{% url 'documents:list' %}{% if current_folder %}?folder={{ current_folder.id }}{% endif %}" 
+                   class="btn btn-secondary">{% trans "Clear" %}</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Folder Tree (Sidebar) -->
+    <div class="documents-layout">
+        <div class="folders-sidebar">
+            <h3>{% trans "Folders" %}</h3>
+            <ul class="folder-tree">
+                <li>
+                    <a href="{% url 'documents:list' %}" 
+                       class="{% if not current_folder %}active{% endif %}"
+                       hx-get="{% url 'documents:list' %}"
+                       hx-target="#documents-content"
+                       hx-select="#documents-content"
+                       hx-push-url="true">
+                        {% trans "Root" %}
+                    </a>
+                </li>
+                {% for folder in folders %}
+                    {% if not folder.parent %}
+                        {% include "documents/folder_item.html" %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Documents Grid -->
+        <div id="documents-content">
+            <div class="documents-grid">
+            {% for document in page_obj %}
+            <div class="document-card">
+                <div class="document-icon">
+                    <span class="file-type-icon">{{ document.get_file_type|slice:":1" }}</span>
+                </div>
+                <div class="document-info">
+                    <h3><a href="{% url 'documents:detail' document.pk %}">{{ document.title }}</a></h3>
+                    {% if document.description %}
+                        <p class="document-description">{{ document.description|truncatewords:15 }}</p>
+                    {% endif %}
+                    <div class="document-meta">
+                        <span class="file-type">{{ document.get_file_type }}</span>
+                        <span class="file-size">
+                            {% if document.file_size %}
+                                {{ document.file_size|filesizeformat }}
+                            {% endif %}
+                        </span>
+                        <span class="file-date">{{ document.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    {% if document.tags.all %}
+                        <div class="document-tags">
+                            {% for tag in document.tags.all %}
+                                <span class="tag" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="document-actions">
+                        <a href="{% url 'documents:detail' document.pk %}" class="btn btn-sm">{% trans "View" %}</a>
+                        {% if document|can_download:user %}
+                            <a href="{% url 'documents:download' document.pk %}" class="btn btn-sm btn-primary">{% trans "Download" %}</a>
+                        {% endif %}
+                    </div>
+                    <div class="document-stats">
+                        <span>v{{ document.version_number }}</span>
+                        <span>{{ document.download_count }} {% trans "downloads" %}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-documents">
+                <p>{% trans "No documents found." %}</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'documents:upload' %}" class="btn btn-primary">{% trans "Upload First Document" %}</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if current_folder %}&folder={{ current_folder.id }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if tag_id %}&tag={{ tag_id }}{% endif %}{% if file_type %}&file_type={{ file_type }}{% endif %}" 
+                       class="btn btn-sm"
+                       hx-get="?page={{ page_obj.previous_page_number }}{% if current_folder %}&folder={{ current_folder.id }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if tag_id %}&tag={{ tag_id }}{% endif %}{% if file_type %}&file_type={{ file_type }}{% endif %}"
+                       hx-target="#documents-content"
+                       hx-select="#documents-content"
+                       hx-push-url="true">{% trans "Previous" %}</a>
+                {% endif %}
+                <span class="page-info">
+                    {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if current_folder %}&folder={{ current_folder.id }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if tag_id %}&tag={{ tag_id }}{% endif %}{% if file_type %}&file_type={{ file_type }}{% endif %}" 
+                       class="btn btn-sm"
+                       hx-get="?page={{ page_obj.next_page_number }}{% if current_folder %}&folder={{ current_folder.id }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if tag_id %}&tag={{ tag_id }}{% endif %}{% if file_type %}&file_type={{ file_type }}{% endif %}"
+                       hx-target="#documents-content"
+                       hx-select="#documents-content"
+                       hx-push-url="true">{% trans "Next" %}</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

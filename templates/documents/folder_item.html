@@ -1,0 +1,21 @@
+{% load i18n %}
+<li class="folder-item">
+    <a href="{% url 'documents:list' %}?folder={{ folder.id }}" 
+       class="{% if current_folder and current_folder.id == folder.id %}active{% endif %}"
+       hx-get="{% url 'documents:list' %}?folder={{ folder.id }}"
+       hx-target="#documents-content"
+       hx-select="#documents-content"
+       hx-push-url="true">
+        {{ folder.name }}
+    </a>
+    {% if folder.children.all %}
+        <ul class="folder-children">
+            {% for child in folder.children.all %}
+                {% with folder=child %}
+                    {% include "documents/folder_item.html" %}
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>
+

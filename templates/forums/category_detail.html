@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ category.name }} - {% trans "Forum" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="forum-category">
+    <div class="forum-header">
+        <div>
+            <h1>{{ category.name }}</h1>
+            {% if category.description %}
+            <p style="margin-top: 0.5rem; color: #5f6368; font-size: 0.9375rem;">{{ category.description }}</p>
+            {% endif %}
+        </div>
+        <div class="header-actions">
+            {% if user.is_authenticated and can_post %}
+                <a href="{% url 'forums:thread_create' category.slug %}" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    {% trans "New Thread" %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Thread List -->
+    <div id="threads-content">
+        <div class="threads-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>{% trans "Thread" %}</th>
+                    <th>{% trans "Author" %}</th>
+                    <th>{% trans "Replies" %}</th>
+                    <th>{% trans "Views" %}</th>
+                    <th>{% trans "Last Activity" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for thread in page_obj %}
+                <tr {% if thread.is_pinned %}class="pinned"{% endif %}>
+                    <td class="thread-title">
+                        <div class="thread-link">
+                            {% if thread.is_pinned %}<span class="badge" title="Pinned">📌</span>{% endif %}
+                            {% if thread.is_locked %}<span class="badge" title="Locked">🔒</span>{% endif %}
+                            <a href="{% url 'forums:thread_detail' thread.slug %}">{{ thread.title }}</a>
+                        </div>
+                    </td>
+                    <td style="color: #5f6368; font-weight: 500;">{{ thread.author.full_name }}</td>
+                    <td style="color: #5f6368; font-weight: 500;">{{ thread.reply_count }}</td>
+                    <td style="color: #5f6368; font-weight: 500;">{{ thread.view_count }}</td>
+                    <td style="color: #80868b; font-size: 0.875rem;">{{ thread.last_activity|timesince }} ago</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">{% trans "No threads yet." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid rgba(0, 0, 0, 0.08);">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.previous_page_number }}"
+                   hx-target="#threads-content"
+                   hx-select="#threads-content"
+                   hx-push-url="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.375rem;">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    {% trans "Previous" %}
+                </a>
+            {% endif %}
+            <span class="page-info">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.next_page_number }}"
+                   hx-target="#threads-content"
+                   hx-select="#threads-content"
+                   hx-push-url="true">
+                    {% trans "Next" %}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-left: 0.375rem;">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

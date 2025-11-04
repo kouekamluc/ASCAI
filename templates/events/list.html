@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Events" %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="events-list">
+    <div class="events-header">
+        <h1>{% trans "Events" %}</h1>
+        <div class="events-actions">
+            <a href="{% url 'events:calendar' %}" class="btn btn-secondary">{% trans "Calendar View" %}</a>
+            {% if user.is_board_member %}
+                <a href="{% url 'events:category_list' %}" class="btn btn-secondary">{% trans "Manage Categories" %}</a>
+                <a href="{% url 'events:create' %}" class="btn btn-primary">{% trans "Create Event" %}</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="events-filters">
+        <form method="get" 
+              class="filter-form"
+              hx-get="{% url 'events:list' %}"
+              hx-target="#events-content"
+              hx-trigger="change delay:300ms, submit"
+              hx-select="#events-content"
+              hx-push-url="true">
+            <input type="text" name="search" placeholder="{% trans 'Search events...' %}" 
+                   value="{{ filter_form.search.value|default:'' }}" class="search-input">
+            
+            <select name="category" class="filter-select">
+                <option value="">{% trans "All Categories" %}</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if filter_form.category.value|stringformat:"s" == category.id|stringformat:"s" %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            
+            <select name="time" class="filter-select">
+                <option value="upcoming" {% if time_filter == "upcoming" %}selected{% endif %}>{% trans "Upcoming" %}</option>
+                <option value="past" {% if time_filter == "past" %}selected{% endif %}>{% trans "Past" %}</option>
+                <option value="all" {% if time_filter == "all" %}selected{% endif %}>{% trans "All" %}</option>
+            </select>
+            
+            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+            <a href="{% url 'events:list' %}" class="btn btn-secondary">{% trans "Clear" %}</a>
+        </form>
+    </div>
+    
+    <!-- Events Grid -->
+    <div id="events-content">
+        <div class="events-grid">
+        {% for event in page_obj %}
+        <article class="event-card">
+            {% if event.featured_image %}
+                <div class="event-image">
+                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}">
+                </div>
+            {% endif %}
+            <div class="event-content">
+                <div class="event-meta">
+                    {% if event.category %}
+                        <span class="category-badge" style="background-color: {{ event.category.color }};">
+                            {{ event.category.name }}
+                        </span>
+                    {% endif %}
+                    <span class="event-date">
+                        {{ event.start_date|date:"F d, Y" }}
+                    </span>
+                </div>
+                <h2><a href="{% url 'events:detail' event.slug %}">{{ event.title }}</a></h2>
+                <div class="event-info">
+                    <p class="event-location">📍 {{ event.location }}</p>
+                    <p class="event-time">{{ event.start_date|date:"g:i A" }} - {{ event.end_date|date:"g:i A" }}</p>
+                    {% if event.is_registration_required %}
+                        <p class="event-capacity">
+                            {% if event.spaces_available is not None %}
+                                {% if event.is_full %}
+                                    <span class="text-danger">{% trans "Full" %}</span>
+                                    {% if event.waitlist_count > 0 %}
+                                        ({{ event.waitlist_count }} {% trans "on waitlist" %})
+                                    {% endif %}
+                                {% else %}
+                                    {{ event.spaces_available }} {% trans "spaces available" %}
+                                {% endif %}
+                            {% else %}
+                                {% trans "Unlimited capacity" %}
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </div>
+                {% if user.is_board_member and event.organizer == user %}
+                    <div class="event-actions">
+                        <a href="{% url 'events:edit' event.slug %}" class="btn btn-sm">{% trans "Edit" %}</a>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+        {% empty %}
+        <p class="no-events">{% trans "No events found." %}</p>
+        {% endfor %}
+    </div>
+    
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.time %}&time={{ request.GET.time }}{% endif %}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.time %}&time={{ request.GET.time }}{% endif %}"
+                   hx-target="#events-content"
+                   hx-select="#events-content"
+                   hx-push-url="true">{% trans "Previous" %}</a>
+            {% endif %}
+            <span class="page-info">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.time %}&time={{ request.GET.time }}{% endif %}" 
+                   class="btn btn-sm"
+                   hx-get="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.time %}&time={{ request.GET.time }}{% endif %}"
+                   hx-target="#events-content"
+                   hx-select="#events-content"
+                   hx-push-url="true">{% trans "Next" %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

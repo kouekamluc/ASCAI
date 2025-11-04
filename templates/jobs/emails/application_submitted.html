@@ -1,0 +1,30 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Application Submitted" %}</title>
+</head>
+<body>
+    <h2>{% trans "Application Submitted Successfully" %}</h2>
+    <p>{% trans "Hello" %} {{ applicant.full_name }},</p>
+    <p>{% trans "Thank you for applying to the following position:" %}</p>
+    
+    <div style="background-color: #f5f5f5; padding: 15px; margin: 20px 0;">
+        <h3>{{ job.title }}</h3>
+        <p><strong>{% trans "Company" %}:</strong> {{ job.company_name }}</p>
+        <p><strong>{% trans "Location" %}:</strong> {{ job.location }}</p>
+    </div>
+    
+    <p>{% trans "Your application has been received and is being reviewed." %}</p>
+    <p>{% trans "We will notify you when there are any updates to your application status." %}</p>
+    
+    <p>{% trans "Best regards," %}<br>{% trans "ASCAI Team" %}</p>
+</body>
+</html>
+
+
+
+
+
+

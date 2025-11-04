@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Messages" %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 1rem;
+        height: calc(100vh - 200px);
+        max-height: 800px;
+    }
+    
+    .conversations-sidebar {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+    }
+    
+    .conversation-item {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    
+    .conversation-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .conversation-item.active {
+        background: rgba(27, 94, 32, 0.1);
+        border-left: 3px solid var(--primary-green);
+    }
+    
+    .chat-main {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .online-users {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    
+    .online-indicator {
+        width: 8px;
+        height: 8px;
+        background: #4caf50;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="conversations-sidebar">
+        <h2 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.25rem; font-weight: 600;">{% trans "Conversations" %}</h2>
+        
+        {% for conversation in conversations %}
+        <a href="{% url 'messaging:chat_detail' conversation.id %}" style="text-decoration: none; color: inherit;">
+            <div class="conversation-item {% if request.resolver_match.url_name == 'chat_detail' and request.resolver_match.kwargs.conversation_id == conversation.id|stringformat:"s" %}active{% endif %}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>{{ conversation.other_participant.full_name }}</strong>
+                        {% if conversation.last_message %}
+                        <p style="margin: 0.25rem 0 0 0; color: #666; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            {{ conversation.last_message.content|truncatewords:10 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% if conversation.unread_count > 0 %}
+                    <span style="background: var(--primary-green); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                        {{ conversation.unread_count }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p style="color: #666; text-align: center; padding: 2rem 0;">{% trans "No conversations yet." %}</p>
+        {% endfor %}
+        
+        <div class="online-users">
+            <h3 style="font-size: 1rem; margin-bottom: 1rem;">{% trans "Online Users" %}</h3>
+            {% for user in online_users %}
+            <div style="padding: 0.5rem 0; display: flex; align-items: center;">
+                <span class="online-indicator"></span>
+                <a href="{% url 'messaging:start_conversation' user.id %}" style="text-decoration: none; color: inherit;">
+                    {{ user.full_name }}
+                </a>
+            </div>
+            {% empty %}
+            <p style="color: #666; font-size: 0.875rem;">{% trans "No users online" %}</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="chat-main">
+        <div style="text-align: center; color: #666; padding: 4rem 2rem;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.3; margin: 0 auto 1rem;">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <p>{% trans "Select a conversation to start chatting" %}</p>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}
+

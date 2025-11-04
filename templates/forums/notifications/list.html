@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Notifications" %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+{% endblock %}
+
+{% block content %}
+<div class="notifications-list">
+    <h1>{% trans "My Notifications" %}</h1>
+    
+    <div class="notifications">
+        {% for notification in page_obj %}
+        <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+            <div class="notification-content">
+                <p>{{ notification.message }}</p>
+                <span class="notification-date">{{ notification.created_at|timesince }} ago</span>
+            </div>
+            <div class="notification-actions">
+                {% if not notification.is_read %}
+                <form method="post" action="{% url 'forums:notification_mark_read' notification.pk %}" hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm">{% trans "Mark as Read" %}</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+            <p>{% trans "No notifications." %}</p>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm">{% trans "Previous" %}</a>
+        {% endif %}
+        <span class="page-info">
+            {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm">{% trans "Next" %}</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+
+
+
+

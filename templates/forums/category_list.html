@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Forum" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="forum-list">
+    <div class="forum-header">
+        <div>
+            <h1>{% trans "Forum Categories" %}</h1>
+            <p style="margin-top: 0.5rem; color: #5f6368; font-size: 0.9375rem;">{% trans "Join discussions and share your thoughts" %}</p>
+        </div>
+    </div>
+    
+    <div class="categories-grid">
+        {% for category in categories %}
+            <div class="category-card">
+                {% if category.icon %}
+                    <div class="category-icon">
+                        <i class="{{ category.icon }}"></i>
+                    </div>
+                {% endif %}
+                <div class="category-content">
+                    <h2><a href="{% url 'forums:category_detail' category.slug %}">{{ category.name }}</a></h2>
+                    {% if category.description %}
+                        <p class="category-description">{{ category.description|truncatewords:25 }}</p>
+                    {% endif %}
+                    <div class="category-stats">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 0.25rem;">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            {{ category.get_thread_count }} {% trans "threads" %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+        <div class="empty-state">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 1.5rem; opacity: 0.3;">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <p>{% trans "No categories available yet." %}</p>
+            {% if user.is_admin or user.is_board_member %}
+            <p><a href="/admin/forums/category/add/" class="btn btn-primary">{% trans "Create a Category" %}</a></p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
