@@ -125,25 +125,74 @@ class JobApplicationForm(forms.ModelForm):
         }
 
     def clean_resume(self):
-        """Validate resume file type and size."""
+        """Validate resume file type and size with enhanced security checks."""
+        import os
+        import re
+        import mimetypes
+        
         resume = self.cleaned_data.get("resume")
         if not resume:
             raise ValidationError(_("Resume is required."))
 
+        # Sanitize filename
+        original_filename = resume.name
+        resume.name = os.path.basename(resume.name)
+        resume.name = re.sub(r'[<>:"|?*\\/]', '_', resume.name)
+        resume.name = resume.name.strip('. ')
+        if len(resume.name) > 255:
+            name, ext = os.path.splitext(resume.name)
+            resume.name = name[:255 - len(ext)] + ext
+
         # Check file extension
         allowed_extensions = [".pdf", ".doc", ".docx"]
+        allowed_mimes = {
+            ".pdf": ["application/pdf"],
+            ".doc": ["application/msword"],
+            ".docx": ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+        }
+        
         file_name = resume.name.lower()
-        if not any(file_name.endswith(ext) for ext in allowed_extensions):
+        file_ext = None
+        for ext in allowed_extensions:
+            if file_name.endswith(ext):
+                file_ext = ext
+                break
+
+        if not file_ext:
             raise ValidationError(
                 _("Only PDF, DOC, and DOCX files are allowed.")
             )
 
-        # Check file size (10MB max from settings)
+        # Check file size (10MB max)
         max_size = 10 * 1024 * 1024  # 10MB
         if resume.size > max_size:
             raise ValidationError(
                 _("File size cannot exceed 10MB.")
             )
+
+        # Validate MIME type
+        resume.seek(0)
+        detected_mime, _ = mimetypes.guess_type(resume.name)
+        if detected_mime:
+            allowed_mimes_list = allowed_mimes.get(file_ext, [])
+            if allowed_mimes_list and detected_mime not in allowed_mimes_list:
+                raise ValidationError(
+                    _(
+                        "File MIME type '%(mime)s' does not match file extension. "
+                        "This may indicate a security issue."
+                    )
+                    % {"mime": detected_mime}
+                )
+
+        # Content validation
+        resume.seek(0)
+        file_header = resume.read(1024)
+        resume.seek(0)
+
+        if file_ext == ".pdf" and not file_header.startswith(b"%PDF"):
+            raise ValidationError(_("File does not appear to be a valid PDF."))
+        elif file_ext in [".docx"] and not file_header.startswith(b"PK"):
+            raise ValidationError(_("File does not appear to be a valid DOCX document."))
 
         return resume
 

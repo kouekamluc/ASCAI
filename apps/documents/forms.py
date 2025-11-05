@@ -2,6 +2,10 @@
 Forms for documents app.
 """
 
+import os
+import re
+import mimetypes
+import hashlib
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -36,7 +40,127 @@ ALLOWED_FILE_EXTENSIONS = [
     ".odp",
 ]
 
+# MIME type mapping for validation
+ALLOWED_MIME_TYPES = {
+    ".pdf": ["application/pdf"],
+    ".doc": ["application/msword"],
+    ".docx": ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+    ".xls": ["application/vnd.ms-excel"],
+    ".xlsx": ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+    ".ppt": ["application/vnd.ms-powerpoint"],
+    ".pptx": ["application/vnd.openxmlformats-officedocument.presentationml.presentation"],
+    ".txt": ["text/plain"],
+    ".zip": ["application/zip"],
+    ".rar": ["application/x-rar-compressed", "application/vnd.rar"],
+    ".jpg": ["image/jpeg"],
+    ".jpeg": ["image/jpeg"],
+    ".png": ["image/png"],
+    ".gif": ["image/gif"],
+    ".csv": ["text/csv", "application/csv"],
+    ".rtf": ["application/rtf", "text/rtf"],
+    ".odt": ["application/vnd.oasis.opendocument.text"],
+    ".ods": ["application/vnd.oasis.opendocument.spreadsheet"],
+    ".odp": ["application/vnd.oasis.opendocument.presentation"],
+}
+
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+
+
+def sanitize_filename(filename):
+    """Sanitize filename to prevent path traversal and remove dangerous characters."""
+    # Remove path components
+    filename = os.path.basename(filename)
+    # Remove or replace dangerous characters
+    filename = re.sub(r'[<>:"|?*\\/]', '_', filename)
+    # Remove leading/trailing dots and spaces
+    filename = filename.strip('. ')
+    # Limit length
+    if len(filename) > 255:
+        name, ext = os.path.splitext(filename)
+        filename = name[:255 - len(ext)] + ext
+    return filename
+
+
+def get_file_hash(file):
+    """Calculate SHA-256 hash of file content."""
+    hash_sha256 = hashlib.sha256()
+    file.seek(0)  # Reset to beginning
+    for chunk in file.chunks():
+        hash_sha256.update(chunk)
+    file.seek(0)  # Reset again
+    return hash_sha256.hexdigest()
+
+
+def validate_uploaded_file(file):
+    """Comprehensive file validation with security checks."""
+    if not file:
+        raise ValidationError(_("Please select a file to upload."))
+
+    # Sanitize filename
+    original_filename = file.name
+    file.name = sanitize_filename(file.name)
+    if file.name != original_filename:
+        # Log filename change for security
+        import logging
+        logger = logging.getLogger("security")
+        logger.warning(f"Filename sanitized: {original_filename} -> {file.name}")
+
+    # Check file extension
+    file_name = file.name.lower()
+    file_ext = None
+    for ext in ALLOWED_FILE_EXTENSIONS:
+        if file_name.endswith(ext):
+            file_ext = ext
+            break
+
+    if not file_ext:
+        raise ValidationError(
+            _(
+                "File type not allowed. Allowed types: %(types)s"
+                % {"types": ", ".join(ALLOWED_FILE_EXTENSIONS)}
+            )
+        )
+
+    # Check file size
+    if hasattr(file, "size") and file.size > MAX_FILE_SIZE:
+        raise ValidationError(
+            _("File size exceeds maximum allowed size of %(size)sMB")
+            % {"size": MAX_FILE_SIZE // (1024 * 1024)}
+        )
+
+    # Validate MIME type
+    file.seek(0)  # Reset to beginning
+    detected_mime, _ = mimetypes.guess_type(file.name)
+    if detected_mime:
+        allowed_mimes = ALLOWED_MIME_TYPES.get(file_ext, [])
+        if allowed_mimes and detected_mime not in allowed_mimes:
+            raise ValidationError(
+                _(
+                    "File MIME type '%(mime)s' does not match file extension. "
+                    "This may indicate a security issue."
+                )
+                % {"mime": detected_mime}
+            )
+
+    # Additional validation: check file content header
+    file.seek(0)
+    file_header = file.read(1024)  # Read first 1KB
+    file.seek(0)
+
+    # Basic content validation for common file types
+    if file_ext == ".pdf" and not file_header.startswith(b"%PDF"):
+        raise ValidationError(_("File does not appear to be a valid PDF."))
+    elif file_ext in [".jpg", ".jpeg"] and not file_header.startswith(b"\xff\xd8\xff"):
+        raise ValidationError(_("File does not appear to be a valid JPEG image."))
+    elif file_ext == ".png" and not file_header.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValidationError(_("File does not appear to be a valid PNG image."))
+    elif file_ext == ".gif" and not file_header.startswith(b"GIF87a") and not file_header.startswith(b"GIF89a"):
+        raise ValidationError(_("File does not appear to be a valid GIF image."))
+    elif file_ext in [".zip", ".docx", ".xlsx", ".pptx"] and not file_header.startswith(b"PK"):
+        # These are ZIP-based formats
+        raise ValidationError(_("File does not appear to be a valid archive format."))
+
+    return file
 
 
 class DocumentUploadForm(forms.ModelForm):
@@ -108,35 +232,9 @@ class DocumentUploadForm(forms.ModelForm):
         self.fields["folder"].required = False
 
     def clean_file(self):
-        """Validate uploaded file."""
+        """Validate uploaded file with enhanced security checks."""
         file = self.cleaned_data.get("file")
-        if not file:
-            raise ValidationError(_("Please select a file to upload."))
-
-        # Check file extension
-        file_name = file.name.lower()
-        file_ext = None
-        for ext in ALLOWED_FILE_EXTENSIONS:
-            if file_name.endswith(ext):
-                file_ext = ext
-                break
-
-        if not file_ext:
-            raise ValidationError(
-                _(
-                    "File type not allowed. Allowed types: %(types)s"
-                    % {"types": ", ".join(ALLOWED_FILE_EXTENSIONS)}
-                )
-            )
-
-        # Check file size
-        if hasattr(file, "size") and file.size > MAX_FILE_SIZE:
-            raise ValidationError(
-                _("File size exceeds maximum allowed size of %(size)sMB")
-                % {"size": MAX_FILE_SIZE // (1024 * 1024)}
-            )
-
-        return file
+        return validate_uploaded_file(file)
 
 
 class DocumentEditForm(forms.ModelForm):
@@ -227,35 +325,9 @@ class DocumentVersionUploadForm(forms.Form):
     )
 
     def clean_file(self):
-        """Validate uploaded file."""
+        """Validate uploaded file with enhanced security checks."""
         file = self.cleaned_data.get("file")
-        if not file:
-            raise ValidationError(_("Please select a file to upload."))
-
-        # Check file extension
-        file_name = file.name.lower()
-        file_ext = None
-        for ext in ALLOWED_FILE_EXTENSIONS:
-            if file_name.endswith(ext):
-                file_ext = ext
-                break
-
-        if not file_ext:
-            raise ValidationError(
-                _(
-                    "File type not allowed. Allowed types: %(types)s"
-                    % {"types": ", ".join(ALLOWED_FILE_EXTENSIONS)}
-                )
-            )
-
-        # Check file size
-        if hasattr(file, "size") and file.size > MAX_FILE_SIZE:
-            raise ValidationError(
-                _("File size exceeds maximum allowed size of %(size)sMB")
-                % {"size": MAX_FILE_SIZE // (1024 * 1024)}
-            )
-
-        return file
+        return validate_uploaded_file(file)
 
 
 class FolderForm(forms.ModelForm):

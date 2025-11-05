@@ -97,6 +97,8 @@ class Event(models.Model):
             models.Index(fields=["category"]),
             models.Index(fields=["visibility"]),
             models.Index(fields=["is_published"]),
+            models.Index(fields=["is_published", "start_date"]),
+            models.Index(fields=["is_published", "created_at"]),
         ]
     
     def __str__(self):

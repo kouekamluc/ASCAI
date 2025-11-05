@@ -388,7 +388,7 @@ def application_list(request):
         messages.error(request, _("Permission denied."))
         return redirect("members:directory")
     
-    applications = MemberApplication.objects.select_related("user", "reviewed_by").all()
+    applications = MemberApplication.objects.select_related("user", "reviewed_by").prefetch_related("user__profile").all()
     
     # Filter by status
     status_filter = request.GET.get("status", "")

@@ -123,6 +123,8 @@ class Thread(models.Model):
             models.Index(fields=["-last_activity"]),
             models.Index(fields=["category"]),
             models.Index(fields=["author"]),
+            models.Index(fields=["category", "is_approved", "-last_activity"]),
+            models.Index(fields=["is_approved", "-created_at"]),
         ]
     
     def __str__(self):

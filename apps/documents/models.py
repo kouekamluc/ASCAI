@@ -205,6 +205,8 @@ class Document(models.Model):
             models.Index(fields=["uploader", "-created_at"]),
             models.Index(fields=["title"]),
             models.Index(fields=["is_published"]),
+            models.Index(fields=["is_published", "created_at"]),
+            models.Index(fields=["is_published", "folder"]),
         ]
 
     def __str__(self):

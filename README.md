@@ -105,10 +105,21 @@ Modern, responsive, mobile-first design.
 
 ## 📚 Documentation
 
+### Getting Started
 - [README.md](README.md) - This file
 - [QUICKSTART.md](QUICKSTART.md) - Getting started guide
 - [SETUP_COMPLETE.md](SETUP_COMPLETE.md) - Setup confirmation
+- [GETTING_STARTED.md](GETTING_STARTED.md) - Step-by-step guide
+
+### Visual Documentation 📊
+- **[VISUAL_DOCUMENTATION.md](VISUAL_DOCUMENTATION.md)** - Complete visual architecture guide with diagrams
+- **[VISUAL_QUICK_REFERENCE.md](VISUAL_QUICK_REFERENCE.md)** - Quick visual reference guide
+- **[USER_JOURNEY_MAPS.md](USER_JOURNEY_MAPS.md)** - User journey maps and personas
+- **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - Complete documentation index
+
+### Project Status
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) - Detailed status
+- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) - Project summary
 - [FINAL_SUMMARY.md](FINAL_SUMMARY.md) - Implementation summary
 
 ## 🔐 Security

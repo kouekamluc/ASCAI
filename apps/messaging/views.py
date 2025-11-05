@@ -22,18 +22,25 @@ def admin_or_board_check(user):
 @login_required
 def chat_list(request):
     """List all conversations for the current user."""
+    from django.core.paginator import Paginator
+    
     conversations = Conversation.objects.filter(
         participants=request.user
-    ).annotate(
+    ).select_related().prefetch_related('participants', 'messages').annotate(
         unread_count=Count('messages', filter=Q(messages__is_read=False) & ~Q(messages__sender=request.user))
     ).order_by('-updated_at')
     
+    # Pagination
+    paginator = Paginator(conversations, 20)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    
     # Add other participant to each conversation
-    for conversation in conversations:
+    for conversation in page_obj:
         conversation.other_participant = conversation.get_other_participant(request.user)
     
     # Get online users
-    online_users = UserPresence.get_online_users().exclude(user=request.user)
+    online_users = UserPresence.get_online_users().select_related('user').exclude(user=request.user)
     
     # Check if a conversation should be auto-loaded (from URL parameter or direct access)
     conversation_id = request.GET.get('conversation', None)
@@ -48,7 +55,7 @@ def chat_list(request):
             pass
     
     context = {
-        'conversations': conversations,
+        'page_obj': page_obj,
         'online_users': [presence.user for presence in online_users],
         'initial_conversation_id': conversation_id if initial_conversation else None,
     }

@@ -10,13 +10,15 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.utils import timezone
 from django.utils.text import slugify
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from .models import NewsPost, NewsCategory
 from .forms import NewsPostForm, NewsCategoryForm
 
 
 def news_list(request):
     """List all published news posts."""
-    posts = NewsPost.objects.filter(is_published=True)
+    posts = NewsPost.objects.filter(is_published=True).select_related('author', 'category')
     
     # Filter by visibility
     if request.user.is_authenticated:

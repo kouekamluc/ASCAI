@@ -76,7 +76,7 @@ def category_detail(request, slug):
         return redirect("forums:category_list")
     
     # Get threads
-    threads = Thread.objects.filter(category=category, is_approved=True)
+    threads = Thread.objects.filter(category=category, is_approved=True).select_related('author', 'category').prefetch_related('replies', 'replies__author')
     
     # Filter by pinned/unpinned
     sort_by = request.GET.get("sort", "recent")

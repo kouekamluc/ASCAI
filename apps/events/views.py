@@ -13,14 +13,23 @@ from django.utils import timezone
 from django.http import JsonResponse, HttpResponse
 from django.db import transaction
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import cache_page
 from django.utils.text import slugify
+from django.core.cache import cache
 from .models import Event, EventCategory, EventRegistration, EventReminder
 from .forms import EventForm, RegistrationForm, EventFilterForm, EventCategoryForm
 
 
 def event_list(request):
     """List all published events."""
-    events = Event.objects.filter(is_published=True)
+    # Use cache for categories list (not user-specific)
+    cache_key = 'event_categories_list'
+    categories = cache.get(cache_key)
+    if categories is None:
+        categories = list(EventCategory.objects.all())
+        cache.set(cache_key, categories, 60 * 15)  # Cache for 15 minutes
+    
+    events = Event.objects.filter(is_published=True).select_related('category', 'organizer')
     
     # Filter by visibility
     if request.user.is_authenticated:
@@ -77,7 +86,7 @@ def event_list(request):
     context = {
         "page_obj": page_obj,
         "filter_form": filter_form,
-        "categories": EventCategory.objects.all(),
+        "categories": categories,
         "time_filter": time_filter,
     }
     

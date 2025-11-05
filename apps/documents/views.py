@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import FileResponse, Http404, HttpResponse
 from django.conf import settings
+from django.core.cache import cache
 import os
 
 from .models import (
@@ -108,7 +109,7 @@ def document_list(request):
             pass
 
     # Base queryset - only published documents accessible to user
-    documents = Document.objects.filter(is_published=True)
+    documents = Document.objects.filter(is_published=True).select_related('uploader', 'folder').prefetch_related('tags')
 
     # Filter by folder
     if current_folder:
@@ -188,10 +189,14 @@ def document_list(request):
         if folder.can_access(request.user):
             accessible_folders.append(folder)
 
-    # Get all tags
-    tags = DocumentTag.objects.annotate(
-        document_count=Count("documents")
-    ).order_by("name")
+    # Get all tags (cache this queryset)
+    cache_key = 'document_tags_list'
+    tags = cache.get(cache_key)
+    if tags is None:
+        tags = list(DocumentTag.objects.annotate(
+            document_count=Count("documents")
+        ).order_by("name"))
+        cache.set(cache_key, tags, 60 * 15)  # Cache for 15 minutes
 
     context = {
         "page_obj": page_obj,

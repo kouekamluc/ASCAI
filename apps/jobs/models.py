@@ -66,6 +66,7 @@ class JobPosting(models.Model):
             models.Index(fields=["job_type"]),
             models.Index(fields=["location"]),
             models.Index(fields=["is_active"]),
+            models.Index(fields=["is_active", "posted_at"]),
         ]
 
     def __str__(self):

@@ -98,6 +98,8 @@ class NewsPost(models.Model):
             models.Index(fields=["-published_at"]),
             models.Index(fields=["category"]),
             models.Index(fields=["visibility"]),
+            models.Index(fields=["is_published", "created_at"]),
+            models.Index(fields=["is_published", "visibility"]),
         ]
     
     def __str__(self):

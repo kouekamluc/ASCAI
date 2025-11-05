@@ -4,35 +4,108 @@ Django settings for ASCAI platform.
 
 from pathlib import Path
 import os
+import warnings
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Try to load environment variables from .env file if python-decouple is available
+try:
+    from decouple import config, Csv
+    USE_DECOUPLE = True
+except ImportError:
+    USE_DECOUPLE = False
+    Csv = None
+    warnings.warn(
+        "python-decouple not installed. Install it with: pip install python-decouple"
+    )
+
+def get_env_config(key, default=None, cast=None):
+    """Get configuration from .env file or environment variables."""
+    if USE_DECOUPLE:
+        try:
+            if cast:
+                return config(key, default=default, cast=cast)
+            return config(key, default=default)
+        except Exception as e:
+            if default is None:
+                raise ValueError(
+                    f"Required environment variable {key} is not set. "
+                    f"Please set it in your .env file. Error: {str(e)}"
+                )
+            return default
+    # Fallback to os.environ if decouple is not available
+    value = os.environ.get(key)
+    if value is None:
+        if default is None:
+            raise ValueError(
+                f"Required environment variable {key} is not set. "
+                f"Please set it in your .env file or environment variables."
+            )
+        return default
+    if cast:
+        # Handle Csv cast specially
+        if cast == Csv or (hasattr(cast, '__name__') and cast.__name__ == 'Csv'):
+            if USE_DECOUPLE and Csv is not None:
+                return config(key, default=default, cast=Csv)
+            else:
+                # Fallback for Csv if decouple not available
+                return [v.strip() for v in value.split(",") if v.strip()]
+        return cast(value)
+    return value
+
 # Environment detection
-DJANGO_ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", "development").lower()
+DJANGO_ENVIRONMENT = get_env_config("DJANGO_ENVIRONMENT", "development").lower()
 IS_PRODUCTION = DJANGO_ENVIRONMENT == "production"
 IS_DEVELOPMENT = not IS_PRODUCTION
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-if not SECRET_KEY:
-    if IS_PRODUCTION:
-        raise ValueError("SECRET_KEY environment variable must be set in production!")
-    # Only allow default in development
-    SECRET_KEY = "django-insecure-630ws57esm5mxwje2zhcmj_0%)w7^1tzdbnik_z+%z=@=x%%6#"
+# Load from .env file - SECRET_KEY is required in production
+if IS_PRODUCTION:
+    SECRET_KEY = get_env_config("SECRET_KEY")  # Required, no default
+else:
+    SECRET_KEY = get_env_config("SECRET_KEY", "django-insecure-630ws57esm5mxwje2zhcmj_0%)w7^1tzdbnik_z+%z=@=x%%6#")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False" if IS_PRODUCTION else "True").lower() == "true"
+DEBUG = get_env_config("DEBUG", "False" if IS_PRODUCTION else "True", cast=lambda v: v.lower() == "true")
 
-# Parse ALLOWED_HOSTS from environment or use defaults
-ALLOWED_HOSTS_ENV = os.environ.get("ALLOWED_HOSTS", "")
-if ALLOWED_HOSTS_ENV:
-    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(",")]
-else:
+# Parse ALLOWED_HOSTS from .env file
+# Ensure it's always a list
+if USE_DECOUPLE and Csv is not None:
+    # Use python-decouple's Csv cast
     if IS_PRODUCTION:
-        raise ValueError("ALLOWED_HOSTS environment variable must be set in production!")
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+        try:
+            hosts_value = config("ALLOWED_HOSTS", cast=Csv)
+        except Exception:
+            raise ValueError("ALLOWED_HOSTS must be set in .env file for production")
+    else:
+        hosts_value = config("ALLOWED_HOSTS", default="localhost,127.0.0.1,0.0.0.0", cast=Csv)
+    
+    # Csv cast should return a list, but ensure it's actually a list
+    if isinstance(hosts_value, list):
+        ALLOWED_HOSTS = [h.strip() for h in hosts_value if h.strip()]
+    elif isinstance(hosts_value, str):
+        ALLOWED_HOSTS = [h.strip() for h in hosts_value.split(",") if h.strip()]
+    else:
+        # Fallback if Csv returns something unexpected
+        ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"] if IS_DEVELOPMENT else []
+else:
+    # Fallback when python-decouple is not available
+    if IS_PRODUCTION:
+        hosts_str = get_env_config("ALLOWED_HOSTS")
+        ALLOWED_HOSTS = [h.strip() for h in hosts_str.split(",") if h.strip()]
+    else:
+        hosts_str = get_env_config("ALLOWED_HOSTS", "localhost,127.0.0.1,0.0.0.0")
+        ALLOWED_HOSTS = [h.strip() for h in hosts_str.split(",") if h.strip()]
+
+# Final safety check - ensure ALLOWED_HOSTS is always a list
+if not isinstance(ALLOWED_HOSTS, (list, tuple)):
+    if isinstance(ALLOWED_HOSTS, str):
+        ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS.split(",") if h.strip()]
+    else:
+        # If it's not a list, tuple, or string, use default
+        ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"] if IS_DEVELOPMENT else []
 
 # Application definition
 INSTALLED_APPS = [
@@ -111,30 +184,10 @@ ASGI_APPLICATION = "config.asgi.application"
 # 2. Edit .env and set DB_PASSWORD=your_postgres_password
 # 3. Also set DB_NAME, DB_USER, DB_HOST, DB_PORT if different from defaults
 
-# Try to load environment variables from .env file if python-decouple is available
-try:
-    from decouple import config
-    USE_DECOUPLE = True
-except ImportError:
-    USE_DECOUPLE = False
-
-def get_db_config(key, default=None, cast=None):
-    """Get database configuration with fallback to environment variables."""
-    if USE_DECOUPLE:
-        try:
-            return config(key, default=default, cast=cast)
-        except Exception:
-            return default
-    value = os.environ.get(key)
-    if value is None:
-        return default
-    if cast:
-        return cast(value)
-    return value
 
 # Channels configuration (Redis)
 # In production, use environment variable for Redis URL
-REDIS_URL = get_db_config("REDIS_URL", "redis://127.0.0.1:6379/0")
+REDIS_URL = get_env_config("REDIS_URL", "redis://127.0.0.1:6379/0")
 if IS_PRODUCTION and ("localhost" in REDIS_URL or "127.0.0.1" in REDIS_URL):
     import warnings
     warnings.warn(
@@ -175,19 +228,39 @@ CHANNEL_LAYERS = {
     },
 }
 
-# Get database configuration
-# Default values match your PostgreSQL setup
-DB_NAME = get_db_config("DB_NAME", "ASCAI")
-DB_USER = get_db_config("DB_USER", "postgres")
-DB_PASSWORD = get_db_config("DB_PASSWORD", "kouekam")
-DB_HOST = get_db_config("DB_HOST", "localhost")
-DB_PORT = get_db_config("DB_PORT", "5432", cast=int)
+# Cache configuration (Redis)
+# Use different Redis database for caching (db 1 instead of 0 for channels)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+        "KEY_PREFIX": "ascai",
+        "TIMEOUT": 300,  # Default 5 minutes
+    }
+}
 
-# Require database password in production
-if IS_PRODUCTION and not DB_PASSWORD:
+# Get database configuration from .env file
+# All values should be set in .env file
+DB_NAME = get_env_config("DB_NAME", "ASCAI")
+DB_USER = get_env_config("DB_USER", "postgres")
+DB_PASSWORD = get_env_config("DB_PASSWORD")  # No default - must be set in .env
+DB_HOST = get_env_config("DB_HOST", "localhost")
+DB_PORT = get_env_config("DB_PORT", "5432", cast=int)
+
+# Require database password in all environments
+if not DB_PASSWORD:
     raise ValueError(
-        "DB_PASSWORD environment variable must be set in production! "
-        "Database credentials cannot be hardcoded."
+        "DB_PASSWORD environment variable must be set! "
+        "Database credentials cannot be hardcoded. "
+        "Set DB_PASSWORD in your .env file or environment variables."
+    )
+
+# Warn if default password is detected (security check)
+if DB_PASSWORD == "kouekam":
+    warnings.warn(
+        "WARNING: Default database password detected! "
+        "Please change DB_PASSWORD in your environment variables for security.",
+        UserWarning
     )
 
 # Determine SSL mode based on environment
@@ -197,12 +270,12 @@ if IS_PRODUCTION:
     default_sslmode = "require"
     # In production, prefer verify-full for maximum security (requires CA certificate)
     # Fall back to require if verify-full is not configured
-    sslmode = get_db_config("DB_SSLMODE", "require")
+    sslmode = get_env_config("DB_SSLMODE", "require")
     if sslmode not in ["require", "verify-ca", "verify-full"]:
         sslmode = "require"
 else:
     default_sslmode = "prefer"
-    sslmode = get_db_config("DB_SSLMODE", "prefer")
+    sslmode = get_env_config("DB_SSLMODE", "prefer")
 
 DATABASES = {
     "default": {
@@ -224,7 +297,7 @@ DATABASES = {
         "AUTOCOMMIT": True,
         # PostgreSQL connection test settings
         "TEST": {
-            "NAME": get_db_config("TEST_DB_NAME", "test_ASCAI"),
+            "NAME": get_env_config("TEST_DB_NAME", "test_ASCAI"),
             "CHARSET": "UTF8",
         },
     }
@@ -331,9 +404,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Site ID for django.contrib.sites
 SITE_ID = 1
 
-# Email backend
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@ascai.it")
+# Email backend - load from .env
+EMAIL_BACKEND = get_env_config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+DEFAULT_FROM_EMAIL = get_env_config("DEFAULT_FROM_EMAIL", "noreply@ascai.it")
+
+# Additional email settings from .env (optional)
+EMAIL_HOST = get_env_config("EMAIL_HOST", None)
+EMAIL_PORT = get_env_config("EMAIL_PORT", None, cast=int)
+EMAIL_USE_TLS = get_env_config("EMAIL_USE_TLS", None, cast=lambda v: v.lower() == "true" if v else None)
+EMAIL_HOST_USER = get_env_config("EMAIL_HOST_USER", None)
+EMAIL_HOST_PASSWORD = get_env_config("EMAIL_HOST_PASSWORD", None)
 
 # File Upload Settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
@@ -384,6 +464,97 @@ CKEDITOR_CONFIGS = {
         "height": 300,
         "width": "100%",
         "disableNativeSpellChecker": False,
+    },
+}
+
+# Logging Configuration - load from .env
+LOG_LEVEL = get_env_config("DJANGO_LOG_LEVEL", "INFO" if IS_PRODUCTION else "DEBUG")
+
+# Ensure logs directory exists
+LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {asctime} {message}",
+            "style": "{",
+        },
+        "security": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+    },
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": LOG_LEVEL,
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGS_DIR / "django.log",
+            "maxBytes": 1024 * 1024 * 10,  # 10MB
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+        "security_file": {
+            "level": "WARNING",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGS_DIR / "security.log",
+            "maxBytes": 1024 * 1024 * 10,  # 10MB
+            "backupCount": 10,  # Keep more security logs
+            "formatter": "security",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "class": "django.utils.log.AdminEmailHandler",
+            "filters": ["require_debug_false"],
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"],
+        "level": LOG_LEVEL,
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["file", "mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["security_file", "mail_admins"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "security": {
+            "handlers": ["security_file", "console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "apps.accounts": {
+            "handlers": ["file", "security_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 

@@ -10,6 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.utils import timezone
 from django.utils.text import slugify
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from .models import JobPosting, JobApplication
 from .forms import JobPostingForm, JobApplicationForm
 from .utils import (
@@ -21,7 +23,7 @@ from .utils import (
 
 def job_list(request):
     """List all active job postings with filtering and search."""
-    jobs = JobPosting.objects.filter(is_active=True)
+    jobs = JobPosting.objects.filter(is_active=True).select_related('posted_by')
 
     # Filter by job type
     job_type = request.GET.get("job_type")

@@ -18,6 +18,11 @@ urlpatterns = [
         views.activate_account,
         name="activate",
     ),
+    path(
+        "resend-verification/",
+        views.resend_verification_email,
+        name="resend_verification",
+    ),
 ]
 
 
