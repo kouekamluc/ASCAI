@@ -1,12 +1,17 @@
 <div class="notification-item read">
     <div class="notification-content">
         <p>{{ notification.message }}</p>
-        <span class="notification-date">{{ notification.created_at|timesince }} ago</span>
+        <span class="notification-date">{% blocktrans with time=notification.created_at|timesince %}{{ time }} ago{% endblocktrans %}</span>
     </div>
     <div class="notification-actions">
         <span class="badge">{% trans "Read" %}</span>
     </div>
 </div>
+
+
+
+
+
 
 
 

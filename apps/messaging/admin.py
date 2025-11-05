@@ -16,8 +16,8 @@ class ConversationAdmin(admin.ModelAdmin):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'conversation', 'sender', 'content_preview', 'is_read', 'created_at')
-    list_filter = ('is_read', 'created_at', 'conversation')
+    list_display = ('id', 'conversation', 'sender', 'content_preview', 'is_read', 'is_admin_message', 'created_at')
+    list_filter = ('is_read', 'is_admin_message', 'created_at', 'conversation')
     search_fields = ('content', 'sender__email', 'sender__first_name', 'sender__last_name')
     readonly_fields = ('created_at',)
 
@@ -31,6 +31,11 @@ class UserPresenceAdmin(admin.ModelAdmin):
     list_display = ('user', 'is_online', 'last_seen')
     list_filter = ('is_online', 'last_seen')
     search_fields = ('user__email', 'user__first_name', 'user__last_name')
+
+
+
+
+
 
 
 

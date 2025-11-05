@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Profile" %} - {{ user.full_name }} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="member-profile-edit">
+    <div class="profile-edit-header">
+        <h1>{% trans "Edit Member Profile" %}</h1>
+        <p class="subtitle">{% trans "Update your member profile information" %}</p>
+        <a href="{% url 'members:profile' user.id %}" class="btn btn-secondary">{% trans "Back to Profile" %}</a>
+    </div>
+    
+    <form method="post" class="profile-edit-form">
+        {% csrf_token %}
+        
+        {% if profile_form.errors or admin_form.errors %}
+        <div class="alert alert-error">
+            <h3>{% trans "Please correct the errors below" %}:</h3>
+            {% if profile_form.errors %}
+                {{ profile_form.errors }}
+            {% endif %}
+            {% if admin_form and admin_form.errors %}
+                {{ admin_form.errors }}
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Academic Information Section -->
+        <div class="form-section">
+            <h2>{% trans "Academic Information" %}</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ profile_form.university.id_for_label }}">
+                        {{ profile_form.university.label }}
+                    </label>
+                    {{ profile_form.university }}
+                    {% if profile_form.university.help_text %}
+                        <small class="form-help">{{ profile_form.university.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.university.errors %}
+                        <div class="form-error">{{ profile_form.university.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ profile_form.course.id_for_label }}">
+                        {{ profile_form.course.label }}
+                    </label>
+                    {{ profile_form.course }}
+                    {% if profile_form.course.help_text %}
+                        <small class="form-help">{{ profile_form.course.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.course.errors %}
+                        <div class="form-error">{{ profile_form.course.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ profile_form.year_of_study.id_for_label }}">
+                        {{ profile_form.year_of_study.label }}
+                    </label>
+                    {{ profile_form.year_of_study }}
+                    {% if profile_form.year_of_study.help_text %}
+                        <small class="form-help">{{ profile_form.year_of_study.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.year_of_study.errors %}
+                        <div class="form-error">{{ profile_form.year_of_study.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ profile_form.graduation_year.id_for_label }}">
+                        {{ profile_form.graduation_year.label }}
+                    </label>
+                    {{ profile_form.graduation_year }}
+                    {% if profile_form.graduation_year.help_text %}
+                        <small class="form-help">{{ profile_form.graduation_year.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.graduation_year.errors %}
+                        <div class="form-error">{{ profile_form.graduation_year.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h2>{% trans "Personal Information" %}</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ profile_form.city.id_for_label }}">
+                        {{ profile_form.city.label }}
+                    </label>
+                    {{ profile_form.city }}
+                    {% if profile_form.city.help_text %}
+                        <small class="form-help">{{ profile_form.city.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.city.errors %}
+                        <div class="form-error">{{ profile_form.city.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ profile_form.country_of_origin.id_for_label }}">
+                        {{ profile_form.country_of_origin.label }}
+                    </label>
+                    {{ profile_form.country_of_origin }}
+                    {% if profile_form.country_of_origin.help_text %}
+                        <small class="form-help">{{ profile_form.country_of_origin.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.country_of_origin.errors %}
+                        <div class="form-error">{{ profile_form.country_of_origin.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ profile_form.date_of_birth.id_for_label }}">
+                        {{ profile_form.date_of_birth.label }}
+                    </label>
+                    {{ profile_form.date_of_birth }}
+                    {% if profile_form.date_of_birth.help_text %}
+                        <small class="form-help">{{ profile_form.date_of_birth.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.date_of_birth.errors %}
+                        <div class="form-error">{{ profile_form.date_of_birth.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Links Section -->
+        <div class="form-section">
+            <h2>{% trans "Links" %}</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ profile_form.linkedin.id_for_label }}">
+                        {{ profile_form.linkedin.label }}
+                    </label>
+                    {{ profile_form.linkedin }}
+                    {% if profile_form.linkedin.help_text %}
+                        <small class="form-help">{{ profile_form.linkedin.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.linkedin.errors %}
+                        <div class="form-error">{{ profile_form.linkedin.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ profile_form.website.id_for_label }}">
+                        {{ profile_form.website.label }}
+                    </label>
+                    {{ profile_form.website }}
+                    {% if profile_form.website.help_text %}
+                        <small class="form-help">{{ profile_form.website.help_text }}</small>
+                    {% endif %}
+                    {% if profile_form.website.errors %}
+                        <div class="form-error">{{ profile_form.website.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Privacy Settings Section -->
+        <div class="form-section">
+            <h2>{% trans "Privacy Settings" %}</h2>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    {{ profile_form.profile_public }}
+                    <label for="{{ profile_form.profile_public.id_for_label }}">
+                        {{ profile_form.profile_public.label }}
+                    </label>
+                </div>
+                {% if profile_form.profile_public.help_text %}
+                    <small class="form-help">{{ profile_form.profile_public.help_text }}</small>
+                {% endif %}
+                {% if profile_form.profile_public.errors %}
+                    <div class="form-error">{{ profile_form.profile_public.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    {{ profile_form.email_public }}
+                    <label for="{{ profile_form.email_public.id_for_label }}">
+                        {{ profile_form.email_public.label }}
+                    </label>
+                </div>
+                {% if profile_form.email_public.help_text %}
+                    <small class="form-help">{{ profile_form.email_public.help_text }}</small>
+                {% endif %}
+                {% if profile_form.email_public.errors %}
+                    <div class="form-error">{{ profile_form.email_public.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Admin/Board Only Section -->
+        {% if is_admin_or_board and admin_form %}
+        <div class="form-section admin-section">
+            <h2>{% trans "Membership Management" %} <span class="admin-badge">{% trans "Admin Only" %}</span></h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ admin_form.membership_number.id_for_label }}">
+                        {{ admin_form.membership_number.label }}
+                    </label>
+                    {{ admin_form.membership_number }}
+                    {% if admin_form.membership_number.help_text %}
+                        <small class="form-help">{{ admin_form.membership_number.help_text }}</small>
+                    {% endif %}
+                    {% if admin_form.membership_number.errors %}
+                        <div class="form-error">{{ admin_form.membership_number.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ admin_form.status.id_for_label }}">
+                        {{ admin_form.status.label }}
+                    </label>
+                    {{ admin_form.status }}
+                    {% if admin_form.status.help_text %}
+                        <small class="form-help">{{ admin_form.status.help_text }}</small>
+                    {% endif %}
+                    {% if admin_form.status.errors %}
+                        <div class="form-error">{{ admin_form.status.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ admin_form.category.id_for_label }}">
+                        {{ admin_form.category.label }}
+                    </label>
+                    {{ admin_form.category }}
+                    {% if admin_form.category.help_text %}
+                        <small class="form-help">{{ admin_form.category.help_text }}</small>
+                    {% endif %}
+                    {% if admin_form.category.errors %}
+                        <div class="form-error">{{ admin_form.category.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ admin_form.membership_expiry.id_for_label }}">
+                        {{ admin_form.membership_expiry.label }}
+                    </label>
+                    {{ admin_form.membership_expiry }}
+                    {% if admin_form.membership_expiry.help_text %}
+                        <small class="form-help">{{ admin_form.membership_expiry.help_text }}</small>
+                    {% endif %}
+                    {% if admin_form.membership_expiry.errors %}
+                        <div class="form-error">{{ admin_form.membership_expiry.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        {{ admin_form.is_verified }}
+                        <label for="{{ admin_form.is_verified.id_for_label }}">
+                            {{ admin_form.is_verified.label }}
+                        </label>
+                    </div>
+                    {% if admin_form.is_verified.help_text %}
+                        <small class="form-help">{{ admin_form.is_verified.help_text }}</small>
+                    {% endif %}
+                    {% if admin_form.is_verified.errors %}
+                        <div class="form-error">{{ admin_form.is_verified.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+            <a href="{% url 'members:profile' user.id %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,66 +1,177 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Messages" %} - ASCAI{% endblock %}
+{% block page_title %}{% trans "Messages" %}{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
 <style>
-    .chat-container {
-        display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 1rem;
-        height: calc(100vh - 200px);
-        max-height: 800px;
-    }
-    
-    .conversations-sidebar {
-        background: white;
-        border-radius: 12px;
-        padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        overflow-y: auto;
-    }
-    
-    .conversation-item {
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-        cursor: pointer;
-        transition: background 0.2s;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    }
-    
-    .conversation-item:hover {
-        background: #f8f9fa;
-    }
-    
-    .conversation-item.active {
-        background: rgba(27, 94, 32, 0.1);
-        border-left: 3px solid var(--primary-green);
-    }
-    
-    .chat-main {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    .main-content {
+        padding: 1rem !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        height: calc(100vh - 140px); /* Account for top bar (~60px), padding, and footer */
         display: flex;
         flex-direction: column;
     }
     
+    .chat-container {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 0;
+        height: 100%;
+        background: #f0f2f5;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .conversations-sidebar {
+        background: white;
+        border-right: 1px solid #e4e6eb;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .conversations-sidebar h2 {
+        padding: 1rem;
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        background: #075e54;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    
+    .conversation-item {
+        padding: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-bottom: 1px solid #f0f2f5;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .conversation-item:hover {
+        background: #f5f6f6;
+    }
+    
+    .conversation-item.active {
+        background: #e9edef;
+        border-left: 3px solid #075e54;
+    }
+    
+    .conversation-item > div {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .conversation-item strong {
+        display: block;
+        font-size: 1rem;
+        color: #111b21;
+        margin-bottom: 0.25rem;
+    }
+    
+    .conversation-item p {
+        margin: 0;
+        color: #667781;
+        font-size: 0.875rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .chat-main {
+        background: #f0f2f5;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .chat-main > .chat-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: #e5ddd5;
+        background-image: 
+            repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,.03) 10px, rgba(0,0,0,.03) 20px);
+    }
+    
     .online-users {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        margin-top: auto;
+        padding: 1rem;
+        border-top: 1px solid #e4e6eb;
+        background: #f0f2f5;
+    }
+    
+    .online-users h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #667781;
+        margin: 0 0 0.75rem 0;
+        text-transform: uppercase;
     }
     
     .online-indicator {
         width: 8px;
         height: 8px;
-        background: #4caf50;
+        background: #53bdeb;
         border-radius: 50%;
         display: inline-block;
         margin-right: 0.5rem;
+    }
+    
+    .online-users a {
+        display: block;
+        padding: 0.5rem;
+        color: #111b21;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+    
+    .online-users a:hover {
+        background: #e4e6eb;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .main-content {
+            padding: 0.5rem !important;
+            height: calc(100vh - 120px);
+        }
+        
+        .chat-container {
+            grid-template-columns: 1fr;
+            border-radius: 4px;
+        }
+        
+        .conversations-sidebar {
+            display: none;
+        }
+        
+        .chat-container.show-conversations .conversations-sidebar {
+            display: flex;
+        }
+        
+        .chat-container.show-conversations .chat-main {
+            display: none;
+        }
+        
+        .chat-main {
+            height: 100%;
+        }
     }
 </style>
 {% endblock %}
@@ -68,49 +179,33 @@
 {% block content %}
 <div class="chat-container">
     <div class="conversations-sidebar">
-        <h2 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.25rem; font-weight: 600;">{% trans "Conversations" %}</h2>
+        <h2>{% trans "Conversations" %}</h2>
         
-        {% for conversation in conversations %}
-        <a href="{% url 'messaging:chat_detail' conversation.id %}" style="text-decoration: none; color: inherit;">
-            <div class="conversation-item {% if request.resolver_match.url_name == 'chat_detail' and request.resolver_match.kwargs.conversation_id == conversation.id|stringformat:"s" %}active{% endif %}">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <strong>{{ conversation.other_participant.full_name }}</strong>
-                        {% if conversation.last_message %}
-                        <p style="margin: 0.25rem 0 0 0; color: #666; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                            {{ conversation.last_message.content|truncatewords:10 }}
-                        </p>
-                        {% endif %}
-                    </div>
-                    {% if conversation.unread_count > 0 %}
-                    <span style="background: var(--primary-green); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
-                        {{ conversation.unread_count }}
-                    </span>
-                    {% endif %}
-                </div>
-            </div>
-        </a>
-        {% empty %}
-        <p style="color: #666; text-align: center; padding: 2rem 0;">{% trans "No conversations yet." %}</p>
-        {% endfor %}
+        <!-- Conversations list with HTMX polling -->
+        <div id="conversations-list"
+             hx-get="{% url 'messaging:chat_list' %}"
+             hx-trigger="every 3s"
+             hx-target="#conversations-list"
+             hx-swap="innerHTML">
+            {% include 'messaging/partials/conversations_list.html' %}
+        </div>
         
         <div class="online-users">
-            <h3 style="font-size: 1rem; margin-bottom: 1rem;">{% trans "Online Users" %}</h3>
-            {% for user in online_users %}
-            <div style="padding: 0.5rem 0; display: flex; align-items: center;">
-                <span class="online-indicator"></span>
-                <a href="{% url 'messaging:start_conversation' user.id %}" style="text-decoration: none; color: inherit;">
-                    {{ user.full_name }}
-                </a>
+            <h3 style="font-size: 0.875rem; font-weight: 600; color: #667781; margin: 0 0 0.75rem 0; text-transform: uppercase; padding: 0 1rem;">{% trans "Online Users" %}</h3>
+            <!-- Online users with HTMX polling -->
+            <div id="online-users-list"
+                 hx-get="{% url 'messaging:online_users' %}"
+                 hx-trigger="every 5s"
+                 hx-target="#online-users-list"
+                 hx-swap="innerHTML"
+                 style="padding: 0 1rem; max-height: 200px; overflow-y: auto;">
+                {% include 'messaging/partials/online_users.html' %}
             </div>
-            {% empty %}
-            <p style="color: #666; font-size: 0.875rem;">{% trans "No users online" %}</p>
-            {% endfor %}
         </div>
     </div>
     
-    <div class="chat-main">
-        <div style="text-align: center; color: #666; padding: 4rem 2rem;">
+    <div id="chat-main" class="chat-main">
+        <div style="text-align: center; color: #666; padding: 4rem 2rem; margin: auto;">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.3; margin: 0 auto 1rem;">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
@@ -119,6 +214,93 @@
     </div>
 </div>
 
-<script src="{% static 'js/chat.js' %}"></script>
+<script>
+(function() {
+    'use strict';
+    
+    // Make updateActiveConversation available globally
+    window.updateActiveConversation = function(conversationId) {
+        // Remove active class from all conversation items
+        document.querySelectorAll('.conversation-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Add active class to clicked conversation
+        const activeItem = document.querySelector(`.conversation-item[data-conv-id="${conversationId}"]`);
+        if (activeItem) {
+            activeItem.classList.add('active');
+        }
+    };
+    
+    // Set active state on page load based on URL
+    function setActiveFromURL() {
+        const pathParts = window.location.pathname.split('/');
+        const conversationIdIndex = pathParts.indexOf('conversation');
+        
+        if (conversationIdIndex !== -1 && pathParts[conversationIdIndex + 1]) {
+            const convId = pathParts[conversationIdIndex + 1].replace('/', '');
+            if (convId) {
+                setTimeout(() => window.updateActiveConversation(convId), 100);
+            }
+        }
+    }
+    
+    // Initialize on page load
+    setActiveFromURL();
+    
+    // Auto-load conversation if provided in URL parameter
+    {% if initial_conversation_id %}
+    (function() {
+        const conversationId = {{ initial_conversation_id }};
+        setTimeout(() => {
+            const chatMain = document.getElementById('chat-main');
+            if (chatMain) {
+                fetch(`/messaging/conversation/${conversationId}/`, {
+                    headers: {
+                        'HX-Request': 'true'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    chatMain.innerHTML = html;
+                    // Update active conversation
+                    if (typeof updateActiveConversation === 'function') {
+                        updateActiveConversation(conversationId);
+                    }
+                    // Update URL without reload
+                    window.history.pushState({}, '', `/messaging/conversation/${conversationId}/`);
+                })
+                .catch(error => {
+                    console.error('Error loading conversation:', error);
+                });
+            }
+        }, 100);
+    })();
+    {% endif %}
+    
+    // Also set when URL changes (HTMX push-url)
+    window.addEventListener('popstate', setActiveFromURL);
+    
+    // Handle HTMX after swap to update active state
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        // If conversations list was updated, re-set active state
+        if (event.detail.target.id === 'conversations-list') {
+            setActiveFromURL();
+        }
+        
+        // If chat main was swapped, update active conversation
+        if (event.detail.target.id === 'chat-main') {
+            const pathParts = window.location.pathname.split('/');
+            const conversationIdIndex = pathParts.indexOf('conversation');
+            if (conversationIdIndex !== -1 && pathParts[conversationIdIndex + 1]) {
+                const convId = pathParts[conversationIdIndex + 1].replace('/', '');
+                if (convId) {
+                    setTimeout(() => window.updateActiveConversation(convId), 100);
+                }
+            }
+        }
+    });
+})();
+</script>
 {% endblock %}
 

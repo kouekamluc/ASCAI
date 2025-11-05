@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Member Applications" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="application-list-page">
+    <h1>{% trans "Member Applications" %}</h1>
+    
+    <form method="get" class="filter-form">
+        <select name="status" class="filter-select">
+            <option value="">{% trans "All Statuses" %}</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+    </form>
+    
+    <div class="applications-table">
+        {% if page_obj %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Applicant" %}</th>
+                        <th>{% trans "Application Date" %}</th>
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Reviewed By" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in page_obj %}
+                    <tr>
+                        <td>
+                            <strong>{{ application.user.full_name }}</strong><br>
+                            <small>{{ application.user.email }}</small>
+                        </td>
+                        <td>{{ application.application_date|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="status-badge status-{{ application.status }}">
+                                {{ application.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if application.reviewed_by %}
+                                {{ application.reviewed_by.full_name }}
+                            {% else %}
+                                <span class="text-muted">{% trans "-" %}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'members:review_application' application.id %}" class="btn btn-sm btn-primary">
+                                {% trans "Review" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm">{% trans "Previous" %}</a>
+                {% endif %}
+                <span class="page-info">
+                    {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm">{% trans "Next" %}</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+            <p>{% trans "No applications found." %}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

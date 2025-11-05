@@ -61,7 +61,9 @@
                 {% endif %}
                 <div class="post-footer">
                     <span class="post-author">{% trans "By" %} {{ post.author.full_name }}</span>
-                    <span class="post-views">{{ post.views_count }} {% trans "views" %}</span>
+                    <span class="post-views">
+                        {% blocktrans count count=post.views_count %}{{ count }} view{% plural %}{{ count }} views{% endblocktrans %}
+                    </span>
                 </div>
                 {% if user.is_board_member and post.author == user %}
                     <div class="post-actions">

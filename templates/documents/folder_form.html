@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans action %} {% trans "Folder" %} - ASCAI{% endblock %}
+{% block title %}{{ action }} {% trans "Folder" %} - ASCAI{% endblock %}
 
 {% block content %}
 <div class="folder-form">
-    <h1>{% trans action %} {% trans "Folder" %}</h1>
+    <h1>{{ action }} {% trans "Folder" %}</h1>
 
     <form method="post" class="folder-form-form">
         {% csrf_token %}
@@ -60,6 +60,11 @@
     </form>
 </div>
 {% endblock %}
+
+
+
+
+
 
 
 

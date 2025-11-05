@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Admin Messaging" %} - ASCAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-messaging-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .messaging-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .messaging-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        color: var(--color-text-primary);
+    }
+    
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.875rem;
+        color: var(--color-text-tertiary);
+        font-weight: 500;
+    }
+    
+    .stat-card .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin: 0;
+    }
+    
+    .message-form-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+    
+    .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 400;
+        cursor: pointer;
+        padding: 0.75rem;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+    
+    .radio-group label:hover {
+        background: var(--color-gray-100);
+    }
+    
+    .radio-group input[type="radio"] {
+        margin: 0;
+    }
+    
+    .user-checkboxes {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid var(--color-gray-300);
+        border-radius: 4px;
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .user-checkboxes label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 400;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+    
+    .user-checkboxes label:hover {
+        background: var(--color-gray-100);
+    }
+    
+    .user-search {
+        margin-bottom: 1rem;
+    }
+    
+    .user-search input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--color-gray-300);
+        border-radius: 4px;
+        font-size: 0.9375rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--color-gray-300);
+        border-radius: 4px;
+        font-size: 0.9375rem;
+        font-family: inherit;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+        min-height: 200px;
+    }
+    
+    .form-help {
+        font-size: 0.875rem;
+        color: var(--color-text-tertiary);
+        margin-top: 0.25rem;
+    }
+    
+    .btn-send {
+        background: var(--primary-green);
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .btn-send:hover {
+        background: #155a19;
+    }
+    
+    .btn-send:disabled {
+        background: var(--color-gray-400);
+        cursor: not-allowed;
+    }
+    
+    .recent-messages {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .recent-messages h2 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .message-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--color-gray-200);
+    }
+    
+    .message-item:last-child {
+        border-bottom: none;
+    }
+    
+    .message-item .message-preview {
+        color: var(--color-text-secondary);
+        margin: 0.5rem 0;
+        font-size: 0.875rem;
+    }
+    
+    .message-item .message-date {
+        color: var(--color-text-tertiary);
+        font-size: 0.75rem;
+    }
+    
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-messaging-container">
+    <div class="messaging-header">
+        <h1>{% trans "Admin Messaging" %}</h1>
+        <a href="{% url 'dashboard:admin' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="stats-cards">
+        <div class="stat-card">
+            <h3>{% trans "Total Users" %}</h3>
+            <p class="value">{{ total_users }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>{% trans "All Members" %}</h3>
+            <p class="value">{{ all_members_count }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>{% trans "Active Members" %}</h3>
+            <p class="value">{{ active_members_count }}</p>
+        </div>
+    </div>
+    
+    <!-- Message Form -->
+    <div class="message-form-container">
+        <h2>{% trans "Send Message" %}</h2>
+        <form method="post" id="adminMessageForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>{{ form.recipient_type.label }}</label>
+                {{ form.recipient_type }}
+                {% if form.recipient_type.errors %}
+                    <div class="error">{{ form.recipient_type.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group" id="selected-users-group" style="display: none;">
+                <label>{{ form.selected_users.label }}</label>
+                <div class="user-search">
+                    <input type="text" id="userSearch" placeholder="{% trans 'Search users...' %}" onkeyup="filterUsers()">
+                </div>
+                <div class="user-checkboxes" id="userCheckboxes">
+                    {% for user in form.selected_users %}
+                        <label>
+                            {{ user.tag }}
+                            <span>{{ user.choice_label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                {% if form.selected_users.help_text %}
+                    <div class="form-help">{{ form.selected_users.help_text }}</div>
+                {% endif %}
+                {% if form.selected_users.errors %}
+                    <div class="error">{{ form.selected_users.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label>{{ form.subject.label }}</label>
+                {{ form.subject }}
+                {% if form.subject.help_text %}
+                    <div class="form-help">{{ form.subject.help_text }}</div>
+                {% endif %}
+                {% if form.subject.errors %}
+                    <div class="error">{{ form.subject.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label>{{ form.content.label }}</label>
+                {{ form.content }}
+                {% if form.content.help_text %}
+                    <div class="form-help">{{ form.content.help_text }}</div>
+                {% endif %}
+                {% if form.content.errors %}
+                    <div class="error">{{ form.content.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn-send" id="sendButton">
+                {% trans "Send Message" %}
+            </button>
+        </form>
+    </div>
+    
+    <!-- Recent Messages -->
+    {% if recent_admin_messages %}
+    <div class="recent-messages">
+        <h2>{% trans "Recent Messages Sent" %}</h2>
+        {% for message in recent_admin_messages %}
+        <div class="message-item">
+            <strong>{% trans "To" %}: {{ message.conversation.get_other_participant|default:"User" }}</strong>
+            <div class="message-preview">{{ message.content|truncatewords:20 }}</div>
+            <div class="message-date">{{ message.created_at|date:"F d, Y H:i" }}</div>
+        </div>
+        {% empty %}
+        <p>{% trans "No messages sent yet." %}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const recipientTypeRadios = document.querySelectorAll('input[name="recipient_type"]');
+    const selectedUsersGroup = document.getElementById('selected-users-group');
+    
+    function toggleSelectedUsers() {
+        const selectedRadio = document.querySelector('input[name="recipient_type"]:checked');
+        if (selectedRadio && selectedRadio.value === 'selected') {
+            selectedUsersGroup.style.display = 'block';
+        } else {
+            selectedUsersGroup.style.display = 'none';
+        }
+    }
+    
+    recipientTypeRadios.forEach(radio => {
+        radio.addEventListener('change', toggleSelectedUsers);
+    });
+    
+    // Initialize on page load
+    toggleSelectedUsers();
+    
+    // Form submission handler
+    const form = document.getElementById('adminMessageForm');
+    const sendButton = document.getElementById('sendButton');
+    
+    form.addEventListener('submit', function(e) {
+        const selectedRadio = document.querySelector('input[name="recipient_type"]:checked');
+        if (selectedRadio && selectedRadio.value === 'selected') {
+            const checkedBoxes = document.querySelectorAll('#userCheckboxes input[type="checkbox"]:checked');
+            if (checkedBoxes.length === 0) {
+                e.preventDefault();
+                alert('{% trans "Please select at least one user." %}');
+                return false;
+            }
+        }
+        
+        sendButton.disabled = true;
+        sendButton.textContent = '{% trans "Sending..." %}';
+    });
+});
+
+function filterUsers() {
+    const searchInput = document.getElementById('userSearch');
+    const filter = searchInput.value.toLowerCase();
+    const labels = document.querySelectorAll('#userCheckboxes label');
+    
+    labels.forEach(label => {
+        const text = label.textContent.toLowerCase();
+        if (text.includes(filter)) {
+            label.style.display = 'flex';
+        } else {
+            label.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}
+

@@ -171,7 +171,7 @@
                     {% for event in event_stats.upcoming_list %}
                     <li>
                         <strong>{{ event.title }}</strong><br>
-                        <small>{{ event.start_date|date:"M d, Y" }} - {{ event.location|default:"TBA" }}</small>
+                        <small>{{ event.start_date|date:"M d, Y" }} - {% if event.location %}{{ event.location }}{% else %}{% trans "TBA" %}{% endif %}</small>
                     </li>
                     {% endfor %}
                 </ul>
@@ -284,7 +284,7 @@
                         {% for event in recent_activity.recent_events %}
                         <li>
                             <strong>{{ event.title }}</strong><br>
-                            <small>{% trans "By" %} {{ event.organizer.full_name|default:"Unknown" }} - {{ event.created_at|date:"M d, Y" }}</small>
+                            <small>{% trans "By" %} {% if event.organizer.full_name %}{{ event.organizer.full_name }}{% else %}{% trans "Unknown" %}{% endif %} - {{ event.created_at|date:"M d, Y" }}</small>
                         </li>
                         {% endfor %}
                     {% else %}
@@ -325,6 +325,19 @@
         </div>
     </div>
 
+    <!-- Admin Messaging Section -->
+    <div class="dashboard-section">
+        <h2>{% trans "Admin Communications" %}</h2>
+        <div class="reports-section">
+            <p>{% trans "Send messages to users, members, or selected recipients:" %}</p>
+            <div class="report-buttons">
+                <a href="{% url 'messaging:admin_messaging' %}" class="btn btn-primary">
+                    ✉️ {% trans "Send Messages to Users" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Reports Section -->
     <div class="dashboard-section">
         <h2>{% trans "Custom Reports" %}</h2>
@@ -346,6 +359,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
+    const i18n = {
+        by: '{% trans "By" %}',
+        unknown: '{% trans "Unknown" %}'
+    };
 // Store chart instances globally for updates
 let memberStatusChart = null;
 let memberCategoryChart = null;
@@ -618,7 +635,7 @@ function updateMetrics(data) {
     if (eventsList) {
         if (data.recent_activity.recent_events && data.recent_activity.recent_events.length > 0) {
             eventsList.innerHTML = data.recent_activity.recent_events.map(event => 
-                `<li><strong>${event.title}</strong><br><small>{% trans "By" %} ${event.organizer || 'Unknown'} - ${event.created_at}</small></li>`
+                `<li><strong>${event.title}</strong><br><small>${i18n.by || 'By'} ${event.organizer || i18n.unknown || 'Unknown'} - ${event.created_at}</small></li>`
             ).join('');
         } else {
             eventsList.innerHTML = '<li>{% trans "No recent events" %}</li>';

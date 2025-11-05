@@ -21,7 +21,9 @@
         <h1>{{ post.title }}</h1>
         <div class="post-author-info">
             <span>{% trans "By" %} {{ post.author.full_name }}</span>
-            <span class="post-views">{{ post.views_count }} {% trans "views" %}</span>
+            <span class="post-views">
+                {% blocktrans count count=post.views_count %}{{ count }} view{% plural %}{{ count }} views{% endblocktrans %}
+            </span>
         </div>
         {% if user.is_board_member and post.author == user %}
             <div class="post-actions">
@@ -63,6 +65,20 @@
     </div>
 </article>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

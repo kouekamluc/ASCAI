@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Payment Status" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="payment-status-page">
+    <div class="payment-header">
+        <h1>{% trans "Payment Status" %}</h1>
+    </div>
+    
+    <div class="payment-status-card">
+        <div class="status-header">
+            <h2>{% trans "Payment" %} #{{ payment.id }}</h2>
+            <span class="status-badge-large status-{{ payment.status }}">
+                {{ payment.get_status_display }}
+            </span>
+        </div>
+        
+        <div class="payment-details">
+            <div class="detail-row">
+                <strong>{% trans "Amount" %}:</strong>
+                <span>€{{ payment.amount }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>{% trans "Payment Type" %}:</strong>
+                <span>{{ payment.get_payment_type_display }}</span>
+            </div>
+            <div class="detail-row">
+                <strong>{% trans "Payment Method" %}:</strong>
+                <span>{{ payment.get_payment_method_display|default:payment.payment_method|default:"-" }}</span>
+            </div>
+            {% if payment.transaction_id %}
+            <div class="detail-row">
+                <strong>{% trans "Transaction ID" %}:</strong>
+                <span>{{ payment.transaction_id }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <strong>{% trans "Created" %}:</strong>
+                <span>{{ payment.created_at|date:"F d, Y H:i" }}</span>
+            </div>
+            {% if payment.paid_at %}
+            <div class="detail-row">
+                <strong>{% trans "Paid At" %}:</strong>
+                <span>{{ payment.paid_at|date:"F d, Y H:i" }}</span>
+            </div>
+            {% endif %}
+            {% if payment.member %}
+            <div class="detail-row">
+                <strong>{% trans "Member Status" %}:</strong>
+                <span class="status-badge status-{{ payment.member.status }}">
+                    {{ payment.member.get_status_display }}
+                </span>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if payment.notes %}
+        <div class="payment-notes">
+            <h3>{% trans "Notes" %}:</h3>
+            <p>{{ payment.notes|linebreaks }}</p>
+        </div>
+        {% endif %}
+        
+        {% if payment.status == "pending" %}
+        <div class="payment-actions">
+            <a href="{% url 'members:payment_confirmation' payment.id %}" class="btn btn-primary">
+                {% trans "Update Payment Info" %}
+            </a>
+            <a href="{% url 'members:pay_membership' %}" class="btn btn-secondary">
+                {% trans "Create New Payment" %}
+            </a>
+        </div>
+        {% elif payment.status == "completed" %}
+        <div class="alert alert-success">
+            <strong>{% trans "Payment Completed!" %}</strong>
+            {% if payment.member %}
+                <p>{% trans "Your membership has been activated. You can now access all member features." %}</p>
+                <a href="{% url 'members:profile' payment.user.id %}" class="btn btn-primary">{% trans "View My Profile" %}</a>
+            {% endif %}
+        </div>
+        {% elif payment.status == "failed" %}
+        <div class="alert alert-error">
+            <strong>{% trans "Payment Failed" %}</strong>
+            <p>{% trans "Your payment could not be processed. Please try again or contact support." %}</p>
+            <a href="{% url 'members:pay_membership' %}" class="btn btn-primary">{% trans "Try Again" %}</a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="back-link">
+        <a href="{% url 'members:payment_history' %}">{% trans "← Back to Payment History" %}</a>
+    </div>
+</div>
+{% endblock %}
+

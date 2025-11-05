@@ -102,8 +102,22 @@ class UserUpdateForm(forms.ModelForm):
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
             "phone": forms.TextInput(attrs={"class": "form-control"}),
             "profile_picture": forms.FileInput(attrs={"class": "form-control"}),
-            "bio": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
+            "bio": forms.Textarea(attrs={"class": "form-control", "rows": 6, "placeholder": ""}),
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

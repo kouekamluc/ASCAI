@@ -19,8 +19,8 @@
                 <p style="margin: 0.5rem 0;"><strong>{% trans "Location" %}:</strong> 📍 {{ job.location }}</p>
             </div>
             <div class="job-stats">
-                <span>👁️ {{ job.views_count }} {% trans "views" %}</span>
-                <span>📝 {{ application_count }} {% trans "applications" %}</span>
+                <span>👁️ {% blocktrans count count=job.views_count %}{{ count }} view{% plural %}{{ count }} views{% endblocktrans %}</span>
+                <span>📝 {% blocktrans count count=application_count %}{{ count }} application{% plural %}{{ count }} applications{% endblocktrans %}</span>
             </div>
         </div>
         {% if job.posted_by == user %}
@@ -34,14 +34,17 @@
     
     <div class="job-content">
         {% if job.salary_min or job.salary_max %}
+        {% load l10n %}
         <div class="job-salary-info">
             <strong>{% trans "Salary Range" %}:</strong>
             {% if job.salary_min and job.salary_max %}
-                €{{ job.salary_min|floatformat:0 }} - €{{ job.salary_max|floatformat:0 }}
+                {% localize on %}
+                    €{{ job.salary_min|floatformat:0 }} - €{{ job.salary_max|floatformat:0 }}
+                {% endlocalize %}
             {% elif job.salary_min %}
-                {% trans "From" %} €{{ job.salary_min|floatformat:0 }}
+                {% trans "From" %} {% localize on %}€{{ job.salary_min|floatformat:0 }}{% endlocalize %}
             {% elif job.salary_max %}
-                {% trans "Up to" %} €{{ job.salary_max|floatformat:0 }}
+                {% trans "Up to" %} {% localize on %}€{{ job.salary_max|floatformat:0 }}{% endlocalize %}
             {% endif %}
         </div>
         {% endif %}

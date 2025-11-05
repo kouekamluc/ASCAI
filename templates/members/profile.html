@@ -4,129 +4,301 @@
 {% block title %}{{ member.user.full_name }} - {% trans "Member Profile" %} - ASCAI{% endblock %}
 
 {% block content %}
-<div class="member-profile">
-    <div class="profile-header">
-        <div class="profile-avatar">
+<div class="member-profile-page">
+    <!-- Profile Header Card -->
+    <div class="profile-header-card">
+        <div class="profile-avatar-large">
             {% if member.user.profile_picture %}
                 <img src="{{ member.user.profile_picture.url }}" alt="{{ member.user.full_name }}">
             {% else %}
-                <div class="avatar-placeholder">{{ member.user.first_name.0 }}{{ member.user.last_name.0 }}</div>
+                <div class="avatar-placeholder-large">
+                    {{ member.user.first_name.0 }}{{ member.user.last_name.0 }}
+                </div>
+            {% endif %}
+            {% if member.is_verified %}
+                <div class="verified-indicator" title="{% trans 'Verified Member' %}">
+                    <span class="icon icon-check-circle"></span>
+                </div>
             {% endif %}
         </div>
-        <div class="profile-info">
-            <h1>{{ member.user.full_name }}</h1>
-            <p class="profile-email">
-                {% if member.email_public or can_edit %}
-                    {{ member.user.email }}
+        <div class="profile-header-info">
+            <div class="profile-name-row">
+                <h1>{{ member.user.full_name }}</h1>
+                {% if member.is_verified %}
+                    <span class="verified-badge-large" title="{% trans 'Verified Member' %}">
+                        <span class="icon icon-check"></span> {% trans "Verified" %}
+                    </span>
                 {% endif %}
-            </p>
-            <span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span>
-            <span class="category-badge">{{ member.get_category_display }}</span>
-        </div>
-        {% if can_edit %}
-            <div class="profile-actions">
-                <a href="{% url 'admin:members_member_change' member.id %}" class="btn btn-secondary">{% trans "Edit" %}</a>
             </div>
+            {% if member.email_public or can_edit %}
+                <p class="profile-email">{{ member.user.email }}</p>
+            {% endif %}
+            <div class="profile-badges-header">
+                {% for badge in badges|slice:":5" %}
+                    <span class="badge-pill" title="{{ badge.name }}">
+                        {% if badge.icon %}<span class="{{ badge.icon }}"></span>{% else %}★{% endif %}
+                        {{ badge.name }}
+                    </span>
+                {% endfor %}
+                {% if badges|length > 5 %}
+                    <span class="badge-more">+{{ badges|length|add:"-5" }} {% trans "more" %}</span>
+                {% endif %}
+            </div>
+            <div class="profile-status-row">
+                <span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span>
+                <span class="category-badge category-{{ member.category }}">{{ member.get_category_display }}</span>
+            </div>
+        </div>
+        <div class="profile-header-actions">
+            {% if can_edit %}
+                <a href="{% url 'members:edit_profile' user.id %}" class="btn btn-primary">{% trans "Edit Profile" %}</a>
+            {% endif %}
+            {% if is_admin_or_board %}
+                {% if not member.is_verified %}
+                    <form method="post" action="{% url 'members:verify_member' member.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="verify">
+                        <input type="hidden" name="next" value="members:profile">
+                        <button type="submit" class="btn btn-success">{% trans "Verify" %}</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'members:verify_member' member.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="unverify">
+                        <input type="hidden" name="next" value="members:profile">
+                        <button type="submit" class="btn btn-warning">{% trans "Unverify" %}</button>
+                    </form>
+                {% endif %}
+                <a href="{% url 'members:check_badges' member.id %}" class="btn btn-secondary">{% trans "Check Badges" %}</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="profile-tabs">
+        <button class="tab-button active" data-tab="overview">{% trans "Overview" %}</button>
+        <button class="tab-button" data-tab="academic">{% trans "Academic" %}</button>
+        <button class="tab-button" data-tab="badges">{% trans "Badges" %} ({{ badges|length }})</button>
+        {% if is_admin_or_board %}
+            <button class="tab-button" data-tab="admin">{% trans "Admin" %}</button>
         {% endif %}
     </div>
-    
-    <div class="profile-content">
-        <div class="profile-section">
-            <h2>{% trans "Membership Information" %}</h2>
-            <dl class="info-list">
-                <dt>{% trans "Membership Number" %}:</dt>
-                <dd>{{ member.membership_number|default:"-" }}</dd>
-                
-                <dt>{% trans "Status" %}:</dt>
-                <dd>{{ member.get_status_display }}</dd>
-                
-                <dt>{% trans "Category" %}:</dt>
-                <dd>{{ member.get_category_display }}</dd>
-                
-                <dt>{% trans "Joined Date" %}:</dt>
-                <dd>{{ member.joined_date|date:"F d, Y" }}</dd>
-                
-                {% if member.membership_expiry %}
-                <dt>{% trans "Membership Expiry" %}:</dt>
-                <dd>{{ member.membership_expiry|date:"F d, Y" }}</dd>
-                {% endif %}
-            </dl>
+
+    <!-- Tab Content -->
+    <div class="profile-tab-content">
+        <!-- Overview Tab -->
+        <div class="tab-pane active" id="tab-overview">
+            <div class="profile-grid">
+                <div class="profile-card">
+                    <h2>{% trans "Membership Information" %}</h2>
+                    <dl class="info-list">
+                        {% if member.membership_number %}
+                        <div class="info-item">
+                            <dt>{% trans "Membership Number" %}:</dt>
+                            <dd>#{{ member.membership_number }}</dd>
+                        </div>
+                        {% endif %}
+                        <div class="info-item">
+                            <dt>{% trans "Status" %}:</dt>
+                            <dd><span class="status-badge status-{{ member.status }}">{{ member.get_status_display }}</span></dd>
+                        </div>
+                        <div class="info-item">
+                            <dt>{% trans "Category" %}:</dt>
+                            <dd><span class="category-badge category-{{ member.category }}">{{ member.get_category_display }}</span></dd>
+                        </div>
+                        <div class="info-item">
+                            <dt>{% trans "Joined Date" %}:</dt>
+                            <dd>{{ member.joined_date|date:"F d, Y" }}</dd>
+                        </div>
+                        {% if member.membership_expiry %}
+                        <div class="info-item">
+                            <dt>{% trans "Membership Expiry" %}:</dt>
+                            <dd>{{ member.membership_expiry|date:"F d, Y" }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if member.is_verified %}
+                        <div class="info-item">
+                            <dt>{% trans "Verified" %}:</dt>
+                            <dd><span class="verified-indicator-text">{% trans "Yes" %} {% if member.verified_at %}({{ member.verified_at|date:"M Y" }}){% endif %}</span></dd>
+                        </div>
+                        {% endif %}
+                    </dl>
+                </div>
+
+                <div class="profile-card">
+                    <h2>{% trans "Personal Information" %}</h2>
+                    <dl class="info-list">
+                        {% if member.city %}
+                        <div class="info-item">
+                            <dt>{% trans "City" %}:</dt>
+                            <dd>{{ member.city }}</dd>
+                        </div>
+                        {% endif %}
+                        <div class="info-item">
+                            <dt>{% trans "Country of Origin" %}:</dt>
+                            <dd>{{ member.country_of_origin }}</dd>
+                        </div>
+                        {% if member.date_of_birth %}
+                        <div class="info-item">
+                            <dt>{% trans "Date of Birth" %}:</dt>
+                            <dd>{{ member.date_of_birth|date:"F d, Y" }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if member.user.phone %}
+                        <div class="info-item">
+                            <dt>{% trans "Phone" %}:</dt>
+                            <dd>{{ member.user.phone }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if member.linkedin or member.website %}
+                        <div class="info-item">
+                            <dt>{% trans "Links" %}:</dt>
+                            <dd>
+                                {% if member.linkedin %}
+                                    <a href="{{ member.linkedin }}" target="_blank" class="link-icon">LinkedIn</a>
+                                {% endif %}
+                                {% if member.website %}
+                                    <a href="{{ member.website }}" target="_blank" class="link-icon">{% trans "Website" %}</a>
+                                {% endif %}
+                            </dd>
+                        </div>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {% if member.user.bio %}
+            <div class="profile-card">
+                <h2>{% trans "Bio" %}</h2>
+                <p>{{ member.user.bio }}</p>
+            </div>
+            {% endif %}
         </div>
-        
-        <div class="profile-section">
-            <h2>{% trans "Academic Information" %}</h2>
-            <dl class="info-list">
-                {% if member.university %}
-                <dt>{% trans "University" %}:</dt>
-                <dd>{{ member.university }}</dd>
-                {% endif %}
-                
-                {% if member.course %}
-                <dt>{% trans "Course of Study" %}:</dt>
-                <dd>{{ member.course }}</dd>
-                {% endif %}
-                
-                {% if member.year_of_study %}
-                <dt>{% trans "Year of Study" %}:</dt>
-                <dd>{{ member.year_of_study }}</dd>
-                {% endif %}
-                
-                {% if member.graduation_year %}
-                <dt>{% trans "Graduation Year" %}:</dt>
-                <dd>{{ member.graduation_year }}</dd>
-                {% endif %}
-            </dl>
+
+        <!-- Academic Tab -->
+        <div class="tab-pane" id="tab-academic">
+            <div class="profile-card">
+                <h2>{% trans "Academic Information" %}</h2>
+                <dl class="info-list">
+                    {% if member.university %}
+                    <div class="info-item">
+                        <dt>{% trans "University" %}:</dt>
+                        <dd>{{ member.university }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if member.course %}
+                    <div class="info-item">
+                        <dt>{% trans "Course of Study" %}:</dt>
+                        <dd>{{ member.course }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if member.year_of_study %}
+                    <div class="info-item">
+                        <dt>{% trans "Year of Study" %}:</dt>
+                        <dd>{{ member.year_of_study }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if member.graduation_year %}
+                    <div class="info-item">
+                        <dt>{% trans "Graduation Year" %}:</dt>
+                        <dd>{{ member.graduation_year }}</dd>
+                    </div>
+                    {% endif %}
+                    {% if not member.university and not member.course %}
+                        <p class="text-muted">{% trans "No academic information available." %}</p>
+                    {% endif %}
+                </dl>
+            </div>
         </div>
-        
-        <div class="profile-section">
-            <h2>{% trans "Personal Information" %}</h2>
-            <dl class="info-list">
-                {% if member.city %}
-                <dt>{% trans "City" %}:</dt>
-                <dd>{{ member.city }}</dd>
+
+        <!-- Badges Tab -->
+        <div class="tab-pane" id="tab-badges">
+            <div class="profile-card">
+                <div class="badges-header">
+                    <h2>{% trans "Badges & Achievements" %}</h2>
+                    {% if is_admin_or_board and available_badges %}
+                        <div class="award-badge-form">
+                            <form method="post" action="{% url 'members:award_badge' member.id %}" class="inline-form">
+                                {% csrf_token %}
+                                <select name="badge_id" class="form-control" required>
+                                    <option value="">{% trans "Select a badge to award..." %}</option>
+                                    {% for badge in available_badges %}
+                                        <option value="{{ badge.id }}">{{ badge.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-primary">{% trans "Award Badge" %}</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if badges %}
+                    <div class="badges-grid">
+                        {% for achievement in achievements %}
+                            <div class="badge-card">
+                                <div class="badge-icon-large">
+                                    {% if achievement.badge.icon %}
+                                        <span class="{{ achievement.badge.icon }}"></span>
+                                    {% else %}
+                                        ★
+                                    {% endif %}
+                                </div>
+                                <div class="badge-info">
+                                    <h3>{{ achievement.badge.name }}</h3>
+                                    {% if achievement.badge.description %}
+                                        <p class="badge-description">{{ achievement.badge.description }}</p>
+                                    {% endif %}
+                                    <small class="badge-earned-date">{% trans "Earned" %}: {{ achievement.earned_date|date:"F Y" }}</small>
+                                </div>
+                                {% if is_admin_or_board %}
+                                    <form method="post" action="{% url 'members:remove_badge' achievement.id %}" class="badge-remove-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-icon" title="{% trans 'Remove badge' %}">×</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">{% trans "No badges earned yet." %}</p>
                 {% endif %}
-                
-                <dt>{% trans "Country of Origin" %}:</dt>
-                <dd>{{ member.country_of_origin }}</dd>
-                
-                {% if member.date_of_birth %}
-                <dt>{% trans "Date of Birth" %}:</dt>
-                <dd>{{ member.date_of_birth|date:"F d, Y" }}</dd>
-                {% endif %}
-                
-                {% if member.user.phone %}
-                <dt>{% trans "Phone" %}:</dt>
-                <dd>{{ member.user.phone }}</dd>
-                {% endif %}
-            </dl>
+            </div>
         </div>
-        
-        {% if member.user.bio %}
-        <div class="profile-section">
-            <h2>{% trans "Bio" %}</h2>
-            <p>{{ member.user.bio }}</p>
-        </div>
-        {% endif %}
-        
-        {% if member.linkedin or member.website %}
-        <div class="profile-section">
-            <h2>{% trans "Links" %}</h2>
-            <ul class="links-list">
-                {% if member.linkedin %}
-                <li><a href="{{ member.linkedin }}" target="_blank">LinkedIn</a></li>
-                {% endif %}
-                {% if member.website %}
-                <li><a href="{{ member.website }}" target="_blank">{% trans "Website" %}</a></li>
-                {% endif %}
-            </ul>
+
+        <!-- Admin Tab -->
+        {% if is_admin_or_board %}
+        <div class="tab-pane" id="tab-admin">
+            <div class="profile-card">
+                <h2>{% trans "Administrative Actions" %}</h2>
+                <div class="admin-actions">
+                    <a href="{% url 'members:edit_profile' user.id %}" class="btn btn-primary">{% trans "Edit Profile" %}</a>
+                    <a href="{% url 'admin:members_member_change' member.id %}" class="btn btn-secondary">{% trans "Admin Edit" %}</a>
+                    <a href="{% url 'members:check_badges' member.id %}" class="btn btn-secondary">{% trans "Check & Award Badges" %}</a>
+                </div>
+            </div>
         </div>
         {% endif %}
     </div>
 </div>
+
+<script>
+// Tab switching functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and panes
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding pane
+            this.classList.add('active');
+            document.getElementById('tab-' + targetTab).classList.add('active');
+        });
+    });
+});
+</script>
 {% endblock %}
-
-
-
-
-
-

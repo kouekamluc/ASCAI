@@ -1,0 +1,312 @@
+/* ============================================
+   BACKWARD COMPATIBILITY STYLES
+   Ensures existing templates work with new design
+   ============================================ */
+
+/* Ensure old classes still work */
+.member-list,
+.event-list,
+.news-list,
+.activity-list,
+.payment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.member-list li,
+.event-list li,
+.news-list li,
+.activity-list li,
+.payment-list li {
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-2);
+    background-color: var(--color-white);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--color-accent);
+}
+
+/* Membership card compatibility */
+.membership-card {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-info));
+    color: var(--color-white);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-6);
+}
+
+.membership-header h2 {
+    color: var(--color-white);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-4);
+}
+
+.membership-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--spacing-6);
+}
+
+.membership-info {
+    flex: 1;
+    min-width: 250px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-3) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: var(--font-weight-semibold);
+    opacity: 0.9;
+}
+
+.info-value {
+    font-weight: var(--font-weight-medium);
+}
+
+.membership-actions .btn {
+    background: var(--color-white);
+    color: var(--color-accent);
+    padding: var(--spacing-3) var(--spacing-6);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    transition: all var(--transition-base);
+    display: inline-block;
+}
+
+.membership-actions .btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Dashboard widget compatibility */
+.dashboard-widget {
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: var(--spacing-6);
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4) var(--spacing-6);
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.widget-header h2 {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    margin: 0;
+}
+
+.widget-content {
+    padding: var(--spacing-6);
+}
+
+/* Event item compatibility */
+.event-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--spacing-4);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-accent);
+    transition: all var(--transition-base);
+    margin-bottom: var(--spacing-4);
+}
+
+.event-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+.event-info h4 {
+    margin: 0 0 var(--spacing-2) 0;
+    color: var(--color-text-primary);
+}
+
+.event-info h4 a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.event-info h4 a:hover {
+    text-decoration: underline;
+}
+
+.event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    margin: var(--spacing-2) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+}
+
+.event-actions {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-shrink: 0;
+}
+
+/* News item compatibility */
+.news-item {
+    padding: var(--spacing-4);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-error);
+    transition: all var(--transition-base);
+    margin-bottom: var(--spacing-4);
+}
+
+.news-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+.news-item h4 {
+    margin: 0 0 var(--spacing-2) 0;
+    color: var(--color-text-primary);
+}
+
+.news-item h4 a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.news-item h4 a:hover {
+    text-decoration: underline;
+}
+
+.news-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    margin: var(--spacing-2) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+}
+
+.news-excerpt {
+    margin-top: var(--spacing-3);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+}
+
+/* Activity item compatibility */
+.activity-item {
+    display: flex;
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-accent);
+    transition: all var(--transition-base);
+    margin-bottom: var(--spacing-4);
+}
+
+.activity-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+.activity-icon {
+    font-size: var(--font-size-2xl);
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-white);
+    border-radius: var(--radius-full);
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-content h4 {
+    margin: 0 0 var(--spacing-2) 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+}
+
+.activity-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    margin: var(--spacing-2) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+}
+
+.activity-link {
+    display: inline-block;
+    margin-top: var(--spacing-2);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    transition: all var(--transition-base);
+}
+
+.activity-link:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+}
+
+/* Quick action card compatibility */
+.quick-action-card {
+    background: var(--color-white);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-base);
+    border: 2px solid transparent;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent);
+}
+
+.action-icon {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--spacing-4);
+}
+
+.quick-action-card h3 {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    margin: 0 0 var(--spacing-2) 0;
+}
+
+.quick-action-card p {
+    color: var(--color-text-tertiary);
+    font-size: var(--font-size-sm);
+    margin: 0;
+    line-height: var(--line-height-normal);
+}
+

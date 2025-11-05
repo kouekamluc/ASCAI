@@ -63,11 +63,11 @@
                         {% if registration.checked_in_at %}
                             ✓ {{ registration.checked_in_at|date:"M d, Y H:i" }}
                         {% else %}
-                            -
+                            {% trans "-" %}
                         {% endif %}
                     </td>
-                    <td>{{ registration.dietary_requirements|default:"-" }}</td>
-                    <td>{{ registration.special_requests|default:"-" }}</td>
+                    <td>{% if registration.dietary_requirements %}{{ registration.dietary_requirements }}{% else %}{% trans "-" %}{% endif %}</td>
+                    <td>{% if registration.special_requests %}{{ registration.special_requests }}{% else %}{% trans "-" %}{% endif %}</td>
                     <td>
                         {% if registration.status != registration.Status.ATTENDED %}
                             <form method="post" action="{% url 'events:check_in' event.slug registration.id %}" style="display: inline;">
@@ -89,6 +89,11 @@
     </div>
 </div>
 {% endblock %}
+
+
+
+
+
 
 
 

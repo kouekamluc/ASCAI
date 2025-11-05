@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Apply for Membership" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="member-application-page">
+    <div class="application-header">
+        <h1>{% trans "Apply for Membership" %}</h1>
+        <p class="subtitle">{% trans "Join the Association of Cameroonian Students in Lazio" %}</p>
+    </div>
+    
+    <div class="application-form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="alert alert-error">
+                <h3>{% trans "Please correct the errors below" %}:</h3>
+                {{ form.errors }}
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+                {{ form.notes }}
+                {% if form.notes.help_text %}
+                    <small class="form-help">{{ form.notes.help_text }}</small>
+                {% endif %}
+                {% if form.notes.errors %}
+                    <div class="form-error">{{ form.notes.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{% trans "Submit Application" %}</button>
+                <a href="{% url 'members:directory' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

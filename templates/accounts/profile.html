@@ -1,22 +1,243 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 
-{% block title %}Profile - ASCAI{% endblock %}
+{% block title %}{% trans "Profile" %} - ASCAI{% endblock %}
 
 {% block content %}
-<div class="profile-container">
-    <h2>{% trans "Profile" %}</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">{% trans "Update Profile" %}</button>
-    </form>
-    <p><a href="{% url 'accounts:change_password' %}">{% trans "Change Password" %}</a></p>
+<div class="user-profile-page">
+    <!-- Profile Header Card -->
+    <div class="profile-header-card">
+        <div class="profile-avatar-large">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="{{ user.full_name }}" id="profile-picture-preview">
+            {% else %}
+                <div class="avatar-placeholder-large" id="profile-picture-preview">
+                    {{ user.first_name.0 }}{{ user.last_name.0 }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="profile-header-info">
+            <div class="profile-name-row">
+                <h1>{{ user.full_name }}</h1>
+                {% if user.is_admin %}
+                    <span class="role-badge role-admin">{% trans "Admin" %}</span>
+                {% elif user.is_board_member %}
+                    <span class="role-badge role-board">{% trans "Board Member" %}</span>
+                {% elif user.is_member %}
+                    <span class="role-badge role-member">{% trans "Member" %}</span>
+                {% else %}
+                    <span class="role-badge role-public">{% trans "Public" %}</span>
+                {% endif %}
+            </div>
+            <p class="profile-email">{{ user.email }}</p>
+            {% if not user.member_profile or user.member_profile.status != "active" %}
+                <div class="membership-status-badge inactive">
+                    {% trans "Not an Active Member" %}
+                </div>
+            {% else %}
+                <div class="membership-status-badge active">
+                    {% trans "Active Member" %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Membership Alert -->
+    {% if not user.member_profile or user.member_profile.status != "active" %}
+    <div class="alert alert-info membership-alert">
+        <div class="alert-content">
+            <strong>{% trans "Become a Member!" %}</strong>
+            <p>{% trans "Pay €10 to become an active member and access all member features." %}</p>
+        </div>
+        <a href="{% url 'members:pay_membership' %}" class="btn btn-primary">{% trans "Pay Membership Fee" %}</a>
+    </div>
+    {% endif %}
+
+    <!-- Profile Form Card -->
+    <div class="card profile-form-card">
+        <div class="card-header">
+            <h2 class="card-title">{% trans "Edit Profile" %}</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="modern-form">
+                {% csrf_token %}
+                
+                <!-- Profile Picture Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">📷</span>
+                        <span>{% trans "Profile Picture" %}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.profile_picture.id_for_label }}" class="form-label">
+                            {% trans "Upload Profile Picture" %}
+                        </label>
+                        {% if form.profile_picture.errors %}
+                            <div class="field-errors">
+                                {{ form.profile_picture.errors }}
+                            </div>
+                        {% endif %}
+                        {{ form.profile_picture }}
+                        <script>
+                            // Add accept attribute and preview handler after form renders
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const fileInput = document.getElementById('{{ form.profile_picture.id_for_label }}');
+                                if (fileInput) {
+                                    fileInput.setAttribute('accept', 'image/*');
+                                    fileInput.addEventListener('change', function(e) {
+                                        previewProfilePicture(e.target);
+                                    });
+                                }
+                            });
+                        </script>
+                        {% if form.profile_picture.help_text %}
+                            <small class="form-hint">{{ form.profile_picture.help_text }}</small>
+                        {% endif %}
+                        {% if user.profile_picture %}
+                            <div class="current-image">
+                                <p class="current-image-label">{% trans "Current Picture:" %}</p>
+                                <img src="{{ user.profile_picture.url }}" alt="{% trans 'Current profile picture' %}" class="current-image-preview">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">👤</span>
+                        <span>{% trans "Personal Information" %}</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                {% trans "First Name" %} <span class="required">*</span>
+                            </label>
+                            {% if form.first_name.errors %}
+                                <div class="field-errors">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+                            {{ form.first_name }}
+                            {% if form.first_name.help_text %}
+                                <small class="form-hint">{{ form.first_name.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                {% trans "Last Name" %} <span class="required">*</span>
+                            </label>
+                            {% if form.last_name.errors %}
+                                <div class="field-errors">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+                            {{ form.last_name }}
+                            {% if form.last_name.help_text %}
+                                <small class="form-hint">{{ form.last_name.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">
+                            {% trans "Phone Number" %}
+                        </label>
+                        {% if form.phone.errors %}
+                            <div class="field-errors">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+                        {{ form.phone }}
+                        {% if form.phone.help_text %}
+                            <small class="form-hint">{{ form.phone.help_text }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Bio Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-icon">📝</span>
+                        <span>{% trans "Biography" %}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.bio.id_for_label }}" class="form-label">
+                            {% trans "About Me" %}
+                        </label>
+                        {% if form.bio.errors %}
+                            <div class="field-errors">
+                                {{ form.bio.errors }}
+                            </div>
+                        {% endif %}
+                        {{ form.bio }}
+                        {% if form.bio.help_text %}
+                            <small class="form-hint">{{ form.bio.help_text }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        {% trans "Update Profile" %}
+                    </button>
+                    <a href="{% url 'dashboard:home' %}" class="btn btn-secondary">
+                        {% trans "Cancel" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="profile-actions-grid">
+        <div class="action-card">
+            <div class="action-icon">🔒</div>
+            <h3>{% trans "Change Password" %}</h3>
+            <p>{% trans "Update your account password" %}</p>
+            <a href="{% url 'accounts:change_password' %}" class="btn btn-secondary">{% trans "Change Password" %}</a>
+        </div>
+        <div class="action-card">
+            <div class="action-icon">💳</div>
+            <h3>{% trans "Payment History" %}</h3>
+            <p>{% trans "View your payment transactions" %}</p>
+            <a href="{% url 'members:payment_history' %}" class="btn btn-secondary">{% trans "View History" %}</a>
+        </div>
+        {% if user.member_profile %}
+        <div class="action-card">
+            <div class="action-icon">👥</div>
+            <h3>{% trans "Member Profile" %}</h3>
+            <p>{% trans "View your member profile" %}</p>
+            <a href="{% url 'members:profile' user.id %}" class="btn btn-secondary">{% trans "View Profile" %}</a>
+        </div>
+        {% endif %}
+    </div>
 </div>
+
+<script>
+function previewProfilePicture(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('profile-picture-preview');
+            if (preview.tagName === 'IMG') {
+                preview.src = e.target.result;
+            } else {
+                // Replace placeholder with image
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = 'Profile preview';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '50%';
+                preview.parentNode.replaceChild(img, preview);
+                img.id = 'profile-picture-preview';
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 {% endblock %}
-
-
-
-
-
-

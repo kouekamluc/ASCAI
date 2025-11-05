@@ -37,12 +37,13 @@ class Conversation(models.Model):
 
     def mark_as_read(self, user):
         """Mark all messages in this conversation as read for a user."""
-        self.messages.filter(sender__id__ne=user.id).update(is_read=True)
+        self.messages.exclude(sender=user).update(is_read=True)
 
     def get_unread_count(self, user):
         """Get unread message count for a user."""
-        return self.messages.filter(
-            sender__id__ne=user.id,
+        return self.messages.exclude(
+            sender=user
+        ).filter(
             is_read=False
         ).count()
 
@@ -63,6 +64,11 @@ class Message(models.Model):
     )
     content = models.TextField(verbose_name=_("Content"))
     is_read = models.BooleanField(default=False, verbose_name=_("Is read"))
+    is_admin_message = models.BooleanField(
+        default=False, 
+        verbose_name=_("Is admin message"),
+        help_text=_("Indicates if this message is from an admin or board member")
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
 
     class Meta:
@@ -74,10 +80,20 @@ class Message(models.Model):
         return f"Message from {self.sender.full_name} at {self.created_at}"
 
     def save(self, *args, **kwargs):
+        # Automatically set is_admin_message if sender is admin or board member
+        if not self.pk:  # Only on creation
+            self.is_admin_message = self.sender.is_admin() or self.sender.is_board_member()
         super().save(*args, **kwargs)
-        # Update conversation's last message
-        self.conversation.last_message = self
-        self.conversation.save(update_fields=['last_message', 'updated_at'])
+        # Update conversation's last message (only if conversation exists and is saved)
+        try:
+            if self.conversation and self.conversation.pk:
+                self.conversation.last_message = self
+                self.conversation.save(update_fields=['last_message', 'updated_at'])
+        except Exception as e:
+            # Log but don't fail if conversation update fails
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Failed to update conversation last_message: {e}")
 
 
 class UserPresence(models.Model):
@@ -110,6 +126,11 @@ class UserPresence(models.Model):
         presence.is_online = is_online
         presence.save()
         return presence
+
+
+
+
+
 
 
 

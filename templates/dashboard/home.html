@@ -3,9 +3,11 @@
 {% load static %}
 
 {% block title %}{% trans "Dashboard" %} - ASCAI{% endblock %}
+{% block page_title %}{% trans "Dashboard" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard-new.css' %}">
 {% endblock %}
 
 {% block content %}

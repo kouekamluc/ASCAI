@@ -33,7 +33,7 @@
     <div class="reply-content-wrapper">
         <div class="reply-meta">
             <strong>{{ reply.author.full_name }}</strong>
-            <span style="color: #80868b;">{{ reply.created_at|timesince }} ago</span>
+            <span style="color: #80868b;">{% blocktrans with time=reply.created_at|timesince %}{{ time }} ago{% endblocktrans %}</span>
             {% if reply.is_edited %}
                 <span class="badge" style="background: rgba(0, 0, 0, 0.06); color: #5f6368;">{% trans "Edited" %}</span>
             {% endif %}

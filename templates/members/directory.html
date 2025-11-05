@@ -1,11 +1,90 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+{% block extra_css %}
+<style>
+.member-info-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.member-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.member-avatar-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.avatar-placeholder-small {
+    width: 100%;
+    height: 100%;
+    background: var(--primary-green);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+.member-name-info {
+    flex: 1;
+    min-width: 0;
+}
+.member-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.verified-badge {
+    color: var(--primary-green);
+    font-size: 14px;
+}
+.membership-number {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+.member-badges-small {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+}
+.badge-mini {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-red);
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    cursor: help;
+}
+.badge-count {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+</style>
+{% endblock %}
+
 {% block title %}{% trans "Member Directory" %} - ASCAI{% endblock %}
 
 {% block content %}
 <div class="member-directory">
-    <h1>{% trans "Member Directory" %}</h1>
+    <div class="directory-header">
+        <h1>{% trans "Member Directory" %}</h1>
+        {% if not user.is_admin and not user.is_board_member %}
+            {% if not user.member_profile %}
+                <a href="{% url 'members:apply' %}" class="btn btn-primary">{% trans "Apply for Membership" %}</a>
+            {% endif %}
+        {% endif %}
+    </div>
     
     <!-- Search and Filters -->
     <form method="get" 
@@ -16,28 +95,46 @@
           hx-select="#members-content"
           hx-push-url="true">
         <div class="filter-row">
-            <input type="text" name="search" placeholder="{% trans 'Search by name, email, university...' %}" 
-                   value="{{ search_query }}" class="search-input">
-            <select name="status" class="filter-select">
-                <option value="">{% trans "All Statuses" %}</option>
-                {% for value, label in status_choices %}
-                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
-                        {{ label }}
-                    </option>
-                {% endfor %}
-            </select>
-            <select name="category" class="filter-select">
-                <option value="">{% trans "All Categories" %}</option>
-                {% for value, label in category_choices %}
-                    <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>
-                        {{ label }}
-                    </option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
-            {% if user.is_admin or user.is_board_member %}
-                <a href="{% url 'members:export_csv' %}" class="btn btn-secondary">{% trans "Export CSV" %}</a>
-            {% endif %}
+            <div class="search-group">
+                <input type="text" name="search" placeholder="{% trans 'Search by name, email, university...' %}" 
+                       value="{{ search_query }}" class="search-input">
+            </div>
+            <div class="filter-group">
+                <select name="status" class="filter-select">
+                    <option value="">{% trans "All Statuses" %}</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <select name="category" class="filter-select">
+                    <option value="">{% trans "All Categories" %}</option>
+                    {% for value, label in category_choices %}
+                        <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if user.is_admin or user.is_board_member %}
+                <select name="verified" class="filter-select">
+                    <option value="">{% trans "All Verification" %}</option>
+                    <option value="true" {% if verified_filter == "true" %}selected{% endif %}>{% trans "Verified" %}</option>
+                    <option value="false" {% if verified_filter == "false" %}selected{% endif %}>{% trans "Not Verified" %}</option>
+                </select>
+                {% endif %}
+                <select name="sort" class="filter-select">
+                    <option value="joined_date" {% if sort_by == "joined_date" %}selected{% endif %}>{% trans "Sort by: Date Joined" %}</option>
+                    <option value="name" {% if sort_by == "name" %}selected{% endif %}>{% trans "Sort by: Name" %}</option>
+                    <option value="university" {% if sort_by == "university" %}selected{% endif %}>{% trans "Sort by: University" %}</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+                {% if user.is_admin or user.is_board_member %}
+                    <a href="{% url 'members:export_csv' %}" class="btn btn-secondary">{% trans "Export CSV" %}</a>
+                {% endif %}
+            </div>
         </div>
     </form>
     
@@ -59,15 +156,15 @@
     <!-- Member List -->
     <div id="members-content">
         <div class="member-list">
-        {% if page_obj %}
-            <table class="member-table">
+        <div class="table-container">
+            <div class="table-wrapper">
+            <table class="member-table data-table">
                 <thead>
                     <tr>
                         {% if user.is_admin or user.is_board_member %}
                             <th><input type="checkbox" id="select-all"></th>
                         {% endif %}
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Membership #" %}</th>
+                        <th>{% trans "Member" %}</th>
                         <th>{% trans "University" %}</th>
                         <th>{% trans "Status" %}</th>
                         <th>{% trans "Category" %}</th>
@@ -80,34 +177,83 @@
                         {% if user.is_admin or user.is_board_member %}
                             <td><input type="checkbox" name="member_ids" value="{{ member.id }}" form="bulk-form"></td>
                         {% endif %}
-                        <td>{{ member.user.full_name }}</td>
-                        <td>{{ member.membership_number|default:"-" }}</td>
-                        <td>{{ member.university|default:"-" }}</td>
+                        <td>
+                            <div class="member-info-cell">
+                                <div class="member-avatar-small">
+                                    {% if member.user.profile_picture %}
+                                        <img src="{{ member.user.profile_picture.url }}" alt="{{ member.user.full_name }}">
+                                    {% else %}
+                                        <div class="avatar-placeholder-small">
+                                            {{ member.user.first_name.0 }}{{ member.user.last_name.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="member-name-info">
+                                    <div class="member-name-row">
+                                        <strong>{{ member.user.full_name }}</strong>
+                                        {% if member.is_verified %}
+                                            <span class="verified-badge" title="{% trans 'Verified Member' %}">
+                                                <span class="icon icon-check"></span>
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    {% if member.membership_number %}
+                                        <small class="membership-number">#{{ member.membership_number }}</small>
+                                    {% endif %}
+                                    {% if member.display_badges %}
+                                        <div class="member-badges-small">
+                                            {% for badge in member.display_badges|slice:":3" %}
+                                                <span class="badge-mini" title="{{ badge.name }}">
+                                                    {% if badge.icon %}<span class="{{ badge.icon }}"></span>{% else %}★{% endif %}
+                                                </span>
+                                            {% endfor %}
+                                            {% if member.display_badges|length > 3 %}
+                                                <span class="badge-count">+{{ member.display_badges|length|add:"-3" }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if member.university %}
+                                {{ member.university }}
+                            {% else %}
+                                <span class="text-muted">{% trans "-" %}</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <span class="status-badge status-{{ member.status }}">
                                 {{ member.get_status_display }}
                             </span>
                         </td>
-                        <td>{{ member.get_category_display }}</td>
                         <td>
-                            <a href="{% url 'members:profile' member.user.id %}" class="btn btn-sm">{% trans "View" %}</a>
+                            <span class="category-badge category-{{ member.category }}">
+                                {{ member.get_category_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'members:profile' member.user.id %}" class="btn btn-sm btn-primary">{% trans "View" %}</a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center">{% trans "No members found." %}</td>
+                        <td colspan="{% if user.is_admin or user.is_board_member %}6{% else %}5{% endif %}" class="text-center">
+                            <p class="no-results">{% trans "No members found." %}</p>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
             
             <!-- Pagination -->
-            {% if page_obj.has_other_pages %}
+            {% if page_obj and page_obj.has_other_pages %}
             <div class="pagination">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if verified_filter %}&verified={{ verified_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
                        class="btn btn-sm"
-                       hx-get="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}"
+                       hx-get="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if verified_filter %}&verified={{ verified_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
                        hx-target="#members-content"
                        hx-select="#members-content"
                        hx-push-url="true">{% trans "Previous" %}</a>
@@ -116,18 +262,16 @@
                     {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
                 </span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" 
+                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if verified_filter %}&verified={{ verified_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
                        class="btn btn-sm"
-                       hx-get="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}"
+                       hx-get="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if verified_filter %}&verified={{ verified_filter }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
                        hx-target="#members-content"
                        hx-select="#members-content"
                        hx-push-url="true">{% trans "Next" %}</a>
                 {% endif %}
             </div>
             {% endif %}
-        {% else %}
-            <p>{% trans "No members found." %}</p>
-        {% endif %}
+        </div>
     </div>
     
     {% if user.is_admin or user.is_board_member %}

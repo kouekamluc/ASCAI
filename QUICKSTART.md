@@ -64,7 +64,7 @@ Copy `.env.example` to `.env` and configure:
 cp env.example .env
 ```
 
-Currently, the platform uses SQLite (default Django database) for development.
+The platform uses PostgreSQL for the database. Make sure PostgreSQL is running and configured with the database name "ASCAI".
 
 ### 3. Run Migrations
 
@@ -175,7 +175,7 @@ association/
 
 ## Development Notes
 
-- **Database**: Currently using SQLite (db.sqlite3)
+- **Database**: PostgreSQL (configured in settings.py)
 - **Media Files**: Stored in /media/ directory
 - **Static Files**: Stored in /static/ directory
 - **Email**: Console backend (emails print to terminal)
@@ -197,6 +197,20 @@ Refer to:
 - README.md for project overview
 - Plan document for full feature list
 - Django documentation for framework details
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

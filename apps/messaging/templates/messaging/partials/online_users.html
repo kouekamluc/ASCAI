@@ -1,0 +1,17 @@
+{% load i18n %}
+{% for user in online_users %}
+<div style="padding: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+    <span class="online-indicator" style="width: 8px; height: 8px; background: #53bdeb; border-radius: 50%; display: inline-block; flex-shrink: 0;"></span>
+    <a href="{% url 'messaging:start_conversation' user.id %}" 
+       style="text-decoration: none; color: inherit; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+       hx-get="{% url 'messaging:start_conversation' user.id %}"
+       hx-target="#chat-main"
+       hx-swap="innerHTML"
+       hx-push-url="true">
+        {{ user.full_name }}
+    </a>
+</div>
+{% empty %}
+<p style="color: #666; font-size: 0.875rem; padding: 0.5rem 0; text-align: center;">{% trans "No users online" %}</p>
+{% endfor %}
+

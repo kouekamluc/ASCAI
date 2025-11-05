@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Review Application" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="review-application-page">
+    <h1>{% trans "Review Membership Application" %}</h1>
+    
+    <div class="application-info-card">
+        <h2>{{ application.user.full_name }}</h2>
+        <p><strong>{% trans "Email" %}:</strong> {{ application.user.email }}</p>
+        <p><strong>{% trans "Application Date" %}:</strong> {{ application.application_date|date:"F d, Y" }}</p>
+        <p><strong>{% trans "Status" %}:</strong> <span class="status-badge status-{{ application.status }}">{{ application.get_status_display }}</span></p>
+        
+        {% if application.notes %}
+        <div class="application-notes">
+            <h3>{% trans "Applicant Notes" %}:</h3>
+            <p>{{ application.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <form method="post" class="review-form">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="alert alert-error">
+            {{ form.errors }}
+        </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.status.id_for_label }}">{{ form.status.label }}</label>
+            {{ form.status }}
+            {% if form.status.errors %}
+                <div class="form-error">{{ form.status.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.review_notes.id_for_label }}">{{ form.review_notes.label }}</label>
+            {{ form.review_notes }}
+            {% if form.review_notes.help_text %}
+                <small class="form-help">{{ form.review_notes.help_text }}</small>
+            {% endif %}
+            {% if form.review_notes.errors %}
+                <div class="form-error">{{ form.review_notes.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" name="action" value="approve" class="btn btn-success">{% trans "Approve" %}</button>
+            <button type="submit" name="action" value="reject" class="btn btn-danger">{% trans "Reject" %}</button>
+            <button type="submit" name="action" value="update" class="btn btn-secondary">{% trans "Update Only" %}</button>
+            <a href="{% url 'members:application_list' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

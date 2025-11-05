@@ -98,7 +98,7 @@ Modern, responsive, mobile-first design.
 
 - **Python**: 3.12+
 - **Django**: 5.1+
-- **Database**: SQLite (dev) / PostgreSQL (prod)
+- **Database**: PostgreSQL (all environments)
 - **Frontend**: Django Templates
 - **Styling**: Custom CSS
 - **Internationalization**: Django i18n

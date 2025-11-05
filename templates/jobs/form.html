@@ -5,12 +5,12 @@
 
 {% block content %}
 <div class="job-form">
-    <h1>{% if action == "Create" %}➕{% else %}✏️{% endif %} {{ action }} {% trans "Job Posting" %}</h1>
+    <h1>{% if job %}✏️{% else %}➕{% endif %} {{ action }} {% trans "Job Posting" %}</h1>
     <p style="color: #5f6368; margin-bottom: 2rem; font-size: 1.0625rem;">
-        {% if action == "Create" %}
-            {% trans "Share your job opportunity with the ASCAI community" %}
-        {% else %}
+        {% if job %}
             {% trans "Update your job posting information" %}
+        {% else %}
+            {% trans "Share your job opportunity with the ASCAI community" %}
         {% endif %}
     </p>
     

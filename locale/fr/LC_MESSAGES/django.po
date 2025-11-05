@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ASCAI Platform 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-01 18:37\n"
-"PO-Revision-Date: 2025-11-01 18:37\n"
+"POT-Creation-Date: 2025-11-05 14:25\n"
+"PO-Revision-Date: 2025-11-05 14:25\n"
 "Last-Translator: \n"
 "Language-Team: fr\n"
 "Language: fr\n"
@@ -18,16 +18,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "%(user)s mentioned you in a reply"
-msgstr "%(user)s mentioned you in a reply"
+msgstr "%(user)s vous a mentionné dans une réponse"
+
+msgid "-"
+msgstr "-"
 
 msgid "A new version will be automatically created."
-msgstr "A new version will be automatically created."
+msgstr "Une nouvelle version sera automatiquement créée."
 
 msgid "A new version will be created from the selected version. The current version will remain in history."
-msgstr "A new version will be created from the selected version. The current version will remain in history."
+msgstr "Une nouvelle version sera créée à partir de la version sélectionnée. La version actuelle restera dans l'historique."
+
+msgid "ASCAI"
+msgstr "ASCAI"
 
 msgid "ASCAI - Association of Cameroonian Students in Lazio"
-msgstr "ASCAI - Association of Cameroonian Students in Lazio"
+msgstr "ASCAI - Association des étudiants camerounais du Latium"
+
+msgid "ASCAI - Association of Cameroonian Students in Lazio, Italy"
+msgstr "ASCAI - Association des étudiants camerounais du Latium, Italie"
 
 msgid "ASCAI Team"
 msgstr "ASCAI Team"
@@ -42,7 +51,7 @@ msgid "Accepted"
 msgstr "Accepted"
 
 msgid "Accepted formats: PDF, DOC, DOCX (max 10MB)"
-msgstr "Accepted formats: PDF, DOC, DOCX (max 10MB)"
+msgstr "Formats acceptés : PDF, DOC, DOCX (max 10MB)"
 
 msgid "Access"
 msgstr "Access"
@@ -54,10 +63,13 @@ msgid "Access Level"
 msgstr "Access Level"
 
 msgid "Access academic and career resources"
-msgstr "Access academic and career resources"
+msgstr "Accéder aux ressources académiques et professionnelles"
 
 msgid "Account Activated"
-msgstr "Account Activated"
+msgstr "Compte activé"
+
+msgid "Achievement"
+msgstr "Achievement"
 
 msgid "Action Details"
 msgstr "Action Details"
@@ -66,34 +78,37 @@ msgid "Actions"
 msgstr "Actions"
 
 msgid "Activate Account"
-msgstr "Activate Account"
+msgstr "Activer le compte"
 
 msgid "Activate selected bans"
-msgstr "Activate selected bans"
+msgstr "Activer les bannissements sélectionnés"
 
 msgid "Activate your ASCAI account"
-msgstr "Activate your ASCAI account"
+msgstr "Activez votre compte ASCAI"
 
 msgid "Activation Link Invalid"
-msgstr "Activation Link Invalid"
+msgstr "Lien d'activation invalide"
 
 msgid "Active"
 msgstr "Active"
 
 msgid "Active Members"
-msgstr "Active Members"
+msgstr "Membres actifs"
+
+msgid "Activity"
+msgstr "Activity"
 
 msgid "Activity Overview"
-msgstr "Activity Overview"
+msgstr "Aperçu de l'activité"
 
 msgid "Add Your Reply"
-msgstr "Add Your Reply"
+msgstr "Ajouter votre réponse"
 
 msgid "Additional Details"
-msgstr "Additional Details"
+msgstr "Détails supplémentaires"
 
 msgid "Additional Information"
-msgstr "Additional Information"
+msgstr "Informations supplémentaires"
 
 msgid "Additional details"
 msgstr "Additional details"
@@ -109,6 +124,9 @@ msgstr "Admin Notes"
 
 msgid "Admin Only"
 msgstr "Admin Only"
+
+msgid "Admin panel"
+msgstr "Panneau d'administration"
 
 msgid "All"
 msgstr "All"
@@ -129,10 +147,16 @@ msgid "All Types"
 msgstr "All Types"
 
 msgid "All time registrations"
-msgstr "All time registrations"
+msgstr "Inscriptions de tous temps"
+
+msgid "Allow other members to see your email address."
+msgstr "Allow other members to see your email address."
+
+msgid "Allow other members to view your profile."
+msgstr "Allow other members to view your profile."
 
 msgid "Already have an account? Login here"
-msgstr "Already have an account? Login here"
+msgstr "Vous avez déjà un compte ? Connectez-vous ici"
 
 msgid "Alumni"
 msgstr "Alumni"
@@ -150,7 +174,7 @@ msgid "Applicant Information"
 msgstr "Applicant Information"
 
 msgid "Application Deadline"
-msgstr "Application Deadline"
+msgstr "Date limite de candidature"
 
 msgid "Application Details"
 msgstr "Application Details"
@@ -173,11 +197,20 @@ msgstr "Application Submitted - {job_title}"
 msgid "Application Submitted Successfully"
 msgstr "Application Submitted Successfully"
 
+msgid "Application approved. Member profile created."
+msgstr "Application approved. Member profile created."
+
+msgid "Application rejected."
+msgstr "Application rejected."
+
 msgid "Application status filter"
 msgstr "Application status filter"
 
 msgid "Application status updated successfully."
 msgstr "Application status updated successfully."
+
+msgid "Application updated."
+msgstr "Application updated."
 
 msgid "Applications"
 msgstr "Applications"
@@ -186,10 +219,10 @@ msgid "Applications for this job will appear here once candidates apply."
 msgstr "Applications for this job will appear here once candidates apply."
 
 msgid "Applied"
-msgstr "Applied"
+msgstr "Postulé"
 
 msgid "Apply Now"
-msgstr "Apply Now"
+msgstr "Postuler maintenant"
 
 msgid "Apply for"
 msgstr "Apply for"
@@ -208,6 +241,9 @@ msgstr "Approve selected replies"
 
 msgid "Approve selected threads"
 msgstr "Approve selected threads"
+
+msgid "Approved"
+msgstr "Approved"
 
 msgid "Are you sure you want to delete this category?"
 msgstr "Are you sure you want to delete this category?"
@@ -266,6 +302,9 @@ msgstr "Available"
 msgid "Awaiting approval"
 msgstr "Awaiting approval"
 
+msgid "Awarded {} badge(s): {}"
+msgstr "Awarded {} badge(s): {}"
+
 msgid "Back"
 msgstr "Back"
 
@@ -282,13 +321,13 @@ msgid "Back to Events"
 msgstr "Back to Events"
 
 msgid "Back to Job Board"
-msgstr "Back to Job Board"
+msgstr "Retour à la liste des emplois"
 
 msgid "Back to Library"
 msgstr "Back to Library"
 
 msgid "Back to Login"
-msgstr "Back to Login"
+msgstr "Retour à la connexion"
 
 msgid "Back to My Applications"
 msgstr "Back to My Applications"
@@ -297,7 +336,13 @@ msgid "Back to News"
 msgstr "Back to News"
 
 msgid "Back to Profile"
-msgstr "Back to Profile"
+msgstr "Retour au profil"
+
+msgid "Badge awarded successfully."
+msgstr "Badge awarded successfully."
+
+msgid "Badge removed successfully."
+msgstr "Badge removed successfully."
 
 msgid "Ban Details"
 msgstr "Ban Details"
@@ -306,7 +351,7 @@ msgid "Ban User"
 msgstr "Ban User"
 
 msgid "Basic Information"
-msgstr "Basic Information"
+msgstr "Informations de base"
 
 msgid "Best regards,"
 msgstr "Best regards,"
@@ -324,25 +369,25 @@ msgid "Brief summary (optional)"
 msgstr "Brief summary (optional)"
 
 msgid "Brief summary that will appear in lists (optional)"
-msgstr "Brief summary that will appear in lists (optional)"
+msgstr "Résumé bref qui apparaîtra dans les listes (optionnel)"
 
 msgid "Browse All"
-msgstr "Browse All"
+msgstr "Voir tout"
 
 msgid "Browse Events"
-msgstr "Browse Events"
+msgstr "Parcourir les événements"
 
 msgid "Browse Jobs"
 msgstr "Browse Jobs"
 
 msgid "Browse and apply for job opportunities"
-msgstr "Browse and apply for job opportunities"
+msgstr "Parcourir et postuler aux opportunités d'emploi"
 
 msgid "Bulk Actions"
 msgstr "Bulk Actions"
 
 msgid "By"
-msgstr "By"
+msgstr "Par"
 
 msgid "By Category"
 msgstr "By Category"
@@ -351,7 +396,7 @@ msgid "By Status"
 msgstr "By Status"
 
 msgid "Calendar View"
-msgstr "Calendar View"
+msgstr "Vue calendrier"
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -411,13 +456,16 @@ msgid "Category updated successfully."
 msgstr "Category updated successfully."
 
 msgid "Category:"
-msgstr "Category:"
+msgstr "Catégorie :"
 
 msgid "Change Password"
-msgstr "Change Password"
+msgstr "Changer le mot de passe"
 
 msgid "Changelog"
 msgstr "Changelog"
+
+msgid "Chat"
+msgstr "Chat"
 
 msgid "Check In"
 msgstr "Check In"
@@ -430,6 +478,9 @@ msgstr "Checked In"
 
 msgid "Checked In At"
 msgstr "Checked In At"
+
+msgid "Checking..."
+msgstr "Checking..."
 
 msgid "City"
 msgstr "City"
@@ -453,13 +504,13 @@ msgid "Company"
 msgstr "Company"
 
 msgid "Company Name"
-msgstr "Company Name"
+msgstr "Nom de l'entreprise"
 
 msgid "Company filter"
-msgstr "Company filter"
+msgstr "Filtre d'entreprise"
 
 msgid "Company name"
-msgstr "Company name"
+msgstr "Nom de l'entreprise"
 
 msgid "Complete your application by uploading your resume and optional cover letter."
 msgstr "Complete your application by uploading your resume and optional cover letter."
@@ -468,16 +519,16 @@ msgid "Completed"
 msgstr "Completed"
 
 msgid "Completed events"
-msgstr "Completed events"
+msgstr "Événements terminés"
 
 msgid "Congratulations! Your application has been accepted."
 msgstr "Congratulations! Your application has been accepted."
 
 msgid "Connect with fellow students and alumni"
-msgstr "Connect with fellow students and alumni"
+msgstr "Connectez-vous avec d'autres étudiants et anciens"
 
 msgid "Connect with other members"
-msgstr "Connect with other members"
+msgstr "Se connecter avec d'autres membres"
 
 msgid "Connecting Cameroonian students in the Lazio region, fostering community, and supporting academic excellence."
 msgstr "Connecter les étudiants camerounais de la région du Latium, favoriser la communauté et soutenir l'excellence académique."
@@ -512,6 +563,12 @@ msgstr "Control who can view this event"
 msgid "Control who can view this post"
 msgstr "Control who can view this post"
 
+msgid "Conversation"
+msgstr "Conversation"
+
+msgid "Conversations"
+msgstr "Conversations"
+
 msgid "Copyright Violation"
 msgstr "Copyright Violation"
 
@@ -524,11 +581,17 @@ msgstr "Country"
 msgid "Country of Origin"
 msgstr "Country of Origin"
 
+msgid "Country of origin"
+msgstr "Country of origin"
+
 msgid "Course"
 msgstr "Course"
 
 msgid "Course of Study"
 msgstr "Course of Study"
+
+msgid "Course of study"
+msgstr "Course of study"
 
 msgid "Cover Letter"
 msgstr "Cover Letter"
@@ -543,13 +606,13 @@ msgid "Create Documents"
 msgstr "Create Documents"
 
 msgid "Create Event"
-msgstr "Create Event"
+msgstr "Créer un événement"
 
 msgid "Create New Thread"
-msgstr "Create New Thread"
+msgstr "Créer un nouveau fil"
 
 msgid "Create Post"
-msgstr "Create Post"
+msgstr "Créer un article"
 
 msgid "Create Tag"
 msgstr "Create Tag"
@@ -561,13 +624,16 @@ msgid "Create a new category"
 msgstr "Create a new category"
 
 msgid "Create or edit a news announcement"
-msgstr "Create or edit a news announcement"
+msgstr "Créer ou modifier une annonce d'actualité"
 
 msgid "Created"
 msgstr "Created"
 
 msgid "Created By"
 msgstr "Created By"
+
+msgid "Created at"
+msgstr "Created at"
 
 msgid "Cultural"
 msgstr "Cultural"
@@ -577,6 +643,12 @@ msgstr "Current Version"
 
 msgid "Current image:"
 msgstr "Current image:"
+
+msgid "Current membership status."
+msgstr "Current membership status."
+
+msgid "Current year of study (1-10)."
+msgstr "Current year of study (1-10)."
 
 msgid "Custom Reports"
 msgstr "Custom Reports"
@@ -588,10 +660,13 @@ msgid "Date"
 msgstr "Date"
 
 msgid "Date & Time"
-msgstr "Date & Time"
+msgstr "Date et heure"
 
 msgid "Date of Birth"
 msgstr "Date of Birth"
+
+msgid "Date when membership expires."
+msgstr "Date when membership expires."
 
 msgid "Day"
 msgstr "Day"
@@ -606,16 +681,16 @@ msgid "Deactivate selected bans"
 msgstr "Deactivate selected bans"
 
 msgid "Deadline"
-msgstr "Deadline"
+msgstr "Date limite"
 
 msgid "Deadline must be in the future."
 msgstr "Deadline must be in the future."
 
 msgid "Default Access Level"
-msgstr "Default Access Level"
+msgstr "Niveau d'accès par défaut"
 
 msgid "Default access level for documents in this folder"
-msgstr "Default access level for documents in this folder"
+msgstr "Niveau d'accès par défaut pour les documents dans ce dossier"
 
 msgid "Delete"
 msgstr "Supprimer"
@@ -660,7 +735,7 @@ msgid "Dietary Requirements:"
 msgstr "Dietary Requirements:"
 
 msgid "Discover exciting career opportunities and internships"
-msgstr "Discover exciting career opportunities and internships"
+msgstr "Découvrez des opportunités de carrière et des stages passionnants"
 
 msgid "Dismiss flags"
 msgstr "Dismiss flags"
@@ -723,16 +798,19 @@ msgid "Edit Document"
 msgstr "Edit Document"
 
 msgid "Edit Event"
-msgstr "Edit Event"
+msgstr "Modifier l'événement"
+
+msgid "Edit Member Profile"
+msgstr "Edit Member Profile"
 
 msgid "Edit Profile"
-msgstr "Edit Profile"
+msgstr "Modifier le profil"
 
 msgid "Edit Reply"
 msgstr "Edit Reply"
 
 msgid "Edit Thread"
-msgstr "Edit Thread"
+msgstr "Modifier le fil"
 
 msgid "Edited"
 msgstr "Edited"
@@ -798,7 +876,7 @@ msgid "Event Date"
 msgstr "Event Date"
 
 msgid "Event Participation Over Time"
-msgstr "Event Participation Over Time"
+msgstr "Participation aux événements au fil du temps"
 
 msgid "Event Registration"
 msgstr "Event Registration"
@@ -813,7 +891,7 @@ msgid "Event Registration Confirmation"
 msgstr "Event Registration Confirmation"
 
 msgid "Event Registrations"
-msgstr "Event Registrations"
+msgstr "Inscriptions aux événements"
 
 msgid "Event Reminder"
 msgstr "Event Reminder"
@@ -822,7 +900,7 @@ msgid "Event Reminder: {} ({} days)"
 msgstr "Event Reminder: {} ({} days)"
 
 msgid "Event Status Distribution"
-msgstr "Event Status Distribution"
+msgstr "Répartition du statut des événements"
 
 msgid "Event Update"
 msgstr "Event Update"
@@ -858,7 +936,7 @@ msgid "Events"
 msgstr "Événements"
 
 msgid "Events Attended"
-msgstr "Events Attended"
+msgstr "Événements assistés"
 
 msgid "Events Overview"
 msgstr "Events Overview"
@@ -867,7 +945,7 @@ msgid "Excerpt"
 msgstr "Excerpt"
 
 msgid "Expiry Date:"
-msgstr "Expiry Date:"
+msgstr "Date d'expiration :"
 
 msgid "Export CSV"
 msgstr "Export CSV"
@@ -915,7 +993,7 @@ msgid "File size exceeds maximum allowed size of %(size)sMB"
 msgstr "File size exceeds maximum allowed size of %(size)sMB"
 
 msgid "Fill in the details below to create a new event"
-msgstr "Fill in the details below to create a new event"
+msgstr "Remplissez les détails ci-dessous pour créer un nouvel événement"
 
 msgid "Filter"
 msgstr "Filtrer"
@@ -927,7 +1005,7 @@ msgid "Flagged Content"
 msgstr "Flagged Content"
 
 msgid "Folder"
-msgstr "Folder"
+msgstr "Dossier"
 
 msgid "Folder created successfully."
 msgstr "Folder created successfully."
@@ -960,13 +1038,13 @@ msgid "French"
 msgstr "French"
 
 msgid "From"
-msgstr "From"
+msgstr "À partir de"
 
 msgid "From:"
 msgstr "From:"
 
 msgid "Full"
-msgstr "Full"
+msgstr "Complet"
 
 msgid "Full Time"
 msgstr "Full Time"
@@ -975,7 +1053,7 @@ msgid "General"
 msgstr "General"
 
 msgid "Get help and guidance from the community"
-msgstr "Get help and guidance from the community"
+msgstr "Obtenez de l'aide et des conseils de la communauté"
 
 msgid "Go to Dashboard"
 msgstr "Aller au tableau de bord"
@@ -988,6 +1066,9 @@ msgstr "Good news! A space has become available for the event:"
 
 msgid "Graduation Year"
 msgstr "Graduation Year"
+
+msgid "Graduation year"
+msgstr "Graduation year"
 
 msgid "Harassment"
 msgstr "Harassment"
@@ -1031,20 +1112,38 @@ msgstr "Initial version"
 msgid "Internal Notes"
 msgstr "Internal Notes"
 
+msgid "Internal notes about the application"
+msgstr "Internal notes about the application"
+
 msgid "Internal notes for the employer"
 msgstr "Internal notes for the employer"
 
 msgid "Internal notes visible only to admins"
 msgstr "Internal notes visible only to admins"
 
+msgid "Internal review notes (visible to applicant if rejected)"
+msgstr "Internal review notes (visible to applicant if rejected)"
+
 msgid "Internship"
 msgstr "Internship"
+
+msgid "Invalid action."
+msgstr "Invalid action."
+
+msgid "Invalid badge."
+msgstr "Invalid badge."
 
 msgid "Invalid request."
 msgstr "Invalid request."
 
 msgid "Invalid status selected."
 msgstr "Invalid status selected."
+
+msgid "Is online"
+msgstr "Is online"
+
+msgid "Is read"
+msgstr "Is read"
 
 msgid "Issuer"
 msgstr "Issuer"
@@ -1053,13 +1152,13 @@ msgid "Italian"
 msgstr "Italian"
 
 msgid "Job & Internship Board"
-msgstr "Job & Internship Board"
+msgstr "Tableau d'emplois et de stages"
 
 msgid "Job Board"
-msgstr "Job Board"
+msgstr "Tableau d'emplois"
 
 msgid "Job Description"
-msgstr "Job Description"
+msgstr "Description du poste"
 
 msgid "Job Information"
 msgstr "Job Information"
@@ -1068,10 +1167,10 @@ msgid "Job Posting"
 msgstr "Job Posting"
 
 msgid "Job Title"
-msgstr "Job Title"
+msgstr "Titre du poste"
 
 msgid "Job Type"
-msgstr "Job Type"
+msgstr "Type d'emploi"
 
 msgid "Job description"
 msgstr "Job description"
@@ -1089,7 +1188,7 @@ msgid "Job requirements (optional)"
 msgstr "Job requirements (optional)"
 
 msgid "Job type filter"
-msgstr "Job type filter"
+msgstr "Filtre de type d'emploi"
 
 msgid "Jobs"
 msgstr "Emplois"
@@ -1101,7 +1200,7 @@ msgid "Join Waitlist"
 msgstr "Join Waitlist"
 
 msgid "Join discussions and share ideas"
-msgstr "Join discussions and share ideas"
+msgstr "Rejoindre les discussions et partager des idées"
 
 msgid "Join discussions and share your thoughts"
 msgstr "Join discussions and share your thoughts"
@@ -1118,11 +1217,17 @@ msgstr "Last Activity"
 msgid "Last Updated"
 msgstr "Last Updated"
 
+msgid "Last message"
+msgstr "Last message"
+
+msgid "Last seen"
+msgstr "Last seen"
+
 msgid "Last updated:"
 msgstr "Last updated:"
 
 msgid "Leave blank to create in root"
-msgstr "Leave blank to create in root"
+msgstr "Laisser vide pour créer à la racine"
 
 msgid "Leave blank to inherit from folder"
 msgstr "Leave blank to inherit from folder"
@@ -1149,13 +1254,13 @@ msgid "List the required skills, qualifications, and experience for this positio
 msgstr "List the required skills, qualifications, and experience for this position."
 
 msgid "Location"
-msgstr "Location"
+msgstr "Localisation"
 
 msgid "Location (e.g., Rome, Italy)"
-msgstr "Location (e.g., Rome, Italy)"
+msgstr "Localisation (ex. : Rome, Italie)"
 
 msgid "Location filter"
-msgstr "Location filter"
+msgstr "Filtre de localisation"
 
 msgid "Lock"
 msgstr "Lock"
@@ -1170,7 +1275,7 @@ msgid "Locked"
 msgstr "Locked"
 
 msgid "Log In"
-msgstr "Log In"
+msgstr "Se connecter"
 
 msgid "Login"
 msgstr "Connexion"
@@ -1181,11 +1286,14 @@ msgstr "Déconnexion"
 msgid "MIME type"
 msgstr "MIME type"
 
+msgid "Main navigation"
+msgstr "Navigation principale"
+
 msgid "Manage Applications"
-msgstr "Manage Applications"
+msgstr "Gérer les candidatures"
 
 msgid "Manage Categories"
-msgstr "Manage Categories"
+msgstr "Gérer les catégories"
 
 msgid "Manage Tags"
 msgstr "Manage Tags"
@@ -1204,6 +1312,9 @@ msgstr "Mark as reviewed"
 
 msgid "Mark as unread"
 msgstr "Mark as unread"
+
+msgid "Mark member as verified by association."
+msgstr "Mark member as verified by association."
 
 msgid "Mark selected as attended"
 msgstr "Mark selected as attended"
@@ -1230,7 +1341,7 @@ msgid "Member"
 msgstr "Member"
 
 msgid "Member Directory"
-msgstr "Member Directory"
+msgstr "Répertoire des membres"
 
 msgid "Member Profile"
 msgstr "Member Profile"
@@ -1238,17 +1349,32 @@ msgstr "Member Profile"
 msgid "Member Statistics"
 msgstr "Member Statistics"
 
+msgid "Member already has this badge."
+msgstr "Member already has this badge."
+
+msgid "Member category (Student, Alumni, Honorary)."
+msgstr "Member category (Student, Alumni, Honorary)."
+
 msgid "Member profile not found."
 msgstr "Member profile not found."
 
 msgid "Member status updated successfully."
 msgstr "Member status updated successfully."
 
+msgid "Member verification removed."
+msgstr "Member verification removed."
+
+msgid "Member verified successfully."
+msgstr "Member verified successfully."
+
 msgid "Members"
 msgstr "Membres"
 
 msgid "Members Only"
 msgstr "Members Only"
+
+msgid "Members directory"
+msgstr "Répertoire des membres"
 
 msgid "Membership"
 msgstr "Membership"
@@ -1265,17 +1391,26 @@ msgstr "Membership Fee"
 msgid "Membership Information"
 msgstr "Membership Information"
 
+msgid "Membership Management"
+msgstr "Membership Management"
+
 msgid "Membership Number"
 msgstr "Membership Number"
 
 msgid "Membership Number:"
-msgstr "Membership Number:"
+msgstr "Numéro d'adhésion :"
 
 msgid "Membership Status"
-msgstr "Membership Status"
+msgstr "Statut d'adhésion"
 
 msgid "Mention"
 msgstr "Mention"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Messages"
+msgstr "Messages"
 
 msgid "Metadata"
 msgstr "Metadata"
@@ -1320,7 +1455,7 @@ msgid "Name"
 msgstr "Nom"
 
 msgid "Network"
-msgstr "Network"
+msgstr "Réseau"
 
 msgid "New Application Received"
 msgstr "New Application Received"
@@ -1347,10 +1482,13 @@ msgid "New Status"
 msgstr "New Status"
 
 msgid "New Thread"
-msgstr "New Thread"
+msgstr "Nouveau fil"
 
 msgid "New file"
 msgstr "New file"
+
+msgid "New message from"
+msgstr "New message from"
 
 msgid "New password"
 msgstr "New password"
@@ -1365,7 +1503,7 @@ msgid "News"
 msgstr "Actualités"
 
 msgid "News & Announcements"
-msgstr "News & Announcements"
+msgstr "Actualités et annonces"
 
 msgid "News Categories"
 msgstr "News Categories"
@@ -1392,7 +1530,7 @@ msgid "Next"
 msgstr "Suivant"
 
 msgid "No applications yet"
-msgstr "No applications yet"
+msgstr "Aucune candidature pour le moment"
 
 msgid "No categories available yet."
 msgstr "No categories available yet."
@@ -1400,11 +1538,14 @@ msgstr "No categories available yet."
 msgid "No categories yet. Create your first category!"
 msgstr "No categories yet. Create your first category!"
 
+msgid "No conversations yet."
+msgstr "No conversations yet."
+
 msgid "No documents found."
 msgstr "No documents found."
 
 msgid "No events found."
-msgstr "No events found."
+msgstr "Aucun événement trouvé."
 
 msgid "No events yet"
 msgstr "No events yet"
@@ -1416,16 +1557,19 @@ msgid "No forum activity"
 msgstr "No forum activity"
 
 msgid "No jobs found"
-msgstr "No jobs found"
+msgstr "Aucun emploi trouvé"
 
 msgid "No members found."
 msgstr "No members found."
 
+msgid "No new badges to award."
+msgstr "No new badges to award."
+
 msgid "No news available at the moment."
-msgstr "No news available at the moment."
+msgstr "Aucune actualité disponible pour le moment."
 
 msgid "No news posts found."
-msgstr "No news posts found."
+msgstr "Aucun article d'actualité trouvé."
 
 msgid "No notifications."
 msgstr "No notifications."
@@ -1440,7 +1584,7 @@ msgid "No pending threads."
 msgstr "No pending threads."
 
 msgid "No recent activity to display."
-msgstr "No recent activity to display."
+msgstr "Aucune activité récente à afficher."
 
 msgid "No recent events"
 msgstr "No recent events"
@@ -1473,22 +1617,40 @@ msgid "No upcoming events"
 msgstr "No upcoming events"
 
 msgid "No upcoming events. Browse available events to register."
-msgstr "No upcoming events. Browse available events to register."
+msgstr "Aucun événement à venir. Parcourez les événements disponibles pour vous inscrire."
+
+msgid "No users online"
+msgstr "No users online"
 
 msgid "Note"
 msgstr "Note"
 
+msgid "Notes from the reviewer"
+msgstr "Notes from the reviewer"
+
 msgid "Notifications"
 msgstr "Notifications"
 
+msgid "Offline"
+msgstr "Offline"
+
 msgid "Old password"
 msgstr "Old password"
+
+msgid "Online"
+msgstr "Online"
+
+msgid "Online Users"
+msgstr "Online Users"
 
 msgid "Only PDF, DOC, and DOCX files are allowed."
 msgstr "Only PDF, DOC, and DOCX files are allowed."
 
 msgid "Optional - leave blank for no deadline"
 msgstr "Optional - leave blank for no deadline"
+
+msgid "Optional notes about earning this badge"
+msgstr "Optional notes about earning this badge"
 
 msgid "Organization"
 msgstr "Organization"
@@ -1503,19 +1665,22 @@ msgid "Other"
 msgstr "Other"
 
 msgid "Our Community"
-msgstr "Our Community"
+msgstr "Notre communauté"
 
 msgid "Page"
 msgstr "Page"
 
 msgid "Parent Folder"
-msgstr "Parent Folder"
+msgstr "Dossier parent"
 
 msgid "Part Time"
 msgstr "Part Time"
 
+msgid "Participants"
+msgstr "Participants"
+
 msgid "Participate in cultural and academic events"
-msgstr "Participate in cultural and academic events"
+msgstr "Participez à des événements culturels et académiques"
 
 msgid "Password"
 msgstr "Mot de passe"
@@ -1524,16 +1689,16 @@ msgid "Password confirmation"
 msgstr "Password confirmation"
 
 msgid "Past"
-msgstr "Past"
+msgstr "Passé"
 
 msgid "Past:"
 msgstr "Past:"
 
 msgid "Payment History"
-msgstr "Payment History"
+msgstr "Historique des paiements"
 
 msgid "Payments (€)"
-msgstr "Payments (€)"
+msgstr "Paiements (€)"
 
 msgid "Pending"
 msgstr "Pending"
@@ -1583,14 +1748,20 @@ msgstr "Pin Thread"
 msgid "Pin selected threads"
 msgstr "Pin selected threads"
 
+msgid "Pinned"
+msgstr "Pinned"
+
 msgid "Please check the event page for more details."
 msgstr "Please check the event page for more details."
 
 msgid "Please check your email and click the activation link to activate your account."
-msgstr "Please check your email and click the activation link to activate your account."
+msgstr "Veuillez vérifier votre e-mail et cliquer sur le lien d'activation pour activer votre compte."
+
+msgid "Please correct the errors below"
+msgstr "Please correct the errors below"
 
 msgid "Please log in to apply for this job."
-msgstr "Please log in to apply for this job."
+msgstr "Veuillez vous connecter pour postuler à cet emploi."
 
 msgid "Please log in to register for this event."
 msgstr "Please log in to register for this event."
@@ -1620,7 +1791,7 @@ msgid "Post Your First Job"
 msgstr "Post Your First Job"
 
 msgid "Post a Job"
-msgstr "Post a Job"
+msgstr "Publier un emploi"
 
 msgid "Post a New Job"
 msgstr "Post a New Job"
@@ -1632,7 +1803,7 @@ msgid "Posted"
 msgstr "Posted"
 
 msgid "Posted by"
-msgstr "Posted by"
+msgstr "Publié par"
 
 msgid "Posts"
 msgstr "Posts"
@@ -1649,11 +1820,14 @@ msgstr "Privacy Settings"
 msgid "Profile"
 msgstr "Profil"
 
+msgid "Profile updated successfully."
+msgstr "Profile updated successfully."
+
 msgid "Provide a brief description of the document (optional)"
 msgstr "Provide a brief description of the document (optional)"
 
 msgid "Provide a detailed description of the event"
-msgstr "Provide a detailed description of the event"
+msgstr "Fournissez une description détaillée de l'événement"
 
 msgid "Provide a detailed description of the role, responsibilities, and what makes this opportunity special."
 msgstr "Provide a detailed description of the role, responsibilities, and what makes this opportunity special."
@@ -1680,7 +1854,7 @@ msgid "Published"
 msgstr "Published"
 
 msgid "Quick Actions"
-msgstr "Quick Actions"
+msgstr "Actions rapides"
 
 msgid "Re-register"
 msgstr "Re-register"
@@ -1698,7 +1872,7 @@ msgid "Reason for reporting"
 msgstr "Reason for reporting"
 
 msgid "Recent Activity"
-msgstr "Recent Activity"
+msgstr "Activité récente"
 
 msgid "Recent Event Registrations"
 msgstr "Recent Event Registrations"
@@ -1710,7 +1884,7 @@ msgid "Recent Member Registrations"
 msgstr "Recent Member Registrations"
 
 msgid "Recent News"
-msgstr "Recent News"
+msgstr "Actualités récentes"
 
 msgid "Recent News Posts"
 msgstr "Recent News Posts"
@@ -1743,7 +1917,7 @@ msgid "Registered At"
 msgstr "Registered At"
 
 msgid "Registered events"
-msgstr "Registered events"
+msgstr "Événements enregistrés"
 
 msgid "Registered for"
 msgstr "Registered for"
@@ -1812,7 +1986,7 @@ msgid "Remove from Waitlist"
 msgstr "Remove from Waitlist"
 
 msgid "Replies"
-msgstr "Replies"
+msgstr "Réponses"
 
 msgid "Reply"
 msgstr "Reply"
@@ -1839,7 +2013,7 @@ msgid "Report Details"
 msgstr "Report Details"
 
 msgid "Requirements"
-msgstr "Requirements"
+msgstr "Exigences"
 
 msgid "Reset"
 msgstr "Reset"
@@ -1848,7 +2022,7 @@ msgid "Resolved"
 msgstr "Resolved"
 
 msgid "Resources"
-msgstr "Resources"
+msgstr "Ressources"
 
 msgid "Restore"
 msgstr "Restore"
@@ -1875,7 +2049,7 @@ msgid "Review Information"
 msgstr "Review Information"
 
 msgid "Reviewed"
-msgstr "Reviewed"
+msgstr "Examiné"
 
 msgid "Rollback"
 msgstr "Rollback"
@@ -1893,7 +2067,7 @@ msgid "Salary & Deadline"
 msgstr "Salary & Deadline"
 
 msgid "Salary Range"
-msgstr "Salary Range"
+msgstr "Échelle salariale"
 
 msgid "Save"
 msgstr "Enregistrer"
@@ -1917,19 +2091,22 @@ msgid "Search documents..."
 msgstr "Search documents..."
 
 msgid "Search events..."
-msgstr "Search events..."
+msgstr "Rechercher des événements..."
 
 msgid "Search jobs"
-msgstr "Search jobs"
+msgstr "Rechercher des emplois"
 
 msgid "Search jobs, companies, or keywords..."
-msgstr "Search jobs, companies, or keywords..."
+msgstr "Rechercher des emplois, entreprises ou mots-clés..."
 
 msgid "Search..."
-msgstr "Search..."
+msgstr "Rechercher..."
 
 msgid "Select a category (optional)"
 msgstr "Select a category (optional)"
+
+msgid "Select a conversation to start chatting"
+msgstr "Select a conversation to start chatting"
 
 msgid "Select a folder to organize this document (optional)"
 msgstr "Select a folder to organize this document (optional)"
@@ -1940,11 +2117,14 @@ msgstr "Select tags to help categorize this document (optional)"
 msgid "Send reminders for selected events"
 msgstr "Send reminders for selected events"
 
+msgid "Sender"
+msgstr "Sender"
+
 msgid "Share your job opportunity with the ASCAI community"
 msgstr "Share your job opportunity with the ASCAI community"
 
 msgid "Slug"
-msgstr "Slug"
+msgstr "Identifiant"
 
 msgid "Social"
 msgstr "Social"
@@ -1954,6 +2134,9 @@ msgstr "Sorry, the activation link is invalid or has expired."
 
 msgid "Spam"
 msgstr "Spam"
+
+msgid "Special"
+msgstr "Special"
 
 msgid "Special Requests"
 msgstr "Special Requests"
@@ -1977,13 +2160,13 @@ msgid "Status Breakdown"
 msgstr "Status Breakdown"
 
 msgid "Status:"
-msgstr "Status:"
+msgstr "Statut :"
 
 msgid "Student"
 msgstr "Student"
 
 msgid "Subfolders"
-msgstr "Subfolders"
+msgstr "Sous-dossiers"
 
 msgid "Submit"
 msgstr "Soumettre"
@@ -2010,10 +2193,13 @@ msgid "Superuser must have is_superuser=True."
 msgstr "Superuser must have is_superuser=True."
 
 msgid "Support"
-msgstr "Support"
+msgstr "Soutien"
 
 msgid "Suspended"
 msgstr "Suspended"
+
+msgid "TBA"
+msgstr "TBA"
 
 msgid "Tag created successfully."
 msgstr "Tag created successfully."
@@ -2034,7 +2220,7 @@ msgid "Tags"
 msgstr "Tags"
 
 msgid "Tags (optional)"
-msgstr "Tags (optional)"
+msgstr "Tags (optionnel)"
 
 msgid "Target Version"
 msgstr "Target Version"
@@ -2078,6 +2264,9 @@ msgstr "The event you are registered for has been updated."
 msgid "The event you are registered for has been updated:"
 msgstr "The event you are registered for has been updated:"
 
+msgid "The university you are attending or attended."
+msgstr "The university you are attending or attended."
+
 msgid "There was an error with your registration."
 msgstr "There was an error with your registration."
 
@@ -2091,7 +2280,7 @@ msgid "This action cannot be undone. All versions of this document will be perma
 msgstr "This action cannot be undone. All versions of this document will be permanently deleted."
 
 msgid "This category is used by"
-msgstr "This category is used by"
+msgstr "Cette catégorie est utilisée par"
 
 msgid "This event has already started."
 msgstr "This event has already started."
@@ -2109,13 +2298,13 @@ msgid "This is a reminder that you are registered for:"
 msgstr "This is a reminder that you are registered for:"
 
 msgid "This job is no longer accepting applications."
-msgstr "This job is no longer accepting applications."
+msgstr "Cet emploi n'accepte plus de candidatures."
 
 msgid "This profile is private."
 msgstr "This profile is private."
 
 msgid "This tag is used by"
-msgstr "This tag is used by"
+msgstr "Ce tag est utilisé par"
 
 msgid "This thread is locked."
 msgstr "This thread is locked."
@@ -2168,14 +2357,20 @@ msgstr "To:"
 msgid "Today"
 msgstr "Today"
 
+msgid "Toggle menu"
+msgstr "Toggle menu"
+
+msgid "Toggle sidebar"
+msgstr "Toggle sidebar"
+
 msgid "Total Events"
-msgstr "Total Events"
+msgstr "Total des événements"
 
 msgid "Total Members"
 msgstr "Total Members"
 
 msgid "Total Payments"
-msgstr "Total Payments"
+msgstr "Total des paiements"
 
 msgid "Total Registrations:"
 msgstr "Total Registrations:"
@@ -2187,16 +2382,19 @@ msgid "Total:"
 msgstr "Total:"
 
 msgid "Track the status of your job applications"
-msgstr "Track the status of your job applications"
+msgstr "Suivez le statut de vos candidatures"
 
 msgid "Try adjusting your search filters or check back later for new opportunities."
 msgstr "Try adjusting your search filters or check back later for new opportunities."
+
+msgid "Type your message..."
+msgstr "Type your message..."
 
 msgid "URL-friendly identifier (e.g., category-name)"
 msgstr "URL-friendly identifier (e.g., category-name)"
 
 msgid "URL-friendly identifier (e.g., folder-name)"
-msgstr "URL-friendly identifier (e.g., folder-name)"
+msgstr "Identifiant convivial pour l'URL (ex. : nom-dossier)"
 
 msgid "URL-friendly identifier (e.g., tag-name)"
 msgstr "URL-friendly identifier (e.g., tag-name)"
@@ -2207,14 +2405,26 @@ msgstr "Unban User"
 msgid "Under Review"
 msgstr "Under Review"
 
+msgid "Unique membership identifier."
+msgstr "Unique membership identifier."
+
+msgid "Unique membership number"
+msgstr "Unique membership number"
+
 msgid "University"
 msgstr "University"
+
+msgid "University name"
+msgstr "University name"
+
+msgid "Unknown"
+msgstr "Unknown"
 
 msgid "Unlimited"
 msgstr "Unlimited"
 
 msgid "Unlimited capacity"
-msgstr "Unlimited capacity"
+msgstr "Capacité illimitée"
 
 msgid "Unlock"
 msgstr "Unlock"
@@ -2244,13 +2454,13 @@ msgid "Unpublished events are only visible to board members"
 msgstr "Unpublished events are only visible to board members"
 
 msgid "Up to"
-msgstr "Up to"
+msgstr "Jusqu'à"
 
 msgid "Upcoming"
-msgstr "Upcoming"
+msgstr "À venir"
 
 msgid "Upcoming Events"
-msgstr "Upcoming Events"
+msgstr "Événements à venir"
 
 msgid "Upcoming:"
 msgstr "Upcoming:"
@@ -2267,8 +2477,14 @@ msgstr "Update Status"
 msgid "Update your job posting information"
 msgstr "Update your job posting information"
 
+msgid "Update your member profile information"
+msgstr "Update your member profile information"
+
 msgid "Update your personal information"
-msgstr "Update your personal information"
+msgstr "Mettre à jour vos informations personnelles"
+
+msgid "Updated at"
+msgstr "Updated at"
 
 msgid "Upload Date"
 msgstr "Upload Date"
@@ -2309,6 +2525,12 @@ msgstr "Upvote"
 msgid "User"
 msgstr "User"
 
+msgid "User Presence"
+msgstr "User Presence"
+
+msgid "User Presences"
+msgstr "User Presences"
+
 msgid "Version"
 msgstr "Version"
 
@@ -2322,16 +2544,16 @@ msgid "Version not found"
 msgstr "Version not found"
 
 msgid "View"
-msgstr "View"
+msgstr "Voir"
 
 msgid "View All"
-msgstr "View All"
+msgstr "Voir tout"
 
 msgid "View Attendees"
 msgstr "View Attendees"
 
 msgid "View Details"
-msgstr "View Details"
+msgstr "Voir les détails"
 
 msgid "View Event Details"
 msgstr "View Event Details"
@@ -2340,22 +2562,22 @@ msgid "View Job Posting"
 msgstr "View Job Posting"
 
 msgid "View My Applications"
-msgstr "View My Applications"
+msgstr "Voir mes candidatures"
 
 msgid "View News"
 msgstr "Voir les actualités"
 
 msgid "View Profile"
-msgstr "View Profile"
+msgstr "Voir le profil"
 
 msgid "View Updated Event Details"
 msgstr "View Updated Event Details"
 
 msgid "View and register for upcoming events"
-msgstr "View and register for upcoming events"
+msgstr "Voir et s'inscrire aux événements à venir"
 
 msgid "View and upload documents"
-msgstr "View and upload documents"
+msgstr "Voir et télécharger des documents"
 
 msgid "Views"
 msgstr "Views"
@@ -2379,7 +2601,7 @@ msgid "Warning"
 msgstr "Warning"
 
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Attention :"
 
 msgid "We look forward to seeing you at the event!"
 msgstr "We look forward to seeing you at the event!"
@@ -2406,7 +2628,7 @@ msgid "Welcome to ASCAI!"
 msgstr "Welcome to ASCAI!"
 
 msgid "Welcome,"
-msgstr "Welcome,"
+msgstr "Bienvenue,"
 
 msgid "What changed in this version"
 msgstr "What changed in this version"
@@ -2414,11 +2636,23 @@ msgstr "What changed in this version"
 msgid "Year of Study"
 msgstr "Year of Study"
 
+msgid "Year of study"
+msgstr "Year of study"
+
+msgid "Year you graduated or expect to graduate."
+msgstr "Year you graduated or expect to graduate."
+
 msgid "Yes, Delete"
 msgstr "Yes, Delete"
 
 msgid "Yes, Delete Event"
 msgstr "Yes, Delete Event"
+
+msgid "You already have a member profile."
+msgstr "You already have a member profile."
+
+msgid "You already have a pending application."
+msgstr "You already have a pending application."
 
 msgid "You are banned from posting. Reason: %(reason)s"
 msgstr "You are banned from posting. Reason: %(reason)s"
@@ -2469,7 +2703,7 @@ msgid "You do not have permission to perform this action."
 msgstr "You do not have permission to perform this action."
 
 msgid "You have already applied to this job."
-msgstr "You have already applied to this job."
+msgstr "Vous avez déjà postulé à cet emploi."
 
 msgid "You have been added to the waitlist for this event."
 msgstr "You have been added to the waitlist for this event."
@@ -2501,8 +2735,11 @@ msgstr "Your %(type)s has been approved."
 msgid "Your %(type)s has been rejected. %(reason)s"
 msgstr "Your %(type)s has been rejected. %(reason)s"
 
+msgid "Your LinkedIn profile URL."
+msgstr "Your LinkedIn profile URL."
+
 msgid "Your account has been successfully activated!"
-msgstr "Your account has been successfully activated!"
+msgstr "Votre compte a été activé avec succès !"
 
 msgid "Your application has been received and is being reviewed."
 msgstr "Your application has been received and is being reviewed."
@@ -2519,8 +2756,14 @@ msgstr "Your application status has been updated:"
 msgid "Your cover letter (optional)"
 msgstr "Your cover letter (optional)"
 
+msgid "Your field of study or degree program."
+msgstr "Your field of study or degree program."
+
 msgid "Your personal dashboard overview"
-msgstr "Your personal dashboard overview"
+msgstr "Vue d'ensemble de votre tableau de bord personnel"
+
+msgid "Your personal or professional website URL."
+msgstr "Your personal or professional website URL."
 
 msgid "Your post reached %(count)s upvotes!"
 msgstr "Your post reached %(count)s upvotes!"
@@ -2552,11 +2795,11 @@ msgstr "amount"
 msgid "applicant"
 msgstr "applicant"
 
+msgid "application date"
+msgstr "application date"
+
 msgid "application deadline"
 msgstr "application deadline"
-
-msgid "applications"
-msgstr "applications"
 
 msgid "applied at"
 msgstr "applied at"
@@ -2566,6 +2809,12 @@ msgstr "approved"
 
 msgid "at"
 msgstr "at"
+
+msgid "badge"
+msgstr "badge"
+
+msgid "badges"
+msgstr "badges"
 
 msgid "bio"
 msgstr "bio"
@@ -2595,7 +2844,7 @@ msgid "company name"
 msgstr "company name"
 
 msgid "completed payments"
-msgstr "completed payments"
+msgstr "paiements effectués"
 
 msgid "content"
 msgstr "content"
@@ -2667,7 +2916,7 @@ msgid "document versions"
 msgstr "document versions"
 
 msgid "document(s). You cannot delete it."
-msgstr "document(s). You cannot delete it."
+msgstr "document(s). Vous ne pouvez pas le supprimer."
 
 msgid "documents"
 msgstr "documents"
@@ -2676,7 +2925,10 @@ msgid "download count"
 msgstr "download count"
 
 msgid "downloads"
-msgstr "downloads"
+msgstr "téléchargements"
+
+msgid "earned date"
+msgstr "earned date"
 
 msgid "edited"
 msgstr "edited"
@@ -2712,7 +2964,7 @@ msgid "event reminders"
 msgstr "event reminders"
 
 msgid "event(s). You cannot delete it."
-msgstr "event(s). You cannot delete it."
+msgstr "événement(s). Vous ne pouvez pas le supprimer."
 
 msgid "events"
 msgstr "events"
@@ -2759,6 +3011,12 @@ msgstr "granted"
 msgid "icon"
 msgstr "icon"
 
+msgid "is typing..."
+msgstr "is typing..."
+
+msgid "is verified"
+msgstr "is verified"
+
 msgid "job"
 msgstr "job"
 
@@ -2803,6 +3061,18 @@ msgstr "maximum salary"
 
 msgid "member"
 msgstr "member"
+
+msgid "member achievement"
+msgstr "member achievement"
+
+msgid "member achievements"
+msgstr "member achievements"
+
+msgid "member application"
+msgstr "member application"
+
+msgid "member applications"
+msgstr "member applications"
 
 msgid "members"
 msgstr "members"
@@ -2853,7 +3123,7 @@ msgid "of total"
 msgstr "of total"
 
 msgid "on waitlist"
-msgstr "on waitlist"
+msgstr "sur liste d'attente"
 
 msgid "order"
 msgstr "order"
@@ -2883,7 +3153,7 @@ msgid "pinned"
 msgstr "pinned"
 
 msgid "post(s). You cannot delete it."
-msgstr "post(s). You cannot delete it."
+msgstr "article(s). Vous ne pouvez pas le supprimer."
 
 msgid "posted at"
 msgstr "posted at"
@@ -2916,7 +3186,7 @@ msgid "registered at"
 msgstr "registered at"
 
 msgid "registration"
-msgstr "registration"
+msgstr "inscription"
 
 msgid "registration deadline"
 msgstr "registration deadline"
@@ -2925,7 +3195,7 @@ msgid "registration required"
 msgstr "registration required"
 
 msgid "registrations"
-msgstr "registrations"
+msgstr "inscriptions"
 
 msgid "reminder type"
 msgstr "reminder type"
@@ -2942,14 +3212,20 @@ msgstr "requirements"
 msgid "resume"
 msgstr "resume"
 
+msgid "review notes"
+msgstr "review notes"
+
 msgid "reviewed at"
 msgstr "reviewed at"
+
+msgid "reviewed by"
+msgstr "reviewed by"
 
 msgid "sent at"
 msgstr "sent at"
 
 msgid "spaces available"
-msgstr "spaces available"
+msgstr "places disponibles"
 
 msgid "special requests"
 msgstr "special requests"
@@ -2970,10 +3246,10 @@ msgid "tags, separated, by, commas"
 msgstr "tags, separated, by, commas"
 
 msgid "thread"
-msgstr "thread"
+msgstr "fil"
 
 msgid "threads"
-msgstr "threads"
+msgstr "fils"
 
 msgid "title"
 msgstr "title"
@@ -3005,11 +3281,17 @@ msgstr "user bans"
 msgid "users"
 msgstr "users"
 
+msgid "verified at"
+msgstr "verified at"
+
+msgid "verified by"
+msgstr "verified by"
+
 msgid "version number"
 msgstr "version number"
 
 msgid "views"
-msgstr "views"
+msgstr "vues"
 
 msgid "visibility"
 msgstr "visibility"

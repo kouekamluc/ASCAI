@@ -1,4 +1,6 @@
 /* Admin Dashboard Styles */
+/* Note: New styles are in dashboard-new.css */
+/* This file maintains backward compatibility */
 
 .admin-dashboard {
     padding: 2rem 0;

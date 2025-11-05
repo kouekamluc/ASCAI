@@ -1,0 +1,586 @@
+{% load i18n %}
+{% load static %}
+<div class="chat-container" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #e5ddd5; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,.03) 10px, rgba(0,0,0,.03) 20px); position: relative; overflow: hidden;">
+    <div class="chat-header">
+        <a href="{% url 'messaging:chat_list' %}" 
+           style="text-decoration: none; color: white;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </a>
+        <div style="flex: 1; min-width: 0;">
+            <h1 style="margin: 0; font-size: 1rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ other_user.full_name }}</h1>
+            <div class="user-status">
+                <span id="status-indicator" class="status-indicator offline"></span>
+                <span id="status-text">{% trans "Checking..." %}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-messages" id="chat-messages" data-last-message-id="{{ last_message_id|default:0 }}" data-conversation-id="{{ conversation.id }}">
+        <!-- Loading indicator for infinite scroll -->
+        <div id="loading-older-messages" style="display: none; text-align: center; padding: 1rem; color: #666;">
+            <span>{% trans "Loading older messages..." %}</span>
+        </div>
+        
+        {% for message in messages %}
+        <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}" data-message-id="{{ message.id }}">
+            <div class="message-content">
+                {{ message.content|linebreaks }}
+            </div>
+            <div class="message-time">{{ message.created_at|date:"H:i" }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- HTMX polling for new messages -->
+    <div id="message-poll" 
+         hx-get="{% url 'messaging:chat_detail' conversation.id %}?last_message_id={{ last_message_id|default:0 }}"
+         hx-trigger="every 2s"
+         hx-target="#chat-messages"
+         hx-swap="none"
+         hx-select=".message"
+         hx-on::after-request="handlePollResponse(event)"
+         style="display: none;"></div>
+    
+    <div class="chat-input-container">
+        <div id="typing-indicator" class="typing-indicator" style="display: none;">
+            <span>{{ other_user.first_name }} {% trans "is typing..." %}</span>
+        </div>
+        <form id="message-form" 
+              class="chat-input-form"
+              method="post"
+              action="{% url 'messaging:send_message' conversation.id %}">
+            {% csrf_token %}
+            <textarea id="message-input" 
+                      name="content" 
+                      rows="1" 
+                      placeholder='{% trans "Type a message" %}'
+                      autocomplete="off"
+                      required></textarea>
+            <button type="submit" class="send-button" id="send-button" aria-label="{% trans 'Send message' %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    
+    // Prevent multiple submissions - use a closure to ensure unique instance
+    let isSubmitting = false;
+    let lastSubmittedContent = '';
+    let lastSubmittedTime = 0;
+    // Use window property to persist across HTMX swaps
+    if (!window.seenMessageIds) {
+        window.seenMessageIds = new Set();
+    }
+    const seenMessageIds = window.seenMessageIds; // Track seen message IDs to prevent duplicates
+    
+    // Use let instead of const so we can reassign when HTMX swaps
+    let messageForm = document.getElementById('message-form');
+    let messageInput = document.getElementById('message-input');
+    let sendButton = document.getElementById('send-button');
+    let messagesContainer = document.getElementById('chat-messages');
+    let pollDiv = document.getElementById('message-poll');
+    
+    if (!messageForm || !messageInput || !sendButton || !messagesContainer) {
+        return;
+    }
+    
+    // Initialize seen message IDs from existing messages
+    function initializeSeenMessages() {
+        const existingMessages = messagesContainer.querySelectorAll('.message[data-message-id]');
+        existingMessages.forEach(msg => {
+            const msgId = msg.getAttribute('data-message-id');
+            if (msgId) {
+                seenMessageIds.add(msgId);
+            }
+        });
+    }
+    
+    // Initialize on load
+    initializeSeenMessages();
+    
+    // Function to add message if not duplicate
+    function addMessageIfNotDuplicate(messageElement) {
+        const msgId = messageElement.getAttribute('data-message-id');
+        if (!msgId || seenMessageIds.has(msgId)) {
+            return false; // Message already exists
+        }
+        seenMessageIds.add(msgId);
+        messagesContainer.appendChild(messageElement);
+        return true;
+    }
+    
+    // Function to update last message ID in poll
+    function updatePollLastMessageId() {
+        if (!pollDiv) return;
+        const lastMessage = messagesContainer.querySelector('.message:last-child[data-message-id]');
+        if (lastMessage) {
+            const lastMessageId = lastMessage.getAttribute('data-message-id');
+            if (lastMessageId) {
+                const currentUrl = pollDiv.getAttribute('hx-get');
+                const baseUrl = currentUrl.split('?')[0];
+                pollDiv.setAttribute('hx-get', baseUrl + '?last_message_id=' + lastMessageId);
+            }
+        }
+    }
+    
+    // Function to scroll to bottom smoothly
+    function scrollToBottom(smooth = true) {
+        if (messagesContainer) {
+            const scrollThreshold = 150;
+            const isNearBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < scrollThreshold;
+            
+            if (isNearBottom || smooth) {
+                setTimeout(() => {
+                    messagesContainer.scrollTo({
+                        top: messagesContainer.scrollHeight,
+                        behavior: smooth ? 'smooth' : 'auto'
+                    });
+                }, 50);
+            }
+        }
+    }
+    
+    // Handle HTMX polling response - make it globally available
+    window.handlePollResponse = function(event) {
+        if (!event || !event.detail || !event.detail.xhr) {
+            return;
+        }
+        
+        if (event.detail.xhr.status === 204) {
+            return; // No new messages
+        }
+        
+        const responseText = event.detail.xhr.responseText;
+        if (!responseText || !responseText.trim()) return;
+        
+        // Get messages container (might have changed if page was swapped)
+        const container = document.getElementById('chat-messages');
+        if (!container) return;
+        
+        // Ensure seenMessageIds exists
+        if (!window.seenMessageIds) {
+            window.seenMessageIds = new Set();
+        }
+        
+        // Parse HTML response
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(responseText, 'text/html');
+        const newMessages = doc.querySelectorAll('.message[data-message-id]');
+        
+        let addedAny = false;
+        newMessages.forEach(msg => {
+            const msgId = msg.getAttribute('data-message-id');
+            if (!msgId || window.seenMessageIds.has(msgId)) {
+                return; // Already exists
+            }
+            window.seenMessageIds.add(msgId);
+            container.appendChild(msg.cloneNode(true));
+            addedAny = true;
+        });
+        
+        if (addedAny) {
+            // Update polling URL
+            const pollDiv = document.getElementById('message-poll');
+            if (pollDiv) {
+                const lastMessage = container.querySelector('.message:last-child[data-message-id]');
+                if (lastMessage) {
+                    const lastMessageId = lastMessage.getAttribute('data-message-id');
+                    if (lastMessageId) {
+                        const currentUrl = pollDiv.getAttribute('hx-get');
+                        if (currentUrl) {
+                            const baseUrl = currentUrl.split('?')[0];
+                            pollDiv.setAttribute('hx-get', baseUrl + '?last_message_id=' + lastMessageId);
+                        }
+                    }
+                }
+            }
+            
+            // Scroll to bottom if near bottom
+            const scrollThreshold = 150;
+            const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < scrollThreshold;
+            if (isNearBottom) {
+                setTimeout(() => {
+                    container.scrollTo({
+                        top: container.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 50);
+            }
+        }
+    };
+    
+    // Auto-focus on load
+    setTimeout(() => messageInput.focus(), 100);
+    
+    // Auto-resize textarea
+    function autoResize() {
+        messageInput.style.height = 'auto';
+        messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
+    }
+    
+    messageInput.addEventListener('input', autoResize);
+    
+    // WhatsApp-like behavior: Enter to send, Shift+Enter for new line
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (!isSubmitting && messageInput.value.trim()) {
+                messageForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+            }
+        }
+    });
+    
+    // Prevent duplicate submissions and handle form submission
+    messageForm.addEventListener('submit', function(e) {
+        const content = messageInput.value.trim();
+        
+        // Prevent if already submitting
+        if (isSubmitting) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        }
+        
+        // Prevent if empty
+        if (!content) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent if same content as last submission (within 2 seconds)
+        const now = Date.now();
+        if (content === lastSubmittedContent && now - (lastSubmittedTime || 0) < 2000) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Mark as submitting
+        isSubmitting = true;
+        lastSubmittedContent = content;
+        lastSubmittedTime = now;
+        
+        // Disable button and show loading state
+        sendButton.disabled = true;
+        sendButton.style.opacity = '0.6';
+        sendButton.style.cursor = 'not-allowed';
+        
+        // Submit via fetch to have full control
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const formData = new FormData(messageForm);
+        const csrfToken = formData.get('csrfmiddlewaretoken');
+        
+        fetch(messageForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'HX-Request': 'true'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Parse and insert new message
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newMessages = doc.querySelectorAll('.message[data-message-id]');
+            
+            let addedAny = false;
+            newMessages.forEach(msg => {
+                if (addMessageIfNotDuplicate(msg.cloneNode(true))) {
+                    addedAny = true;
+                }
+            });
+            
+            if (addedAny) {
+                updatePollLastMessageId();
+                scrollToBottom(true);
+            }
+            
+            // Clear input immediately after successful send
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            lastSubmittedContent = ''; // Clear so same message can be sent again after delay
+            
+            // Reset submitting flag and button state
+            setTimeout(() => {
+                isSubmitting = false;
+                sendButton.disabled = false;
+                sendButton.style.opacity = '1';
+                sendButton.style.cursor = 'pointer';
+                messageInput.focus();
+            }, 300);
+        })
+        .catch(error => {
+            console.error('Error sending message:', error);
+            // Reset on error
+            isSubmitting = false;
+            lastSubmittedContent = '';
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+            messageInput.focus();
+            
+            // Show error message
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'chat-error';
+            errorMsg.style.cssText = 'padding: 0.5rem 1rem; background: #fee; color: #c33; border-radius: 8px; margin: 0.5rem; text-align: center;';
+            errorMsg.textContent = 'Failed to send message. Please try again.';
+            messagesContainer.appendChild(errorMsg);
+            setTimeout(() => errorMsg.remove(), 5000);
+        });
+        
+        return false;
+    });
+    
+    // Initialize scroll position on load
+    setTimeout(() => {
+        scrollToBottom(false);
+    }, 200);
+    
+    // Infinite scroll for loading older messages
+    let isLoadingOlderMessages = false;
+    let currentPage = 1;
+    // Check if we have more messages based on initial load
+    const initialMessages = messagesContainer.querySelectorAll('.message').length;
+    let hasMoreMessages = initialMessages >= 50; // If we got 50 messages, likely more exist
+    
+    async function loadOlderMessages() {
+        if (isLoadingOlderMessages || !hasMoreMessages) return;
+        
+        const conversationId = messagesContainer.getAttribute('data-conversation-id');
+        if (!conversationId) return;
+        
+        isLoadingOlderMessages = true;
+        const loadingIndicator = document.getElementById('loading-older-messages');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+        }
+        
+        try {
+            const nextPage = currentPage + 1;
+            const response = await fetch(`/messaging/conversation/${conversationId}/messages/?page=${nextPage}&per_page=50`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (data.messages && data.messages.length > 0) {
+                    // Store current scroll position
+                    const oldScrollHeight = messagesContainer.scrollHeight;
+                    const scrollTop = messagesContainer.scrollTop;
+                    
+                    // Get the first message element (before which we'll insert)
+                    const firstMessage = messagesContainer.querySelector('.message');
+                    
+                    // Create message elements
+                    data.messages.forEach(msg => {
+                        const msgId = String(msg.id);
+                        // Check if message already exists
+                        if (seenMessageIds.has(msgId)) return;
+                        
+                        seenMessageIds.add(msgId);
+                        
+                        const messageDiv = document.createElement('div');
+                        // Get current user ID from the page or use sender comparison
+                        const currentUserId = {{ user.id }};
+                        const isSent = msg.sender_id === currentUserId;
+                        messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+                        messageDiv.setAttribute('data-message-id', msgId);
+                        
+                        // Escape HTML and convert line breaks
+                        const contentDiv = document.createElement('div');
+                        contentDiv.textContent = msg.content;
+                        const content = contentDiv.innerHTML.replace(/\n/g, '<br>');
+                        
+                        const timeDiv = document.createElement('div');
+                        timeDiv.className = 'message-time';
+                        const messageDate = new Date(msg.created_at);
+                        timeDiv.textContent = messageDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        messageDiv.innerHTML = `
+                            <div class="message-content">${content}</div>
+                        `;
+                        messageDiv.appendChild(timeDiv);
+                        
+                        // Insert before first message or loading indicator
+                        if (firstMessage) {
+                            messagesContainer.insertBefore(messageDiv, firstMessage);
+                        } else {
+                            messagesContainer.insertBefore(messageDiv, loadingIndicator);
+                        }
+                    });
+                    
+                    // Restore scroll position
+                    const newScrollHeight = messagesContainer.scrollHeight;
+                    messagesContainer.scrollTop = scrollTop + (newScrollHeight - oldScrollHeight);
+                    
+                    currentPage = nextPage;
+                    hasMoreMessages = data.has_more;
+                } else {
+                    hasMoreMessages = false;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading older messages:', error);
+        } finally {
+            isLoadingOlderMessages = false;
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+    }
+    
+    // Add scroll listener for infinite scroll
+    messagesContainer.addEventListener('scroll', function() {
+        // Load more when scrolled near top (within 200px)
+        if (messagesContainer.scrollTop < 200 && hasMoreMessages && !isLoadingOlderMessages) {
+            loadOlderMessages();
+        }
+    });
+    
+    // Check and update online status
+    async function checkOnlineStatus() {
+        const otherUserId = {{ other_user.id }};
+        if (!otherUserId) return;
+        
+        try {
+            const response = await fetch(`/messaging/user/${otherUserId}/status/`);
+            if (response.ok) {
+                const data = await response.json();
+                updateOnlineStatus(data.is_online, data.last_seen);
+            }
+        } catch (error) {
+            console.error('Error checking online status:', error);
+        }
+    }
+    
+    function updateOnlineStatus(isOnline, lastSeen) {
+        const indicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        
+        if (indicator && statusText) {
+            if (isOnline) {
+                indicator.className = 'status-indicator online';
+                statusText.textContent = '{% trans "Online" %}';
+            } else {
+                indicator.className = 'status-indicator offline';
+                if (lastSeen) {
+                    const lastSeenDate = new Date(lastSeen);
+                    const now = new Date();
+                    const diffMs = now - lastSeenDate;
+                    const diffMins = Math.floor(diffMs / 60000);
+                    const diffHours = Math.floor(diffMins / 60);
+                    const diffDays = Math.floor(diffHours / 24);
+                    
+                    let statusMsg = '{% trans "Offline" %}';
+                    if (diffMins < 1) {
+                        statusMsg = '{% trans "Just now" %}';
+                    } else if (diffMins < 60) {
+                        statusMsg = diffMins + ' {% trans "min ago" %}';
+                    } else if (diffHours < 24) {
+                        statusMsg = diffHours + (diffHours > 1 ? ' {% trans "hours ago" %}' : ' {% trans "hour ago" %}');
+                    } else if (diffDays < 7) {
+                        statusMsg = diffDays + (diffDays > 1 ? ' {% trans "days ago" %}' : ' {% trans "day ago" %}');
+                    } else {
+                        statusMsg = lastSeenDate.toLocaleDateString();
+                    }
+                    statusText.textContent = statusMsg;
+                } else {
+                    statusText.textContent = '{% trans "Offline" %}';
+                }
+            }
+        }
+    }
+    
+    // Check online status on load and periodically
+    checkOnlineStatus();
+    setInterval(checkOnlineStatus, 10000); // Check every 10 seconds
+    
+    // Keep input focused (but not too aggressively)
+    messageInput.addEventListener('blur', function() {
+        // Only refocus if user clicked outside but not on another input/button
+        setTimeout(() => {
+            if (!isSubmitting && document.activeElement !== sendButton && !document.activeElement.matches('a, button:not(#send-button)')) {
+                messageInput.focus();
+            }
+        }, 200);
+    });
+    
+    // Handle HTMX events for when conversation is loaded via HTMX
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        // If the entire chat container was swapped, reinitialize
+        if (event.detail.target.id === 'chat-main' || event.detail.target.classList.contains('chat-container')) {
+            // Wait for DOM to be fully updated and script to re-execute
+            // The script will re-run automatically when the page is swapped
+            setTimeout(() => {
+                // Clear and reinitialize seen messages for new conversation
+                if (window.seenMessageIds) {
+                    window.seenMessageIds.clear();
+                } else {
+                    window.seenMessageIds = new Set();
+                }
+                
+                // Reinitialize seen messages
+                const newMessagesContainer = document.getElementById('chat-messages');
+                if (newMessagesContainer) {
+                    const existingMessages = newMessagesContainer.querySelectorAll('.message[data-message-id]');
+                    existingMessages.forEach(msg => {
+                        const msgId = msg.getAttribute('data-message-id');
+                        if (msgId) {
+                            window.seenMessageIds.add(msgId);
+                        }
+                    });
+                    
+                    // Update polling
+                    const newPollDiv = document.getElementById('message-poll');
+                    if (newPollDiv) {
+                        const lastMessage = newMessagesContainer.querySelector('.message:last-child[data-message-id]');
+                        if (lastMessage) {
+                            const lastMessageId = lastMessage.getAttribute('data-message-id');
+                            if (lastMessageId) {
+                                const currentUrl = newPollDiv.getAttribute('hx-get');
+                                if (currentUrl) {
+                                    const baseUrl = currentUrl.split('?')[0];
+                                    newPollDiv.setAttribute('hx-get', baseUrl + '?last_message_id=' + lastMessageId);
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Scroll to bottom
+                    setTimeout(() => {
+                        newMessagesContainer.scrollTo({
+                            top: newMessagesContainer.scrollHeight,
+                            behavior: 'auto'
+                        });
+                    }, 50);
+                }
+                
+                // Focus input
+                const newMessageInput = document.getElementById('message-input');
+                if (newMessageInput) {
+                    setTimeout(() => newMessageInput.focus(), 100);
+                }
+            }, 100);
+        }
+    });
+})();
+</script>
+

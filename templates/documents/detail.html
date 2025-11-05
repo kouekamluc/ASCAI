@@ -107,7 +107,7 @@
                     <td>{{ version.version_number }}</td>
                     <td>{{ version.created_at|date:"M d, Y H:i" }}</td>
                     <td>{{ version.created_by.full_name|default:version.created_by.email }}</td>
-                    <td>{{ version.changelog|default:"—" }}</td>
+                    <td>{% if version.changelog %}{{ version.changelog }}{% else %}{% trans "-" %}{% endif %}</td>
                     <td>{{ version.file_size|filesizeformat }}</td>
                     <td>
                         <a href="{% url 'documents:version_download' document.pk version.version_number %}" 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}Registration Successful - ASCAI{% endblock %}
+{% block title %}{% trans "Registration Successful" %} - ASCAI{% endblock %}
 
 {% block content %}
 <div class="auth-container">
@@ -11,6 +11,20 @@
     <p><a href="{% url 'accounts:login' %}">{% trans "Back to Login" %}</a></p>
 </div>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

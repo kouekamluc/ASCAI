@@ -72,13 +72,16 @@
                     {{ job.description|truncatewords:30 }}
                 </p>
                 {% if job.salary_min or job.salary_max %}
+                    {% load l10n %}
                     <div class="job-salary">
                         {% if job.salary_min and job.salary_max %}
-                            €{{ job.salary_min|floatformat:0 }} - €{{ job.salary_max|floatformat:0 }}
+                            {% localize on %}
+                                €{{ job.salary_min|floatformat:0 }} - €{{ job.salary_max|floatformat:0 }}
+                            {% endlocalize %}
                         {% elif job.salary_min %}
-                            {% trans "From" %} €{{ job.salary_min|floatformat:0 }}
+                            {% trans "From" %} {% localize on %}€{{ job.salary_min|floatformat:0 }}{% endlocalize %}
                         {% elif job.salary_max %}
-                            {% trans "Up to" %} €{{ job.salary_max|floatformat:0 }}
+                            {% trans "Up to" %} {% localize on %}€{{ job.salary_max|floatformat:0 }}{% endlocalize %}
                         {% endif %}
                     </div>
                 {% endif %}
@@ -88,8 +91,20 @@
                     </div>
                 {% endif %}
                 <div class="job-footer">
-                    <span class="job-views">{{ job.views_count }} {% trans "views" %}</span>
-                    <span class="job-applications">{{ job.get_application_count }} {% trans "applications" %}</span>
+                    <span class="job-views">
+                        {% blocktrans count count=job.views_count %}
+                            {{ count }} view
+                        {% plural %}
+                            {{ count }} views
+                        {% endblocktrans %}
+                    </span>
+                    <span class="job-applications">
+                        {% blocktrans count count=job.get_application_count %}
+                            {{ count }} application
+                        {% plural %}
+                            {{ count }} applications
+                        {% endblocktrans %}
+                    </span>
                 </div>
             </div>
         </article>

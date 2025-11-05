@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Payment Confirmation" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="payment-confirmation-page">
+    <div class="payment-header">
+        <h1>{% trans "Payment Confirmation" %}</h1>
+        <p class="subtitle">{% trans "Complete your payment information" %}</p>
+    </div>
+    
+    <div class="payment-details-card">
+        <h2>{% trans "Payment Details" %}</h2>
+        <div class="payment-detail-item">
+            <strong>{% trans "Amount" %}:</strong>
+            <span>€{{ payment.amount }}</span>
+        </div>
+        <div class="payment-detail-item">
+            <strong>{% trans "Payment Method" %}:</strong>
+            <span>{{ payment.get_payment_method_display|default:payment.payment_method|default:"Manual Payment" }}</span>
+        </div>
+        <div class="payment-detail-item">
+            <strong>{% trans "Status" %}:</strong>
+            <span class="status-badge status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+        </div>
+        <div class="payment-detail-item">
+            <strong>{% trans "Created" %}:</strong>
+            <span>{{ payment.created_at|date:"F d, Y H:i" }}</span>
+        </div>
+    </div>
+    
+    <div class="bank-details-card">
+        <h2>{% trans "Bank Transfer Details" %}</h2>
+        <div class="bank-info">
+            <p><strong>{% trans "Bank Name" %}:</strong> [Your Bank Name]</p>
+            <p><strong>{% trans "Account Holder" %}:</strong> ASCAI - Association of Cameroonian Students in Lazio</p>
+            <p><strong>{% trans "IBAN" %}:</strong> [Your IBAN]</p>
+            <p><strong>{% trans "BIC/SWIFT" %}:</strong> [Your BIC]</p>
+            <p><strong>{% trans "Reference" %}:</strong> MEM-{{ payment.id }}</p>
+            <p class="amount-highlight"><strong>{% trans "Amount" %}:</strong> €{{ payment.amount }}</p>
+        </div>
+        <div class="alert alert-info">
+            <strong>{% trans "Important" %}:</strong>
+            {% trans "Please include the reference 'MEM-{{ payment.id }}' in your bank transfer so we can identify your payment." %}
+        </div>
+    </div>
+    
+    <div class="payment-form-card">
+        <h2>{% trans "Confirm Payment" %}</h2>
+        <p>{% trans "After you've made the bank transfer, please fill in the form below to help us verify your payment." %}</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="alert alert-error">
+                {{ form.errors }}
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="{{ form.transaction_reference.id_for_label }}">{{ form.transaction_reference.label }}</label>
+                {{ form.transaction_reference }}
+                {% if form.transaction_reference.help_text %}
+                    <small class="form-help">{{ form.transaction_reference.help_text }}</small>
+                {% endif %}
+                {% if form.transaction_reference.errors %}
+                    <div class="form-error">{{ form.transaction_reference.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}
+                    <div class="form-error">{{ form.notes.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">{% trans "Submit Confirmation" %}</button>
+                <a href="{% url 'members:payment_status' payment.id %}" class="btn btn-secondary">{% trans "Skip for Now" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

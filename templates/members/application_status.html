@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Application Status" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="application-status-page">
+    <div class="status-header">
+        <h1>{% trans "My Membership Applications" %}</h1>
+        {% if not latest_application or latest_application.status != "pending" %}
+            <a href="{% url 'members:apply' %}" class="btn btn-primary">{% trans "Apply for Membership" %}</a>
+        {% endif %}
+    </div>
+    
+    {% if latest_application %}
+        <div class="application-status-card">
+            <div class="status-badge-large status-{{ latest_application.status }}">
+                {{ latest_application.get_status_display }}
+            </div>
+            
+            <div class="application-details">
+                <div class="detail-item">
+                    <strong>{% trans "Application Date" %}:</strong>
+                    {{ latest_application.application_date|date:"F d, Y" }}
+                </div>
+                
+                {% if latest_application.notes %}
+                <div class="detail-item">
+                    <strong>{% trans "Your Notes" %}:</strong>
+                    <p>{{ latest_application.notes }}</p>
+                </div>
+                {% endif %}
+                
+                {% if latest_application.reviewed_at %}
+                <div class="detail-item">
+                    <strong>{% trans "Reviewed" %}:</strong>
+                    {{ latest_application.reviewed_at|date:"F d, Y" }}
+                    {% if latest_application.reviewed_by %}
+                        {% trans "by" %} {{ latest_application.reviewed_by.full_name }}
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if latest_application.review_notes %}
+                <div class="detail-item">
+                    <strong>{% trans "Review Notes" %}:</strong>
+                    <p>{{ latest_application.review_notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>{% trans "You haven't submitted any membership applications yet." %}</p>
+            <a href="{% url 'members:apply' %}" class="btn btn-primary">{% trans "Apply Now" %}</a>
+        </div>
+    {% endif %}
+    
+    {% if applications|length > 1 %}
+        <div class="application-history">
+            <h2>{% trans "Application History" %}</h2>
+            <div class="history-list">
+                {% for application in applications %}
+                    <div class="history-item">
+                        <span class="status-badge status-{{ application.status }}">{{ application.get_status_display }}</span>
+                        <span>{{ application.application_date|date:"M d, Y" }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

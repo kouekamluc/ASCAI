@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Payment History" %} - ASCAI{% endblock %}
+
+{% block content %}
+<div class="payment-history-page">
+    <div class="payment-header">
+        <h1>{% trans "Payment History" %}</h1>
+        <a href="{% url 'members:pay_membership' %}" class="btn btn-primary">{% trans "Pay Membership Fee" %}</a>
+    </div>
+    
+    {% if payments %}
+    <div class="payments-table">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Amount" %}</th>
+                    <th>{% trans "Method" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.created_at|date:"M d, Y" }}</td>
+                    <td>{{ payment.get_payment_type_display }}</td>
+                    <td>€{{ payment.amount }}</td>
+                    <td>{{ payment.get_payment_method_display|default:payment.payment_method|default:"-" }}</td>
+                    <td>
+                        <span class="status-badge status-{{ payment.status }}">
+                            {{ payment.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'members:payment_status' payment.id %}" class="btn btn-sm btn-primary">
+                            {% trans "View" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>{% trans "You haven't made any payments yet." %}</p>
+        <a href="{% url 'members:pay_membership' %}" class="btn btn-primary">{% trans "Pay Membership Fee" %}</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

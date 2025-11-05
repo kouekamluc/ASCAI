@@ -43,15 +43,15 @@
                 <tr {% if thread.is_pinned %}class="pinned"{% endif %}>
                     <td class="thread-title">
                         <div class="thread-link">
-                            {% if thread.is_pinned %}<span class="badge" title="Pinned">📌</span>{% endif %}
-                            {% if thread.is_locked %}<span class="badge" title="Locked">🔒</span>{% endif %}
+                            {% if thread.is_pinned %}<span class="badge" title="{% trans 'Pinned' %}">📌</span>{% endif %}
+                            {% if thread.is_locked %}<span class="badge" title="{% trans 'Locked' %}">🔒</span>{% endif %}
                             <a href="{% url 'forums:thread_detail' thread.slug %}">{{ thread.title }}</a>
                         </div>
                     </td>
                     <td style="color: #5f6368; font-weight: 500;">{{ thread.author.full_name }}</td>
                     <td style="color: #5f6368; font-weight: 500;">{{ thread.reply_count }}</td>
                     <td style="color: #5f6368; font-weight: 500;">{{ thread.view_count }}</td>
-                    <td style="color: #80868b; font-size: 0.875rem;">{{ thread.last_activity|timesince }} ago</td>
+                    <td style="color: #80868b; font-size: 0.875rem;">{% blocktrans with time=thread.last_activity|timesince %}{{ time }} ago{% endblocktrans %}</td>
                 </tr>
                 {% empty %}
                 <tr>

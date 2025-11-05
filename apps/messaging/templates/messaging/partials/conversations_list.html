@@ -1,0 +1,34 @@
+{% load i18n %}
+{% for conversation in conversations %}
+<a href="{% url 'messaging:chat_detail' conversation.id %}" 
+   class="conversation-link"
+   data-conversation-id="{{ conversation.id }}"
+   style="text-decoration: none; color: inherit; display: block;"
+   hx-get="{% url 'messaging:chat_detail' conversation.id %}"
+   hx-target="#chat-main"
+   hx-swap="innerHTML"
+   hx-push-url="true"
+   hx-on::after-request="if(typeof updateActiveConversation === 'function') updateActiveConversation({{ conversation.id }})">
+    <div class="conversation-item" data-conv-id="{{ conversation.id }}">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>{{ conversation.other_participant.full_name }}</strong>
+                {% if conversation.last_message %}
+                <p style="margin: 0.25rem 0 0 0; color: #666; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {{ conversation.last_message.content|truncatewords:10 }}
+                </p>
+                {% endif %}
+            </div>
+            {% if conversation.unread_count > 0 %}
+            <span style="background: var(--primary-green); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                {{ conversation.unread_count }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+</a>
+{% empty %}
+<p style="color: #666; text-align: center; padding: 2rem 0;">{% trans "No conversations yet." %}</p>
+{% endfor %}
+
+

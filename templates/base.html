@@ -5,8 +5,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ASCAI - Association of Cameroonian Students in Lazio{% endblock %}</title>
+    <title>{% block title %}{% trans "ASCAI - Association of Cameroonian Students in Lazio" %}{% endblock %}</title>
     {% load static %}
+    <!-- Google Fonts - Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Design System -->
+    <link rel="stylesheet" href="{% static 'css/design-system.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/compatibility.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
     <style>
@@ -21,53 +30,253 @@
 </head>
 <body>
     {% load i18n %}
-    <nav class="navbar">
-        <div class="container">
-            <a href="{% url 'dashboard:index' %}" class="navbar-brand">ASCAI</a>
-            <ul class="navbar-nav">
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'dashboard:home' %}">{% trans "Dashboard" %}</a></li>
-                    {% if user.is_admin or user.is_board_member %}
-                    <li><a href="{% url 'dashboard:admin' %}">{% trans "Admin" %}</a></li>
-                    {% endif %}
-                    <li><a href="{% url 'events:list' %}">{% trans "Events" %}</a></li>
-                    <li><a href="{% url 'news:list' %}">{% trans "News" %}</a></li>
-                    <li><a href="{% url 'forums:category_list' %}">{% trans "Forum" %}</a></li>
-                    <li><a href="{% url 'documents:list' %}">{% trans "Documents" %}</a></li>
-                    <li><a href="{% url 'jobs:list' %}">{% trans "Jobs" %}</a></li>
-                    <li><a href="{% url 'members:directory' %}">{% trans "Members" %}</a></li>
-                    <li><a href="{% url 'messaging:chat_list' %}">{% trans "Messages" %}</a></li>
-                    <li><a href="{% url 'accounts:profile' %}">{% trans "Profile" %}</a></li>
-                    <li><a href="{% url 'accounts:logout' %}">{% trans "Logout" %}</a></li>
-                {% else %}
-                    <li><a href="{% url 'accounts:login' %}">{% trans "Login" %}</a></li>
-                    <li><a href="{% url 'accounts:register' %}">{% trans "Register" %}</a></li>
-                {% endif %}
-                <li>{% include "includes/language_switcher.html" %}</li>
-            </ul>
+    
+    {% if user.is_authenticated %}
+    <!-- Vertical Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="{% trans 'Main navigation' %}">
+        <button class="sidebar-toggle" aria-label="{% trans 'Toggle sidebar' %}" id="sidebar-toggle">
+            <span class="icon icon-chevron-left"></span>
+        </button>
+        
+        <div class="sidebar-brand">
+            <div class="logo">A</div>
+            <div class="logo-text">ASCAI</div>
         </div>
-    </nav>
-
-    <main class="container">
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
+        
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard:home' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}" aria-label="{% trans 'Dashboard' %}">
+                <span class="icon icon-dashboard"></span>
+                <span class="text">{% trans "Dashboard" %}</span>
+            </a>
+            {% if user.is_admin or user.is_board_member %}
+            <a href="{% url 'dashboard:admin' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'admin' %}active{% endif %}" aria-label="{% trans 'Admin panel' %}">
+                <span class="icon icon-admin"></span>
+                <span class="text">{% trans "Admin" %}</span>
+            </a>
+            {% endif %}
+            <a href="{% url 'events:list' %}" class="sidebar-nav-item {% if 'events' in request.resolver_match.app_name %}active{% endif %}" aria-label="{% trans 'Events' %}">
+                <span class="icon icon-events"></span>
+                <span class="text">{% trans "Events" %}</span>
+            </a>
+            <a href="{% url 'news:list' %}" class="sidebar-nav-item {% if 'news' in request.resolver_match.app_name %}active{% endif %}" aria-label="{% trans 'News' %}">
+                <span class="icon icon-news"></span>
+                <span class="text">{% trans "News" %}</span>
+            </a>
+            <a href="{% url 'forums:category_list' %}" class="sidebar-nav-item {% if 'forums' in request.resolver_match.app_name %}active{% endif %}" aria-label="{% trans 'Forum' %}">
+                <span class="icon icon-forum"></span>
+                <span class="text">{% trans "Forum" %}</span>
+            </a>
+            <a href="{% url 'documents:list' %}" class="sidebar-nav-item {% if 'documents' in request.resolver_match.app_name %}active{% endif %}" aria-label="{% trans 'Documents' %}">
+                <span class="icon icon-documents"></span>
+                <span class="text">{% trans "Documents" %}</span>
+            </a>
+            <a href="{% url 'jobs:list' %}" class="sidebar-nav-item {% if 'jobs' in request.resolver_match.app_name %}active{% endif %}" aria-label="{% trans 'Jobs' %}">
+                <span class="icon icon-jobs"></span>
+                <span class="text">{% trans "Jobs" %}</span>
+            </a>
+            {% if user.is_admin %}
+            <a href="{% url 'members:directory' %}" class="sidebar-nav-item {% if 'members' in request.resolver_match.app_name %}active{% endif %}" aria-label="{% trans 'Members directory' %}">
+                <span class="icon icon-members"></span>
+                <span class="text">{% trans "Members" %}</span>
+            </a>
+            {% endif %}
+            <a href="{% url 'messaging:chat_list' %}" class="sidebar-nav-item {% if 'messaging' in request.resolver_match.app_name %}active{% endif %}" aria-label="{% trans 'Messages' %}" id="messages-nav-link">
+                <span class="icon icon-messages"></span>
+                <span class="text">{% trans "Messages" %}</span>
+                <span class="notification-badge" id="messages-notification-badge" style="display: none;"></span>
+            </a>
+            <a href="{% url 'accounts:profile' %}" class="sidebar-nav-item {% if 'accounts' in request.resolver_match.app_name and request.resolver_match.url_name == 'profile' %}active{% endif %}" aria-label="{% trans 'Profile' %}">
+                <span class="icon icon-profile"></span>
+                <span class="text">{% trans "Profile" %}</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-user">
+            <div class="sidebar-user-content">
+                <div class="sidebar-user-avatar">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">{{ user.full_name }}</div>
+                    <div class="sidebar-user-email">{{ user.email|truncatechars:20 }}</div>
+                </div>
             </div>
+            <a href="{% url 'accounts:logout' %}" class="sidebar-nav-item" aria-label="{% trans 'Logout' %}" style="margin-top: 0.5rem;">
+                <span class="icon icon-logout"></span>
+                <span class="text">{% trans "Logout" %}</span>
+            </a>
+        </div>
+    </aside>
+    
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    {% endif %}
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper {% if user.is_authenticated %}{% else %}no-sidebar{% endif %}" id="main-wrapper">
+        {% if user.is_authenticated %}
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <button class="mobile-menu-button" id="mobile-menu-button" aria-label="{% trans 'Toggle menu' %}">
+                <span class="icon icon-menu"></span>
+            </button>
+            <h1 class="top-bar-title">{% block page_title %}{% trans "ASCAI" %}{% endblock %}</h1>
+            <div class="top-bar-actions">
+                {% include "includes/language_switcher.html" %}
+            </div>
+        </header>
         {% endif %}
 
-        {% block content %}{% endblock %}
-    </main>
+        <!-- Breadcrumbs -->
+        {% block breadcrumbs %}{% endblock %}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; {% now "Y" %} ASCAI - Association of Cameroonian Students in Lazio, Italy</p>
+            <p>&copy; {% now "Y" %} {% trans "ASCAI - Association of Cameroonian Students in Lazio, Italy" %}</p>
         </div>
     </footer>
 
     <!-- HTMX Library -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <!-- Form ID Fix - Prevents duplicate form field IDs -->
+    <script src="{% static 'js/form-id-fix.js' %}"></script>
+    
+    <!-- Sidebar Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const mainWrapper = document.getElementById('main-wrapper');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            
+            // Load saved sidebar state
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            if (savedState === 'true' && window.innerWidth > 1024) {
+                sidebar.classList.add('collapsed');
+                mainWrapper.classList.add('sidebar-collapsed');
+            }
+            
+            // Desktop toggle
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    if (window.innerWidth > 1024) {
+                        sidebar.classList.toggle('collapsed');
+                        mainWrapper.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                    }
+                });
+            }
+            
+            // Mobile menu toggle
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    sidebar.classList.add('mobile-open');
+                    sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            // Close mobile menu on overlay click
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('mobile-open');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+            
+            // Close mobile menu on escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+                    sidebar.classList.remove('mobile-open');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    mobileMenuButton.focus();
+                }
+            });
+            
+            // Close mobile menu when clicking a link
+            const sidebarLinks = sidebar.querySelectorAll('.sidebar-nav-item');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 1024) {
+                        sidebar.classList.remove('mobile-open');
+                        sidebarOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 1024) {
+                    sidebar.classList.remove('mobile-open');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+    
+    <!-- Message Notification Badge Updater -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationBadge = document.getElementById('messages-notification-badge');
+            
+            function updateNotificationBadge() {
+                fetch('{% url "messaging:unread_count" %}')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.unread_count > 0) {
+                            notificationBadge.textContent = data.unread_count > 99 ? '99+' : data.unread_count;
+                            notificationBadge.style.display = 'flex';
+                            
+                            // Add admin notification class if there are admin messages
+                            if (data.admin_unread_count > 0) {
+                                notificationBadge.classList.add('admin-notification');
+                            } else {
+                                notificationBadge.classList.remove('admin-notification');
+                            }
+                        } else {
+                            notificationBadge.style.display = 'none';
+                            notificationBadge.classList.remove('admin-notification');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching unread count:', error);
+                    });
+            }
+            
+            // Update immediately on page load
+            updateNotificationBadge();
+            
+            // Update every 30 seconds
+            setInterval(updateNotificationBadge, 30000);
+            
+            // Also update when the page becomes visible (user switches tabs)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    updateNotificationBadge();
+                }
+            });
+        });
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>

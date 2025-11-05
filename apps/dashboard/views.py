@@ -137,14 +137,15 @@ def admin_dashboard_view(request):
     ).count()
     
     # Prepare chart data for JavaScript (JSON serialized)
+    # Convert lazy translation strings to regular strings for JSON serialization
     member_status_labels = [
-        dict(Member.MembershipStatus.choices).get(status, status.title())
+        str(dict(Member.MembershipStatus.choices).get(status, status.title()))
         for status in member_stats["by_status"].keys()
     ]
     member_status_data = list(member_stats["by_status"].values())
     
     member_category_labels = [
-        dict(Member.MemberCategory.choices).get(cat, cat.title())
+        str(dict(Member.MemberCategory.choices).get(cat, cat.title()))
         for cat in member_stats["by_category"].keys()
     ]
     member_category_data = list(member_stats["by_category"].values())
@@ -156,7 +157,7 @@ def admin_dashboard_view(request):
     revenue_data = [float(item["revenue"]) for item in revenue_stats["monthly_revenue"]]
     
     revenue_type_labels = [
-        dict(Payment.PaymentType.choices).get(item["type"], item["type"].title())
+        str(dict(Payment.PaymentType.choices).get(item["type"], item["type"].title()))
         for item in revenue_stats["by_type"]
     ]
     revenue_type_data = [float(item["total"]) for item in revenue_stats["by_type"]]
@@ -281,7 +282,7 @@ def admin_dashboard_api_view(request):
     for member in recent_activity["recent_members"]:
         recent_members_data.append({
             "name": member.user.full_name,
-            "status": member.get_status_display(),
+            "status": str(member.get_status_display()),
             "joined_date": member.joined_date.strftime("%Y-%m-%d") if member.joined_date else None,
         })
     
@@ -299,7 +300,7 @@ def admin_dashboard_api_view(request):
         recent_event_registrations_data.append({
             "user_name": reg.user.full_name,
             "event_title": reg.event.title,
-            "status": reg.get_status_display(),
+            "status": str(reg.get_status_display()),
             "registered_at": reg.registered_at.strftime("%Y-%m-%d %H:%M") if reg.registered_at else None,
         })
     
@@ -334,7 +335,7 @@ def admin_dashboard_api_view(request):
         recent_payments_activity_data.append({
             "user_name": payment.user.full_name,
             "amount": float(payment.amount),
-            "status": payment.get_status_display(),
+            "status": str(payment.get_status_display()),
             "created_at": payment.created_at.strftime("%Y-%m-%d") if payment.created_at else None,
         })
     
@@ -358,19 +359,20 @@ def admin_dashboard_api_view(request):
         recent_payments_data.append({
             "user_name": payment.user.full_name,
             "amount": float(payment.amount),
-            "status": payment.get_status_display(),
+            "status": str(payment.get_status_display()),
             "created_at": payment.created_at.strftime("%Y-%m-%d") if payment.created_at else None,
         })
     
     # Prepare chart data
+    # Convert lazy translation strings to regular strings for JSON serialization
     member_status_labels = [
-        dict(Member.MembershipStatus.choices).get(status, status.title())
+        str(dict(Member.MembershipStatus.choices).get(status, status.title()))
         for status in member_stats["by_status"].keys()
     ]
     member_status_data = list(member_stats["by_status"].values())
     
     member_category_labels = [
-        dict(Member.MemberCategory.choices).get(cat, cat.title())
+        str(dict(Member.MemberCategory.choices).get(cat, cat.title()))
         for cat in member_stats["by_category"].keys()
     ]
     member_category_data = list(member_stats["by_category"].values())
@@ -382,7 +384,7 @@ def admin_dashboard_api_view(request):
     revenue_data = [float(item["revenue"]) for item in revenue_stats["monthly_revenue"]]
     
     revenue_type_labels = [
-        dict(Payment.PaymentType.choices).get(item["type"], item["type"].title())
+        str(dict(Payment.PaymentType.choices).get(item["type"], item["type"].title()))
         for item in revenue_stats["by_type"]
     ]
     revenue_type_data = [float(item["total"]) for item in revenue_stats["by_type"]]

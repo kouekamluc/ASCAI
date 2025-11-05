@@ -16,7 +16,7 @@
         <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
             <div class="notification-content">
                 <p>{{ notification.message }}</p>
-                <span class="notification-date">{{ notification.created_at|timesince }} ago</span>
+                <span class="notification-date">{% blocktrans with time=notification.created_at|timesince %}{{ time }} ago{% endblocktrans %}</span>
             </div>
             <div class="notification-actions">
                 {% if not notification.is_read %}
@@ -48,6 +48,11 @@
     {% endif %}
 </div>
 {% endblock %}
+
+
+
+
+
 
 
 
