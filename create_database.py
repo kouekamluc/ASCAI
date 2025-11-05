@@ -9,11 +9,19 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # Database configuration
+# DB_PASSWORD must be set in .env file or environment variables
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+if not DB_PASSWORD:
+    print("[ERROR] DB_PASSWORD environment variable must be set!")
+    print("        Set DB_PASSWORD in your .env file or environment variables.")
+    print("        Example: DB_PASSWORD=your_postgres_password")
+    sys.exit(1)
+
 DB_CONFIG = {
     "host": os.environ.get("DB_HOST", "localhost"),
     "port": os.environ.get("DB_PORT", "5432"),
     "user": os.environ.get("DB_USER", "postgres"),
-    "password": os.environ.get("DB_PASSWORD", "kouekam"),
+    "password": DB_PASSWORD,
 }
 
 DB_NAME = os.environ.get("DB_NAME", "ASCAI")

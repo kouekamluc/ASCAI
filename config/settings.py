@@ -255,14 +255,6 @@ if not DB_PASSWORD:
         "Set DB_PASSWORD in your .env file or environment variables."
     )
 
-# Warn if default password is detected (security check)
-if DB_PASSWORD == "kouekam":
-    warnings.warn(
-        "WARNING: Default database password detected! "
-        "Please change DB_PASSWORD in your environment variables for security.",
-        UserWarning
-    )
-
 # Determine SSL mode based on environment
 # Production: require SSL for secure connections
 # Development: prefer SSL but allow non-SSL
