@@ -59,7 +59,11 @@
         <article class="event-card">
             {% if event.featured_image %}
                 <div class="event-image">
-                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}">
+                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:100%;height:200px;background:linear-gradient(135deg,#f093fb 0%,#4facfe 100%);display:flex;align-items:center;justify-content:center;color:white;font-size:0.9rem;\'>Image not available</div>'">
+                </div>
+            {% else %}
+                <div class="event-image" style="background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
+                    {% trans "No image" %}
                 </div>
             {% endif %}
             <div class="event-content">

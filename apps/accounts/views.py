@@ -128,7 +128,8 @@ def login_view(request):
 def logout_view(request):
     """User logout view."""
     logout(request)
-    return redirect("accounts:login")
+    messages.success(request, _("You have been successfully logged out."))
+    return redirect("/")
 
 
 def _send_verification_email(request, user):

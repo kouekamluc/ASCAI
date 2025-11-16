@@ -34,8 +34,267 @@ def index_view(request):
     """Public landing page."""
     if request.user.is_authenticated:
         return redirect("dashboard:home")
-    context = {}
+    
+    # Get latest published news posts (public visibility only)
+    from apps.news.models import NewsPost
+    latest_news = NewsPost.objects.filter(
+        is_published=True,
+        visibility=NewsPost.Visibility.PUBLIC
+    ).select_related('author', 'category').order_by('-published_at', '-created_at')[:4]
+    
+    # Get upcoming published events (public visibility only)
+    from apps.events.models import Event
+    upcoming_events = Event.objects.filter(
+        is_published=True,
+        visibility=Event.Visibility.PUBLIC,
+        start_date__gte=timezone.now()
+    ).select_related('category', 'organizer').order_by('start_date')[:4]
+    
+    # Get open calls/bandi (events starting today or in the future)
+    open_calls = Event.objects.filter(
+        is_published=True,
+        visibility=Event.Visibility.PUBLIC,
+        start_date__gte=timezone.now()
+    ).select_related('category', 'organizer').order_by('start_date')[:3]
+    
+    # Get closed calls/bandi (events that have ended)
+    closed_calls = Event.objects.filter(
+        is_published=True,
+        visibility=Event.Visibility.PUBLIC,
+        end_date__lt=timezone.now()
+    ).select_related('category', 'organizer').order_by('-end_date')[:2]
+    
+    context = {
+        'latest_news': latest_news,
+        'upcoming_events': upcoming_events,
+        'open_calls': open_calls,
+        'closed_calls': closed_calls,
+    }
     return render(request, "dashboard/index.html", context)
+
+
+def students_view(request):
+    """Students page with universities, scholarships, and study information."""
+    from apps.events.models import Event, EventCategory
+    from apps.news.models import NewsPost
+    from apps.content.models import University, ExchangeProgram
+    from django.db.models import Q
+    
+    # Get scholarship events (calls/bandi)
+    scholarships = Event.objects.filter(
+        is_published=True,
+        visibility=Event.Visibility.PUBLIC,
+        start_date__gte=timezone.now()
+    ).select_related('category', 'organizer').order_by('start_date')[:6]
+    
+    # Get news related to studies/scholarships
+    study_news = NewsPost.objects.filter(
+        is_published=True,
+        visibility=NewsPost.Visibility.PUBLIC
+    ).filter(
+        Q(title__icontains='scholarship') |
+        Q(title__icontains='university') |
+        Q(title__icontains='study') |
+        Q(title__icontains='erasmus') |
+        Q(excerpt__icontains='scholarship') |
+        Q(excerpt__icontains='university') |
+        Q(excerpt__icontains='study') |
+        Q(excerpt__icontains='erasmus')
+    ).select_related('author', 'category').order_by('-published_at', '-created_at')[:6]
+    
+    # Get universities from content model
+    universities = University.objects.filter(is_active=True).order_by('display_order', 'name')
+    
+    # Get exchange programs from content model
+    exchange_programs = ExchangeProgram.objects.filter(is_active=True).order_by('display_order', 'name')
+    
+    # Get event categories for filtering
+    categories = EventCategory.objects.all()[:8]
+    
+    context = {
+        'scholarships': scholarships,
+        'study_news': study_news,
+        'universities': universities,
+        'exchange_programs': exchange_programs,
+        'categories': categories,
+    }
+    return render(request, "dashboard/students.html", context)
+
+
+def diaspora_view(request):
+    """Diaspora page with news, events, testimonials, and success stories."""
+    from apps.news.models import NewsPost
+    from apps.events.models import Event
+    from apps.content.models import Testimonial
+    from django.core.paginator import Paginator
+    
+    # Get latest diaspora news
+    diaspora_news = NewsPost.objects.filter(
+        is_published=True,
+        visibility=NewsPost.Visibility.PUBLIC
+    ).select_related('author', 'category').order_by('-published_at', '-created_at')
+    
+    # Paginate news
+    news_paginator = Paginator(diaspora_news, 9)
+    news_page = request.GET.get('news_page', 1)
+    news_page_obj = news_paginator.get_page(news_page)
+    
+    # Get upcoming events
+    upcoming_events = Event.objects.filter(
+        is_published=True,
+        visibility=Event.Visibility.PUBLIC,
+        start_date__gte=timezone.now()
+    ).select_related('category', 'organizer').order_by('start_date')[:6]
+    
+    # Get past events (for testimonials context)
+    past_events = Event.objects.filter(
+        is_published=True,
+        visibility=Event.Visibility.PUBLIC,
+        end_date__lt=timezone.now()
+    ).select_related('category', 'organizer').order_by('-end_date')[:4]
+    
+    # Get testimonials from content model
+    testimonials = Testimonial.objects.filter(is_active=True).select_related('member').order_by('display_order', '-created_at')[:6]
+    
+    context = {
+        'news_page_obj': news_page_obj,
+        'upcoming_events': upcoming_events,
+        'past_events': past_events,
+        'testimonials': testimonials,
+    }
+    return render(request, "dashboard/diaspora.html", context)
+
+
+def resources_view(request):
+    """Resources page with useful links, documents, and downloads."""
+    from apps.documents.models import Document, DocumentFolder
+    from apps.content.models import UsefulLinkCategory, UsefulLink
+    from django.core.paginator import Paginator
+    from django.db.models import Q, Prefetch
+    
+    # Get all published documents
+    documents = Document.objects.filter(
+        is_published=True
+    ).select_related('uploader', 'folder').prefetch_related('tags').order_by('-created_at')
+    
+    # Filter by search query
+    search_query = request.GET.get('search', '')
+    if search_query:
+        documents = documents.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(tags__name__icontains=search_query)
+        ).distinct()
+    
+    # Filter by folder
+    folder_id = request.GET.get('folder')
+    current_folder = None
+    if folder_id:
+        try:
+            current_folder = DocumentFolder.objects.get(id=folder_id)
+            documents = documents.filter(folder=current_folder)
+        except DocumentFolder.DoesNotExist:
+            pass
+    
+    # Permission filtering - only show documents user can view
+    accessible_docs = []
+    for doc in documents:
+        if doc.can_view(request.user) and doc.file:  # Only include documents with files
+            accessible_docs.append(doc.id)
+    
+    if accessible_docs:
+        documents = Document.objects.filter(id__in=accessible_docs).order_by('-created_at')
+    else:
+        documents = Document.objects.none()
+    
+    # Paginate documents
+    doc_paginator = Paginator(documents, 12)
+    doc_page = request.GET.get('doc_page', 1)
+    doc_page_obj = doc_paginator.get_page(doc_page)
+    
+    # Get accessible folders
+    folders = DocumentFolder.objects.all()
+    accessible_folders = []
+    for folder in folders:
+        if folder.can_access(request.user):
+            accessible_folders.append(folder)
+    
+    # Get useful links organized by category (only active links)
+    link_categories = UsefulLinkCategory.objects.filter(
+        is_active=True
+    ).prefetch_related(
+        Prefetch('links', queryset=UsefulLink.objects.filter(is_active=True).order_by('display_order', 'name'))
+    ).order_by('display_order', 'name')
+    
+    context = {
+        'doc_page_obj': doc_page_obj,
+        'accessible_folders': accessible_folders,
+        'current_folder': current_folder,
+        'search_query': search_query,
+        'link_categories': link_categories,
+    }
+    return render(request, "dashboard/resources.html", context)
+
+
+def contact_view(request):
+    """Contact page with contact form and information."""
+    from django.contrib import messages
+    from django.core.mail import send_mail
+    from django.conf import settings
+    from apps.content.models import ContactInfo, OfficeHours
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        subject = request.POST.get('subject', '').strip()
+        message = request.POST.get('message', '').strip()
+        contact_type = request.POST.get('contact_type', 'general')
+        
+        if name and email and subject and message:
+            try:
+                # Get contact email based on type, default to general
+                contact_info = ContactInfo.objects.filter(
+                    contact_type=contact_type,
+                    is_active=True
+                ).first()
+                
+                recipient_email = contact_info.email if contact_info else 'info@ascai.it'
+                
+                # Send email (configure email backend in settings)
+                send_mail(
+                    subject=f'ASCAI Contact Form: {subject}',
+                    message=f'From: {name} ({email})\nContact Type: {contact_type}\n\n{message}',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[recipient_email],
+                    fail_silently=False,
+                )
+                messages.success(request, _('Thank you for your message! We will get back to you soon.'))
+                return redirect('dashboard:contact')
+            except Exception as e:
+                messages.error(request, _('Sorry, there was an error sending your message. Please try again later.'))
+        else:
+            messages.error(request, _('Please fill in all fields.'))
+    
+    # Get contact information from models
+    contact_info_list = ContactInfo.objects.filter(is_active=True).order_by('display_order', 'contact_type')
+    
+    # Get office hours
+    office_hours = OfficeHours.objects.filter(is_active=True).order_by('display_order', 'day')
+    
+    # Group office hours by day
+    hours_by_day = {}
+    for hours in office_hours:
+        day = hours.get_day_display()
+        if day not in hours_by_day:
+            hours_by_day[day] = []
+        hours_by_day[day].append(hours)
+    
+    context = {
+        'contact_info_list': contact_info_list,
+        'office_hours': office_hours,
+        'hours_by_day': hours_by_day,
+    }
+    return render(request, "dashboard/contact.html", context)
 
 
 @login_required

@@ -23,11 +23,19 @@ from .forms import EventForm, RegistrationForm, EventFilterForm, EventCategoryFo
 def event_list(request):
     """List all published events."""
     # Use cache for categories list (not user-specific)
+    # Gracefully handle Redis connection errors
     cache_key = 'event_categories_list'
-    categories = cache.get(cache_key)
-    if categories is None:
+    try:
+        categories = cache.get(cache_key)
+        if categories is None:
+            categories = list(EventCategory.objects.all())
+            try:
+                cache.set(cache_key, categories, 60 * 15)  # Cache for 15 minutes
+            except Exception:
+                pass  # Cache not available, continue without caching
+    except Exception:
+        # Redis not available, fetch directly from database
         categories = list(EventCategory.objects.all())
-        cache.set(cache_key, categories, 60 * 15)  # Cache for 15 minutes
     
     events = Event.objects.filter(is_published=True).select_related('category', 'organizer')
     
@@ -71,12 +79,12 @@ def event_list(request):
             events = events.filter(visibility=visibility)
     
     # Filter by time (upcoming, past, all)
-    time_filter = request.GET.get("time", "upcoming")
+    time_filter = request.GET.get("time", "all")  # Changed default to "all" to show all events
     if time_filter == "upcoming":
         events = events.filter(start_date__gte=timezone.now())
     elif time_filter == "past":
         events = events.filter(end_date__lt=timezone.now())
-    # "all" shows everything
+    # "all" shows everything (no filtering)
     
     # Pagination
     paginator = Paginator(events, 12)

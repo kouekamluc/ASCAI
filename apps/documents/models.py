@@ -221,7 +221,9 @@ class Document(models.Model):
             return self.access_level
         if self.folder:
             return self.folder.default_access_level
-        return DocumentFolder.AccessLevel.MEMBERS_ONLY
+        # If no access_level and no folder, default to PUBLIC for backward compatibility
+        # Documents in root without explicit access should be publicly accessible
+        return DocumentFolder.AccessLevel.PUBLIC
 
     def can_view(self, user):
         """Check if user can view this document."""

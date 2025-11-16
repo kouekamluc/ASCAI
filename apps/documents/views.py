@@ -117,30 +117,6 @@ def document_list(request):
     else:
         documents = documents.filter(folder__isnull=True)
 
-    # Filter by access level based on user role
-    if request.user.is_authenticated:
-        if request.user.is_admin():
-            pass  # Admins see all
-        elif request.user.is_board_member():
-            documents = documents.exclude(
-                access_level=DocumentFolder.AccessLevel.ADMIN_ONLY
-            )
-        elif request.user.is_member():
-            documents = documents.exclude(
-                access_level__in=[
-                    DocumentFolder.AccessLevel.ADMIN_ONLY,
-                    DocumentFolder.AccessLevel.BOARD_ONLY,
-                ]
-            )
-        else:
-            documents = documents.filter(
-                Q(access_level=DocumentFolder.AccessLevel.PUBLIC) | Q(access_level__isnull=True)
-            )
-    else:
-        documents = documents.filter(
-            Q(access_level=DocumentFolder.AccessLevel.PUBLIC) | Q(access_level__isnull=True)
-        )
-
     # Search - apply before permission filtering for efficiency
     if search_query:
         documents = documents.filter(
@@ -164,8 +140,9 @@ def document_list(request):
     # Ordering
     documents = documents.order_by("-created_at")
 
-    # Additional permission filtering - apply last after all other filters
-    # We'll filter in Python for documents since access logic is complex
+    # Permission filtering - check can_view for each document
+    # This is necessary because access level can be inherited from folders
+    # and we need to respect folder permissions as well
     accessible_docs = []
     for doc in documents:
         if doc.can_view(request.user):
@@ -190,13 +167,23 @@ def document_list(request):
             accessible_folders.append(folder)
 
     # Get all tags (cache this queryset)
+    # Gracefully handle Redis connection errors
     cache_key = 'document_tags_list'
-    tags = cache.get(cache_key)
-    if tags is None:
+    try:
+        tags = cache.get(cache_key)
+        if tags is None:
+            tags = list(DocumentTag.objects.annotate(
+                document_count=Count("documents")
+            ).order_by("name"))
+            try:
+                cache.set(cache_key, tags, 60 * 15)  # Cache for 15 minutes
+            except Exception:
+                pass  # Cache not available, continue without caching
+    except Exception:
+        # Redis not available, fetch directly from database
         tags = list(DocumentTag.objects.annotate(
             document_count=Count("documents")
         ).order_by("name"))
-        cache.set(cache_key, tags, 60 * 15)  # Cache for 15 minutes
 
     context = {
         "page_obj": page_obj,

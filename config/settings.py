@@ -135,6 +135,7 @@ INSTALLED_APPS = [
     "apps.payments",
     "apps.dashboard",
     "apps.messaging",
+    "apps.content",
 ]
 
 MIDDLEWARE = [
@@ -230,14 +231,35 @@ CHANNEL_LAYERS = {
 
 # Cache configuration (Redis)
 # Use different Redis database for caching (db 1 instead of 0 for channels)
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
-        "KEY_PREFIX": "ascai",
-        "TIMEOUT": 300,  # Default 5 minutes
+# Fall back to local memory cache if Redis is not available (development)
+try:
+    import redis
+    redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, socket_connect_timeout=2)
+    redis_client.ping()
+    # Redis is available, use it for caching
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+            "KEY_PREFIX": "ascai",
+            "TIMEOUT": 300,  # Default 5 minutes
+        }
     }
-}
+except Exception:
+    # Redis not available (ImportError, ConnectionError, or other), use local memory cache
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "ascai-cache",
+            "KEY_PREFIX": "ascai",
+            "TIMEOUT": 300,  # Default 5 minutes
+        }
+    }
+    if IS_DEVELOPMENT:
+        warnings.warn(
+            "Redis is not available. Using local memory cache instead. "
+            "This is fine for development but not recommended for production."
+        )
 
 # Get database configuration from .env file
 # All values should be set in .env file

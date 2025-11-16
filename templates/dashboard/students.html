@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Students - ASCAI" %}{% endblock %}
+
+{% block content %}
+<!-- Students Page Hero -->
+<section class="page-hero">
+    <div class="container">
+        <h1>{% trans "For Students" %}</h1>
+        <p class="page-hero-subtitle">{% trans "Everything you need to know about studying in Lazio" %}</p>
+    </div>
+</section>
+
+<!-- Universities Section -->
+<section class="landing-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Universities in Lazio" %}</h2>
+            <p class="section-description">{% trans "Discover universities and study programs in the Lazio region" %}</p>
+        </div>
+        
+        {% if universities %}
+        <div class="universities-list">
+            {% for university in universities %}
+            <div class="university-item">
+                {% if university.image %}
+                <div class="university-image-wrapper">
+                    <img src="{{ university.image.url }}" alt="{{ university.name }}" class="university-image" onerror="this.style.display='none';">
+                </div>
+                {% elif university.logo %}
+                <div class="university-logo-wrapper">
+                    <img src="{{ university.logo.url }}" alt="{{ university.name }}" class="university-logo" onerror="this.style.display='none';">
+                </div>
+                {% endif %}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" {% if university.image or university.logo %}style="display:none;"{% endif %}>
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    <path d="M9 10h6"></path>
+                    <path d="M9 14h6"></path>
+                </svg>
+                <div class="university-info">
+                    {% if university.url %}
+                    <a href="{{ university.url }}" target="_blank" rel="noopener" class="university-name">{{ university.name }}</a>
+                    {% else %}
+                    <span class="university-name">{{ university.name }}</span>
+                    {% endif %}
+                    {% if university.location %}
+                    <span class="university-location">{{ university.location }}</span>
+                    {% endif %}
+                    {% if university.description %}
+                    <p class="university-description">{{ university.description|truncatewords:15 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-content">{% trans "No universities listed yet. Check back soon!" %}</p>
+        {% endif %}
+        
+        <!-- University Search Tool -->
+        <div class="university-search-section">
+            <h3>{% trans "Find Your University" %}</h3>
+            <div class="search-tool">
+                <input type="text" id="university-search-input" placeholder="{% trans 'Search universities or programs...' %}" class="search-input">
+                <button type="button" class="btn btn-primary" onclick="searchUniversities()">{% trans "Search" %}</button>
+            </div>
+            <p class="search-hint">{% trans "Search for universities, study programs, and courses in Lazio" %}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Scholarships Section -->
+<section class="landing-section" style="background: var(--light-gray);">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Scholarships & Funding" %}</h2>
+            <p class="section-description">{% trans "Financial support opportunities for your studies" %}</p>
+        </div>
+        
+        {% if scholarships %}
+        <div class="scholarships-grid">
+            {% for scholarship in scholarships %}
+            <div class="scholarship-card">
+                {% if scholarship.featured_image %}
+                <div class="scholarship-image">
+                    <img src="{{ scholarship.featured_image.url }}" alt="{{ scholarship.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f093fb 0%, #4facfe 100%)';">
+                </div>
+                {% else %}
+                <div class="scholarship-image" style="background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
+                    {% trans "No image" %}
+                </div>
+                {% endif %}
+                <div class="scholarship-content">
+                    <div class="scholarship-meta">
+                        {% if scholarship.category %}
+                        <span class="scholarship-category" style="background-color: {{ scholarship.category.color }};">
+                            {{ scholarship.category.name }}
+                        </span>
+                        {% endif %}
+                        <span class="scholarship-date">{{ scholarship.start_date|date:"d/m/Y" }}</span>
+                    </div>
+                    <h3><a href="{% url 'events:detail' scholarship.slug %}">{{ scholarship.title }}</a></h3>
+                    <p>{{ scholarship.description|truncatewords:25 }}</p>
+                    <div class="scholarship-info">
+                        <span>📍 {% trans "Location" %}: {{ scholarship.location }}</span>
+                        {% if scholarship.is_registration_required %}
+                        <span class="registration-badge">{% trans "Registration Required" %}</span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'events:detail' scholarship.slug %}" class="btn btn-primary">{% trans "View Details" %}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-actions">
+            <a href="{% url 'events:list' %}" class="btn btn-outline">{% trans "View All Opportunities" %}</a>
+        </div>
+        {% else %}
+        <p class="no-content">{% trans "No scholarships available at the moment. Check back later!" %}</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Study News Section -->
+<section class="landing-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Study News & Updates" %}</h2>
+            <p class="section-description">{% trans "Latest news about studies, scholarships, and university life" %}</p>
+        </div>
+        
+        {% if study_news %}
+        <div class="news-grid">
+            {% for news in study_news %}
+            <article class="news-card">
+                {% if news.featured_image %}
+                <div class="news-card-image">
+                    <img src="{{ news.featured_image.url }}" alt="{{ news.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)';">
+                </div>
+                {% else %}
+                <div class="news-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
+                    {% trans "No image" %}
+                </div>
+                {% endif %}
+                <div class="news-card-content">
+                    <div class="news-card-meta">
+                        <span class="news-date">{{ news.published_at|date:"d/m/Y"|default:news.created_at|date:"d/m/Y" }}</span>
+                        {% if news.category %}
+                        <span class="news-category">{{ news.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <h3><a href="{% url 'news:detail' news.slug %}">{{ news.title }}</a></h3>
+                    {% if news.excerpt %}
+                    <p>{{ news.excerpt|truncatewords:20 }}</p>
+                    {% endif %}
+                    <a href="{% url 'news:detail' news.slug %}" class="btn btn-outline">{% trans "Read More" %}</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <div class="section-actions">
+            <a href="{% url 'news:list' %}" class="btn btn-outline">{% trans "View All News" %}</a>
+        </div>
+        {% else %}
+        <p class="no-content">{% trans "No study-related news at the moment." %}</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Exchange Programs Section -->
+<section class="landing-section" style="background: var(--light-gray);">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Exchange Programs" %}</h2>
+            <p class="section-description">{% trans "International exchange opportunities" %}</p>
+        </div>
+        
+        {% if exchange_programs %}
+        <div class="exchange-programs">
+            {% for program in exchange_programs %}
+            <div class="exchange-program-card">
+                <div class="exchange-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3>{{ program.name }}</h3>
+                <p>{{ program.description }}</p>
+                {% if program.url %}
+                <a href="{{ program.url }}" target="_blank" rel="noopener" class="btn btn-primary">{% trans "Learn More" %}</a>
+                {% else %}
+                <a href="{% url 'news:list' %}" class="btn btn-primary">{% trans "Learn More" %}</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-content">{% trans "No exchange programs listed yet." %}</p>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+function searchUniversities() {
+    const query = document.getElementById('university-search-input').value;
+    if (query.trim()) {
+        // Redirect to events/news with search query
+        window.location.href = `{% url 'events:list' %}?search=${encodeURIComponent(query)}`;
+    }
+}
+
+// Allow Enter key to trigger search
+document.getElementById('university-search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchUniversities();
+    }
+});
+</script>
+{% endblock %}
+

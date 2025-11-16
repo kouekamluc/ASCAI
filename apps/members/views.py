@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
@@ -285,10 +286,14 @@ def edit_profile(request, user_id=None):
     return render(request, "members/edit_profile.html", context)
 
 
-@login_required
 @require_http_methods(["GET", "POST"])
 def apply_for_membership(request):
     """Apply for membership view."""
+    # If user is not authenticated, redirect to login with next parameter
+    if not request.user.is_authenticated:
+        messages.info(request, _("Please log in or register to apply for membership."))
+        return redirect(f"{reverse('accounts:login')}?next={request.path}")
+    
     # Check if user already has a member profile
     if hasattr(request.user, "member_profile"):
         messages.info(request, _("You already have a member profile."))

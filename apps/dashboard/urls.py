@@ -9,6 +9,10 @@ app_name = "dashboard"
 
 urlpatterns = [
     path("", views.index_view, name="index"),
+    path("students/", views.students_view, name="students"),
+    path("diaspora/", views.diaspora_view, name="diaspora"),
+    path("resources/", views.resources_view, name="resources"),
+    path("contact/", views.contact_view, name="contact"),
     path("dashboard/", views.home_view, name="home"),
     path("dashboard/admin/", views.admin_dashboard_view, name="admin"),
     path("dashboard/admin/api/", views.admin_dashboard_api_view, name="admin_api"),

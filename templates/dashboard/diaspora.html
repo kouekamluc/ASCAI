@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Diaspora - ASCAI" %}{% endblock %}
+
+{% block content %}
+<!-- Diaspora Page Hero -->
+<section class="page-hero">
+    <div class="container">
+        <h1>{% trans "Diaspora" %}</h1>
+        <p class="page-hero-subtitle">{% trans "News, events, testimonials, and success stories from the Cameroonian student community" %}</p>
+    </div>
+</section>
+
+<!-- News Section -->
+<section class="landing-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Latest News" %}</h2>
+            <p class="section-description">{% trans "Stay updated with the latest news from the diaspora community" %}</p>
+        </div>
+        
+        {% if news_page_obj %}
+        <div class="news-grid">
+            {% for news in news_page_obj %}
+            <article class="news-card">
+                {% if news.featured_image %}
+                <div class="news-card-image">
+                    <img src="{{ news.featured_image.url }}" alt="{{ news.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)';">
+                </div>
+                {% else %}
+                <div class="news-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
+                    {% trans "No image" %}
+                </div>
+                {% endif %}
+                <div class="news-card-content">
+                    <div class="news-card-meta">
+                        <span class="news-date">{{ news.published_at|date:"d/m/Y"|default:news.created_at|date:"d/m/Y" }}</span>
+                        {% if news.category %}
+                        <span class="news-category">{{ news.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <h3><a href="{% url 'news:detail' news.slug %}">{{ news.title }}</a></h3>
+                    {% if news.excerpt %}
+                    <p>{{ news.excerpt|truncatewords:20 }}</p>
+                    {% endif %}
+                    <div class="news-card-footer">
+                        <span class="news-author">{% trans "By" %} {{ news.author.full_name|default:news.author.username }}</span>
+                        <a href="{% url 'news:detail' news.slug %}" class="btn btn-outline">{% trans "Read More" %}</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if news_page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if news_page_obj.has_previous %}
+            <a href="?news_page={{ news_page_obj.previous_page_number }}" class="btn btn-outline">{% trans "Previous" %}</a>
+            {% endif %}
+            <span class="pagination-info">
+                {% trans "Page" %} {{ news_page_obj.number }} {% trans "of" %} {{ news_page_obj.paginator.num_pages }}
+            </span>
+            {% if news_page_obj.has_next %}
+            <a href="?news_page={{ news_page_obj.next_page_number }}" class="btn btn-outline">{% trans "Next" %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <p class="no-content">{% trans "No news available at the moment." %}</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Events Section -->
+<section class="landing-section" style="background: var(--light-gray);">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Upcoming Events" %}</h2>
+            <p class="section-description">{% trans "Join us for upcoming diaspora events and activities" %}</p>
+        </div>
+        
+        {% if upcoming_events %}
+        <div class="events-grid">
+            {% for event in upcoming_events %}
+            <div class="event-card">
+                {% if event.featured_image %}
+                <div class="event-card-image">
+                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f093fb 0%, #4facfe 100%)';">
+                </div>
+                {% else %}
+                <div class="event-card-image" style="background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
+                    {% trans "No image" %}
+                </div>
+                {% endif %}
+                <div class="event-card-content">
+                    <div class="event-card-meta">
+                        {% if event.category %}
+                        <span class="event-category" style="background-color: {{ event.category.color }};">
+                            {{ event.category.name }}
+                        </span>
+                        {% endif %}
+                        <span class="event-date">{{ event.start_date|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <h3><a href="{% url 'events:detail' event.slug %}">{{ event.title }}</a></h3>
+                    <p class="event-location">📍 {% trans "Location" %}: {{ event.location }}</p>
+                    {% if event.description %}
+                    <p>{{ event.description|truncatewords:20 }}</p>
+                    {% endif %}
+                    {% if event.is_registration_required %}
+                    <span class="registration-badge">{% trans "Registration Required" %}</span>
+                    {% endif %}
+                    <a href="{% url 'events:detail' event.slug %}" class="btn btn-primary">{% trans "View Details" %}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-actions">
+            <a href="{% url 'events:list' %}" class="btn btn-outline">{% trans "View All Events" %}</a>
+        </div>
+        {% else %}
+        <p class="no-content">{% trans "No upcoming events at the moment." %}</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Success Stories / Testimonials Section -->
+<section class="landing-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Success Stories" %}</h2>
+            <p class="section-description">{% trans "Inspiring stories from our community members" %}</p>
+        </div>
+        
+        {% if testimonials %}
+        <div class="testimonials-grid">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    {% if testimonial.photo %}
+                    <img src="{{ testimonial.photo.url }}" alt="{{ testimonial.display_name }}" class="testimonial-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="testimonial-avatar-placeholder" style="display:none;">
+                        {{ testimonial.display_name|first|upper }}
+                    </div>
+                    {% elif testimonial.member and testimonial.member.profile_picture %}
+                    <img src="{{ testimonial.member.profile_picture.url }}" alt="{{ testimonial.display_name }}" class="testimonial-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="testimonial-avatar-placeholder" style="display:none;">
+                        {{ testimonial.display_name|first|upper }}
+                    </div>
+                    {% else %}
+                    <div class="testimonial-avatar-placeholder">
+                        {{ testimonial.display_name|first|upper }}
+                    </div>
+                    {% endif %}
+                    <div class="testimonial-author-info">
+                        <strong>{{ testimonial.display_name }}</strong>
+                        {% if testimonial.display_university %}
+                        <span class="testimonial-university">{{ testimonial.display_university }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="testimonial-content">
+                    <p>"{{ testimonial.content }}"</p>
+                </div>
+                {% if testimonial.member %}
+                <a href="{% url 'members:profile' testimonial.member.id %}" class="testimonial-link">{% trans "View Profile" %}</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-actions">
+            <a href="{% url 'forums:category_list' %}" class="btn btn-outline">{% trans "Share Your Story" %}</a>
+        </div>
+        {% else %}
+        <p class="no-content">{% trans "No testimonials available at the moment." %}</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Past Events Section -->
+{% if past_events %}
+<section class="landing-section" style="background: var(--light-gray);">
+    <div class="container">
+        <div class="section-header">
+            <h2>{% trans "Past Events" %}</h2>
+            <p class="section-description">{% trans "Relive memories from our past events" %}</p>
+        </div>
+        
+        <div class="past-events-grid">
+            {% for event in past_events %}
+            <div class="past-event-card">
+                {% if event.featured_image %}
+                <div class="past-event-image">
+                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)';">
+                </div>
+                {% else %}
+                <div class="past-event-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
+                    {% trans "No image" %}
+                </div>
+                {% endif %}
+                <div class="past-event-content">
+                    <h3><a href="{% url 'events:detail' event.slug %}">{{ event.title }}</a></h3>
+                    <p class="past-event-date">{{ event.start_date|date:"F d, Y" }}</p>
+                    <a href="{% url 'events:detail' event.slug %}" class="btn btn-outline">{% trans "View Details" %}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+

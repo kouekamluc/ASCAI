@@ -7,7 +7,11 @@
 <article class="news-detail">
     {% if post.featured_image %}
     <div class="featured-image">
-        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:white;font-size:1.2rem;padding:2rem;\'>Image not available</div>'">
+    </div>
+    {% else %}
+    <div class="featured-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; padding: 2rem;">
+        {% trans "No image available" %}
     </div>
     {% endif %}
     

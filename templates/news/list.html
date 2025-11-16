@@ -43,7 +43,11 @@
         <article class="post-card">
             {% if post.featured_image %}
                 <div class="post-image">
-                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:100%;height:200px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:white;font-size:0.9rem;\'>Image not available</div>'">
+                </div>
+            {% else %}
+                <div class="post-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
+                    {% trans "No image" %}
                 </div>
             {% endif %}
             <div class="post-content">

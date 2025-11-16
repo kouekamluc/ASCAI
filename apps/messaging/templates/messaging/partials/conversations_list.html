@@ -1,5 +1,5 @@
 {% load i18n %}
-{% for conversation in conversations %}
+{% for conversation in page_obj %}
 <a href="{% url 'messaging:chat_detail' conversation.id %}" 
    class="conversation-link"
    data-conversation-id="{{ conversation.id }}"
