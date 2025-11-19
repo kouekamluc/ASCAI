@@ -13,6 +13,7 @@ from .models import (
     UsefulLink,
     ContactInfo,
     OfficeHours,
+    ContactFormSubmission,
 )
 
 
@@ -196,3 +197,51 @@ class OfficeHoursAdmin(admin.ModelAdmin):
             return _("Closed")
         return f"{obj.start_time.strftime('%H:%M')} - {obj.end_time.strftime('%H:%M')}"
     time_display.short_description = _("Hours")
+
+
+@admin.register(ContactFormSubmission)
+class ContactFormSubmissionAdmin(admin.ModelAdmin):
+    """Admin for contact form submissions."""
+    list_display = ['name', 'email', 'subject', 'contact_type', 'status', 'recipient_email', 'created_at', 'responded_at']
+    list_filter = ['status', 'contact_type', 'created_at', 'responded_at']
+    search_fields = ['name', 'email', 'subject', 'message']
+    list_editable = ['status']
+    readonly_fields = ['created_at', 'updated_at', 'ip_address', 'user_agent']
+    date_hierarchy = 'created_at'
+    autocomplete_fields = ['responded_by']
+    
+    fieldsets = (
+        (_("Submission Details"), {
+            'fields': ('name', 'email', 'subject', 'message', 'contact_type', 'recipient_email')
+        }),
+        (_("Status & Response"), {
+            'fields': ('status', 'responded_at', 'responded_by', 'notes')
+        }),
+        (_("Technical Information"), {
+            'fields': ('ip_address', 'user_agent', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    actions = ['mark_as_responded', 'mark_as_in_progress', 'mark_as_closed']
+    
+    def mark_as_responded(self, request, queryset):
+        """Mark selected submissions as responded."""
+        count = 0
+        for submission in queryset:
+            submission.mark_as_responded(user=request.user)
+            count += 1
+        self.message_user(request, _('Marked %(count)d submission(s) as responded.') % {'count': count})
+    mark_as_responded.short_description = _("Mark selected as responded")
+    
+    def mark_as_in_progress(self, request, queryset):
+        """Mark selected submissions as in progress."""
+        queryset.update(status=ContactFormSubmission.Status.IN_PROGRESS)
+        self.message_user(request, _('Marked %(count)d submission(s) as in progress.') % {'count': queryset.count()})
+    mark_as_in_progress.short_description = _("Mark selected as in progress")
+    
+    def mark_as_closed(self, request, queryset):
+        """Mark selected submissions as closed."""
+        queryset.update(status=ContactFormSubmission.Status.CLOSED)
+        self.message_user(request, _('Marked %(count)d submission(s) as closed.') % {'count': queryset.count()})
+    mark_as_closed.short_description = _("Mark selected as closed")

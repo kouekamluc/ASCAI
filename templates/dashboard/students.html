@@ -4,222 +4,262 @@
 {% block title %}{% trans "Students - ASCAI" %}{% endblock %}
 
 {% block content %}
-<!-- Students Page Hero -->
-<section class="page-hero">
+<div class="reddit-landing-wrapper">
+    <!-- Hero Section -->
     <div class="container">
-        <h1>{% trans "For Students" %}</h1>
-        <p class="page-hero-subtitle">{% trans "Everything you need to know about studying in Lazio" %}</p>
-    </div>
-</section>
-
-<!-- Universities Section -->
-<section class="landing-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Universities in Lazio" %}</h2>
-            <p class="section-description">{% trans "Discover universities and study programs in the Lazio region" %}</p>
+        <div class="reddit-hero">
+            <h1 class="reddit-hero-title">{% trans "For Students" %}</h1>
+            <p class="reddit-hero-subtitle">{% trans "Everything you need to know about studying in Lazio" %}</p>
         </div>
-        
-        {% if universities %}
-        <div class="universities-list">
-            {% for university in universities %}
-            <div class="university-item">
-                {% if university.image %}
-                <div class="university-image-wrapper">
-                    <img src="{{ university.image.url }}" alt="{{ university.name }}" class="university-image" onerror="this.style.display='none';">
-                </div>
-                {% elif university.logo %}
-                <div class="university-logo-wrapper">
-                    <img src="{{ university.logo.url }}" alt="{{ university.name }}" class="university-logo" onerror="this.style.display='none';">
-                </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="reddit-container">
+        <div class="reddit-main-feed">
+            <!-- Universities Section -->
+            <div class="reddit-section-header">
+                <h2 class="reddit-section-title">{% trans "Universities in Lazio" %}</h2>
+            </div>
+            
+            {% if universities %}
+            <div class="reddit-search">
+                <form method="get" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <input type="text" name="search" value="{{ search_query }}" placeholder="{% trans 'Search universities or programs...' %}" class="reddit-search-input" style="flex: 1;">
+                    <button type="submit" class="reddit-btn reddit-btn-primary">{% trans "Search" %}</button>
+                    {% if search_query %}
+                    <a href="{% url 'dashboard:students' %}" class="reddit-btn reddit-btn-outline">{% trans "Clear" %}</a>
+                    {% endif %}
+                </form>
+                {% if search_query %}
+                <p style="font-size: 0.875rem; color: var(--reddit-text-secondary); margin-bottom: 1rem;">
+                    {% trans "Search results for" %}: <strong>{{ search_query }}</strong>
+                </p>
                 {% endif %}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" {% if university.image or university.logo %}style="display:none;"{% endif %}>
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                    <path d="M9 10h6"></path>
-                    <path d="M9 14h6"></path>
-                </svg>
-                <div class="university-info">
-                    {% if university.url %}
-                    <a href="{{ university.url }}" target="_blank" rel="noopener" class="university-name">{{ university.name }}</a>
+            </div>
+
+            {% for university in universities %}
+            <div class="reddit-university-card">
+                <div class="reddit-university-icon">
+                    {% if university.logo %}
+                    <img src="{{ university.logo.url }}" alt="{{ university.name }}" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\'20\' height=\'20\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\'><path d=\'M4 19.5A2.5 2.5 0 0 1 6.5 17H20\'></path><path d=\'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\'></path></svg>';">
                     {% else %}
-                    <span class="university-name">{{ university.name }}</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <path d="M9 10h6"></path>
+                        <path d="M9 14h6"></path>
+                    </svg>
+                    {% endif %}
+                </div>
+                <div class="reddit-university-info">
+                    {% if university.url %}
+                    <a href="{{ university.url }}" target="_blank" rel="noopener" class="reddit-university-name">{{ university.name }}</a>
+                    {% else %}
+                    <span class="reddit-university-name">{{ university.name }}</span>
                     {% endif %}
                     {% if university.location %}
-                    <span class="university-location">{{ university.location }}</span>
+                    <div class="reddit-university-location">📍 {{ university.location }}</div>
                     {% endif %}
                     {% if university.description %}
-                    <p class="university-description">{{ university.description|truncatewords:15 }}</p>
+                    <p style="font-size: 0.875rem; color: var(--reddit-text-secondary); margin-top: 0.5rem; line-height: 1.5;">{{ university.description|truncatewords:20 }}</p>
                     {% endif %}
                 </div>
             </div>
             {% endfor %}
-        </div>
-        {% else %}
-        <p class="no-content">{% trans "No universities listed yet. Check back soon!" %}</p>
-        {% endif %}
-        
-        <!-- University Search Tool -->
-        <div class="university-search-section">
-            <h3>{% trans "Find Your University" %}</h3>
-            <div class="search-tool">
-                <input type="text" id="university-search-input" placeholder="{% trans 'Search universities or programs...' %}" class="search-input">
-                <button type="button" class="btn btn-primary" onclick="searchUniversities()">{% trans "Search" %}</button>
+            {% else %}
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-content">
+                    <p style="text-align: center; color: var(--reddit-text-secondary); padding: 2rem;">
+                        {% trans "No universities listed yet. Check back soon!" %}
+                    </p>
+                </div>
             </div>
-            <p class="search-hint">{% trans "Search for universities, study programs, and courses in Lazio" %}</p>
-        </div>
-    </div>
-</section>
+            {% endif %}
 
-<!-- Scholarships Section -->
-<section class="landing-section" style="background: var(--light-gray);">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Scholarships & Funding" %}</h2>
-            <p class="section-description">{% trans "Financial support opportunities for your studies" %}</p>
-        </div>
-        
-        {% if scholarships %}
-        <div class="scholarships-grid">
+            <div class="cameroon-flag-accent"></div>
+
+            <!-- Scholarships Section -->
+            <div class="reddit-section-header">
+                <h2 class="reddit-section-title">{% trans "Scholarships & Funding" %}</h2>
+                <a href="{% url 'events:list' %}" class="reddit-btn reddit-btn-outline">{% trans "View All" %}</a>
+            </div>
+            
+            {% if scholarships %}
             {% for scholarship in scholarships %}
-            <div class="scholarship-card">
-                {% if scholarship.featured_image %}
-                <div class="scholarship-image">
-                    <img src="{{ scholarship.featured_image.url }}" alt="{{ scholarship.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f093fb 0%, #4facfe 100%)';">
+            <div class="reddit-post-card" onclick="window.location.href='{% url 'events:detail' scholarship.slug %}'">
+                <div class="reddit-post-vote">
+                    <button class="reddit-vote-button" aria-label="{% trans 'Upvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2L3 9h4v8h6v-8h4L10 2z"/>
+                        </svg>
+                    </button>
+                    <span class="reddit-vote-count">•</span>
+                    <button class="reddit-vote-button downvote" aria-label="{% trans 'Downvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 18l7-7h-4V3H7v8H3l7 7z"/>
+                        </svg>
+                    </button>
                 </div>
-                {% else %}
-                <div class="scholarship-image" style="background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
-                    {% trans "No image" %}
-                </div>
-                {% endif %}
-                <div class="scholarship-content">
-                    <div class="scholarship-meta">
+                <div class="reddit-post-content">
+                    <div class="reddit-post-header">
+                        <span class="reddit-post-subreddit">r/ASCAI-Scholarships</span>
+                        <span>•</span>
+                        <span class="reddit-post-author">{{ scholarship.start_date|date:"M d, Y" }}</span>
                         {% if scholarship.category %}
-                        <span class="scholarship-category" style="background-color: {{ scholarship.category.color }};">
-                            {{ scholarship.category.name }}
-                        </span>
-                        {% endif %}
-                        <span class="scholarship-date">{{ scholarship.start_date|date:"d/m/Y" }}</span>
-                    </div>
-                    <h3><a href="{% url 'events:detail' scholarship.slug %}">{{ scholarship.title }}</a></h3>
-                    <p>{{ scholarship.description|truncatewords:25 }}</p>
-                    <div class="scholarship-info">
-                        <span>📍 {% trans "Location" %}: {{ scholarship.location }}</span>
-                        {% if scholarship.is_registration_required %}
-                        <span class="registration-badge">{% trans "Registration Required" %}</span>
+                        <span>•</span>
+                        <span style="color: {{ scholarship.category.color }};">{{ scholarship.category.name }}</span>
                         {% endif %}
                     </div>
-                    <a href="{% url 'events:detail' scholarship.slug %}" class="btn btn-primary">{% trans "View Details" %}</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="section-actions">
-            <a href="{% url 'events:list' %}" class="btn btn-outline">{% trans "View All Opportunities" %}</a>
-        </div>
-        {% else %}
-        <p class="no-content">{% trans "No scholarships available at the moment. Check back later!" %}</p>
-        {% endif %}
-    </div>
-</section>
-
-<!-- Study News Section -->
-<section class="landing-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Study News & Updates" %}</h2>
-            <p class="section-description">{% trans "Latest news about studies, scholarships, and university life" %}</p>
-        </div>
-        
-        {% if study_news %}
-        <div class="news-grid">
-            {% for news in study_news %}
-            <article class="news-card">
-                {% if news.featured_image %}
-                <div class="news-card-image">
-                    <img src="{{ news.featured_image.url }}" alt="{{ news.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)';">
-                </div>
-                {% else %}
-                <div class="news-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
-                    {% trans "No image" %}
-                </div>
-                {% endif %}
-                <div class="news-card-content">
-                    <div class="news-card-meta">
-                        <span class="news-date">{{ news.published_at|date:"d/m/Y"|default:news.created_at|date:"d/m/Y" }}</span>
-                        {% if news.category %}
-                        <span class="news-category">{{ news.category.name }}</span>
-                        {% endif %}
-                    </div>
-                    <h3><a href="{% url 'news:detail' news.slug %}">{{ news.title }}</a></h3>
-                    {% if news.excerpt %}
-                    <p>{{ news.excerpt|truncatewords:20 }}</p>
+                    <a href="{% url 'events:detail' scholarship.slug %}" class="reddit-post-title">{{ scholarship.title }}</a>
+                    {% if scholarship.description %}
+                    <p class="reddit-post-body">{{ scholarship.description|truncatewords:30 }}</p>
                     {% endif %}
-                    <a href="{% url 'news:detail' news.slug %}" class="btn btn-outline">{% trans "Read More" %}</a>
+                    {% if scholarship.featured_image %}
+                    <img src="{{ scholarship.featured_image.url }}" alt="{{ scholarship.title }}" class="reddit-post-image" onerror="this.style.display='none';">
+                    {% endif %}
+                    <div class="reddit-post-footer">
+                        <div class="reddit-post-action">
+                            <span>📍 {{ scholarship.location }}</span>
+                        </div>
+                        {% if scholarship.is_registration_required %}
+                        <div class="reddit-post-action">
+                            <span style="color: var(--cameroon-red); font-weight: 600;">{% trans "Registration Required" %}</span>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-            </article>
-            {% endfor %}
-        </div>
-        <div class="section-actions">
-            <a href="{% url 'news:list' %}" class="btn btn-outline">{% trans "View All News" %}</a>
-        </div>
-        {% else %}
-        <p class="no-content">{% trans "No study-related news at the moment." %}</p>
-        {% endif %}
-    </div>
-</section>
-
-<!-- Exchange Programs Section -->
-<section class="landing-section" style="background: var(--light-gray);">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Exchange Programs" %}</h2>
-            <p class="section-description">{% trans "International exchange opportunities" %}</p>
-        </div>
-        
-        {% if exchange_programs %}
-        <div class="exchange-programs">
-            {% for program in exchange_programs %}
-            <div class="exchange-program-card">
-                <div class="exchange-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                </div>
-                <h3>{{ program.name }}</h3>
-                <p>{{ program.description }}</p>
-                {% if program.url %}
-                <a href="{{ program.url }}" target="_blank" rel="noopener" class="btn btn-primary">{% trans "Learn More" %}</a>
-                {% else %}
-                <a href="{% url 'news:list' %}" class="btn btn-primary">{% trans "Learn More" %}</a>
-                {% endif %}
             </div>
             {% endfor %}
+            {% else %}
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-content">
+                    <p style="text-align: center; color: var(--reddit-text-secondary); padding: 2rem;">
+                        {% trans "No scholarships available at the moment. Check back later!" %}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="cameroon-flag-accent"></div>
+
+            <!-- Study News Section -->
+            <div class="reddit-section-header">
+                <h2 class="reddit-section-title">{% trans "Study News & Updates" %}</h2>
+                <a href="{% url 'news:list' %}" class="reddit-btn reddit-btn-outline">{% trans "View All" %}</a>
+            </div>
+            
+            {% if study_news %}
+            {% for news in study_news %}
+            <div class="reddit-post-card" onclick="window.location.href='{% url 'news:detail' news.slug %}'">
+                <div class="reddit-post-vote">
+                    <button class="reddit-vote-button" aria-label="{% trans 'Upvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2L3 9h4v8h6v-8h4L10 2z"/>
+                        </svg>
+                    </button>
+                    <span class="reddit-vote-count">•</span>
+                    <button class="reddit-vote-button downvote" aria-label="{% trans 'Downvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 18l7-7h-4V3H7v8H3l7 7z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="reddit-post-content">
+                    <div class="reddit-post-header">
+                        <span class="reddit-post-subreddit">r/ASCAI-News</span>
+                        <span>•</span>
+                        <span class="reddit-post-author">{{ news.published_at|date:"M d, Y"|default:news.created_at|date:"M d, Y" }}</span>
+                        {% if news.category %}
+                        <span>•</span>
+                        <span>{{ news.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'news:detail' news.slug %}" class="reddit-post-title">{{ news.title }}</a>
+                    {% if news.excerpt %}
+                    <p class="reddit-post-body">{{ news.excerpt|truncatewords:30 }}</p>
+                    {% endif %}
+                    {% if news.featured_image %}
+                    <img src="{{ news.featured_image.url }}" alt="{{ news.title }}" class="reddit-post-image" onerror="this.style.display='none';">
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-content">
+                    <p style="text-align: center; color: var(--reddit-text-secondary); padding: 2rem;">
+                        {% trans "No study-related news at the moment." %}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="cameroon-flag-accent"></div>
+
+            <!-- Exchange Programs Section -->
+            <div class="reddit-section-header">
+                <h2 class="reddit-section-title">{% trans "Exchange Programs" %}</h2>
+            </div>
+            
+            {% if exchange_programs %}
+            <div class="reddit-feature-grid">
+                {% for program in exchange_programs %}
+                <div class="reddit-feature-card">
+                    <div class="reddit-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3 class="reddit-feature-title">{{ program.name }}</h3>
+                    <p class="reddit-feature-description">{{ program.description }}</p>
+                    {% if program.url %}
+                    <a href="{{ program.url }}" target="_blank" rel="noopener" class="reddit-btn reddit-btn-cameroon">{% trans "Learn More" %}</a>
+                    {% else %}
+                    <a href="{% url 'news:list' %}" class="reddit-btn reddit-btn-cameroon">{% trans "Learn More" %}</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-content">
+                    <p style="text-align: center; color: var(--reddit-text-secondary); padding: 2rem;">
+                        {% trans "No exchange programs listed yet." %}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
         </div>
-        {% else %}
-        <p class="no-content">{% trans "No exchange programs listed yet." %}</p>
-        {% endif %}
+
+        <!-- Sidebar -->
+        <aside class="reddit-sidebar">
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-header">
+                    <span>{% trans "Quick Links" %}</span>
+                </div>
+                <div class="reddit-sidebar-content">
+                    <a href="{% url 'dashboard:index' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">🏠</span>
+                        <span class="reddit-sidebar-text">{% trans "Home" %}</span>
+                    </a>
+                    <a href="{% url 'events:list' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">📅</span>
+                        <span class="reddit-sidebar-text">{% trans "All Events" %}</span>
+                    </a>
+                    <a href="{% url 'news:list' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">📰</span>
+                        <span class="reddit-sidebar-text">{% trans "All News" %}</span>
+                    </a>
+                    <a href="{% url 'documents:list' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">📄</span>
+                        <span class="reddit-sidebar-text">{% trans "Documents" %}</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
     </div>
-</section>
-
-<script>
-function searchUniversities() {
-    const query = document.getElementById('university-search-input').value;
-    if (query.trim()) {
-        // Redirect to events/news with search query
-        window.location.href = `{% url 'events:list' %}?search=${encodeURIComponent(query)}`;
-    }
-}
-
-// Allow Enter key to trigger search
-document.getElementById('university-search-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        searchUniversities();
-    }
-});
-</script>
+</div>
 {% endblock %}
-

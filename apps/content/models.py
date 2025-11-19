@@ -214,3 +214,67 @@ class OfficeHours(models.Model):
         if self.is_closed:
             return f"{self.get_day_display()} - Closed"
         return f"{self.get_day_display()} - {self.start_time} to {self.end_time}"
+
+
+class ContactFormSubmission(models.Model):
+    """Model to store contact form submissions from the website."""
+    
+    class Status(models.TextChoices):
+        NEW = "new", _("New")
+        IN_PROGRESS = "in_progress", _("In Progress")
+        RESPONDED = "responded", _("Responded")
+        CLOSED = "closed", _("Closed")
+    
+    name = models.CharField(_("Name"), max_length=200)
+    email = models.EmailField(_("Email Address"))
+    subject = models.CharField(_("Subject"), max_length=200)
+    message = models.TextField(_("Message"))
+    contact_type = models.CharField(
+        _("Contact Type"),
+        max_length=20,
+        choices=ContactInfo.CONTACT_TYPE_CHOICES,
+        default='general'
+    )
+    status = models.CharField(
+        _("Status"),
+        max_length=20,
+        choices=Status.choices,
+        default=Status.NEW
+    )
+    recipient_email = models.EmailField(_("Recipient Email"), help_text=_("Email address where the message was sent"))
+    ip_address = models.GenericIPAddressField(_("IP Address"), null=True, blank=True)
+    user_agent = models.CharField(_("User Agent"), max_length=500, blank=True)
+    notes = models.TextField(_("Internal Notes"), blank=True, help_text=_("Internal notes for staff"))
+    responded_at = models.DateTimeField(_("Responded At"), null=True, blank=True)
+    responded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="contact_responses",
+        verbose_name=_("Responded By")
+    )
+    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated At"), auto_now=True)
+    
+    class Meta:
+        verbose_name = _("Contact Form Submission")
+        verbose_name_plural = _("Contact Form Submissions")
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['status']),
+            models.Index(fields=['contact_type']),
+        ]
+    
+    def __str__(self):
+        return f"{self.name} - {self.subject} ({self.created_at.strftime('%Y-%m-%d')})"
+    
+    def mark_as_responded(self, user=None):
+        """Mark submission as responded."""
+        from django.utils import timezone
+        self.status = self.Status.RESPONDED
+        self.responded_at = timezone.now()
+        if user:
+            self.responded_by = user
+        self.save(update_fields=['status', 'responded_at', 'responded_by', 'updated_at'])

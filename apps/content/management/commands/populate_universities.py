@@ -175,3 +175,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('Falling back to static data...'))
             self.populate_from_static_data()
 
+
+
+

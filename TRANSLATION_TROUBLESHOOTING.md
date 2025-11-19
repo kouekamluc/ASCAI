@@ -117,3 +117,9 @@ python manage.py clear_cache  # if available
 **Cause**: JavaScript issue or form not submitting
 **Fix**: Check browser console for errors, verify language switcher form
 
+
+
+
+
+
+

@@ -64,11 +64,24 @@ def index_view(request):
         end_date__lt=timezone.now()
     ).select_related('category', 'organizer').order_by('-end_date')[:2]
     
+    # Get testimonials for diaspora section
+    from apps.content.models import Testimonial
+    testimonials = Testimonial.objects.filter(
+        is_active=True,
+        is_featured=True
+    ).select_related('member').order_by('display_order', '-created_at')[:2]
+    
+    # Get universities for university search section
+    from apps.content.models import University
+    universities = University.objects.filter(is_active=True).order_by('display_order', 'name')[:10]
+    
     context = {
         'latest_news': latest_news,
         'upcoming_events': upcoming_events,
         'open_calls': open_calls,
         'closed_calls': closed_calls,
+        'testimonials': testimonials,
+        'universities': universities,
     }
     return render(request, "dashboard/index.html", context)
 
@@ -79,6 +92,9 @@ def students_view(request):
     from apps.news.models import NewsPost
     from apps.content.models import University, ExchangeProgram
     from django.db.models import Q
+    
+    # Get search query
+    search_query = request.GET.get('search', '').strip()
     
     # Get scholarship events (calls/bandi)
     scholarships = Event.objects.filter(
@@ -105,8 +121,23 @@ def students_view(request):
     # Get universities from content model
     universities = University.objects.filter(is_active=True).order_by('display_order', 'name')
     
+    # Filter universities by search query if provided
+    if search_query:
+        universities = universities.filter(
+            Q(name__icontains=search_query) |
+            Q(location__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+    
     # Get exchange programs from content model
     exchange_programs = ExchangeProgram.objects.filter(is_active=True).order_by('display_order', 'name')
+    
+    # Filter exchange programs by search query if provided
+    if search_query:
+        exchange_programs = exchange_programs.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
     
     # Get event categories for filtering
     categories = EventCategory.objects.all()[:8]
@@ -117,6 +148,7 @@ def students_view(request):
         'universities': universities,
         'exchange_programs': exchange_programs,
         'categories': categories,
+        'search_query': search_query,
     }
     return render(request, "dashboard/students.html", context)
 
@@ -242,6 +274,9 @@ def contact_view(request):
     from django.core.mail import send_mail
     from django.conf import settings
     from apps.content.models import ContactInfo, OfficeHours
+    import logging
+    
+    logger = logging.getLogger(__name__)
     
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -259,21 +294,91 @@ def contact_view(request):
                 ).first()
                 
                 recipient_email = contact_info.email if contact_info else 'info@ascai.it'
+                contact_label = contact_info.label if contact_info else 'General Inquiries'
                 
-                # Send email (configure email backend in settings)
+                # Get IP address and user agent for tracking
+                ip_address = request.META.get('REMOTE_ADDR', None)
+                user_agent = request.META.get('HTTP_USER_AGENT', '')[:500]  # Limit length
+                
+                # Save submission to database
+                from apps.content.models import ContactFormSubmission
+                submission = ContactFormSubmission.objects.create(
+                    name=name,
+                    email=email,
+                    subject=subject,
+                    message=message,
+                    contact_type=contact_type,
+                    recipient_email=recipient_email,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    status=ContactFormSubmission.Status.NEW
+                )
+                
+                # Prepare email message for ASCAI team
+                email_subject = f'ASCAI Contact Form: {subject}'
+                email_message = f"""New contact form submission from ASCAI website:
+
+From: {name}
+Email: {email}
+Contact Type: {contact_label}
+Subject: {subject}
+
+Message:
+{message}
+
+---
+This message was sent through the ASCAI contact form.
+Reply directly to: {email}
+Submission ID: {submission.id}
+"""
+                
+                # Send email to ASCAI team
                 send_mail(
-                    subject=f'ASCAI Contact Form: {subject}',
-                    message=f'From: {name} ({email})\nContact Type: {contact_type}\n\n{message}',
+                    subject=email_subject,
+                    message=email_message,
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[recipient_email],
                     fail_silently=False,
                 )
-                messages.success(request, _('Thank you for your message! We will get back to you soon.'))
+                
+                # Send confirmation email to the user
+                try:
+                    confirmation_subject = _('Thank you for contacting ASCAI')
+                    confirmation_message = f"""Dear {name},
+
+Thank you for contacting ASCAI - Association of Cameroonian Students in Lazio.
+
+We have received your message regarding: {subject}
+
+Our team will review your inquiry and get back to you as soon as possible.
+
+Your message:
+{message}
+
+Best regards,
+ASCAI Team
+"""
+                    send_mail(
+                        subject=confirmation_subject,
+                        message=confirmation_message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[email],
+                        fail_silently=True,  # Don't fail if confirmation email fails
+                    )
+                except Exception as confirm_error:
+                    # Log but don't fail the whole process if confirmation email fails
+                    logger.warning(f"Failed to send confirmation email to {email}: {str(confirm_error)}")
+                
+                logger.info(f"Contact form submitted successfully: {name} ({email}) - {subject} (ID: {submission.id})")
+                messages.success(request, _('Thank you for your message! We have sent you a confirmation email and will get back to you soon.'))
                 return redirect('dashboard:contact')
+                
             except Exception as e:
-                messages.error(request, _('Sorry, there was an error sending your message. Please try again later.'))
+                # Log the error for debugging
+                logger.error(f"Error sending contact form email: {str(e)}", exc_info=True)
+                messages.error(request, _('Sorry, there was an error sending your message. Please try again later or contact us directly at info@ascai.it'))
         else:
-            messages.error(request, _('Please fill in all fields.'))
+            messages.error(request, _('Please fill in all required fields.'))
     
     # Get contact information from models
     contact_info_list = ContactInfo.objects.filter(is_active=True).order_by('display_order', 'contact_type')

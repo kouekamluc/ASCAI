@@ -4,634 +4,400 @@
 {% block title %}{% trans "Welcome to ASCAI" %}{% endblock %}
 
 {% block content %}
-<!-- Hero Section with ASCAI Presentation -->
-<section class="landing-hero" id="home">
+<div class="reddit-landing-wrapper">
+    <!-- Hero Section -->
     <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">{% trans "Association of Cameroonian Students in Lazio" %}</h1>
-            <p class="hero-subtitle">{% trans "Empowering Cameroonian students in Lazio through community, support, and opportunities" %}</p>
-            <div class="hero-objectives">
-                <div class="objective-item">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    <h3>{% trans "Community Building" %}</h3>
-                    <p>{% trans "Connect with fellow Cameroonian students and build lasting relationships" %}</p>
-                </div>
-                <div class="objective-item">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                        <path d="M9 10h6"></path>
-                        <path d="M9 14h6"></path>
-                    </svg>
-                    <h3>{% trans "Academic Support" %}</h3>
-                    <p>{% trans "Access resources, guidance, and mentorship for your academic journey" %}</p>
-                </div>
-                <div class="objective-item">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 6v6l4 2"></path>
-                    </svg>
-                    <h3>{% trans "Cultural Exchange" %}</h3>
-                    <p>{% trans "Share experiences, celebrate culture, and learn from each other" %}</p>
-                </div>
-                <div class="objective-item">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <h3>{% trans "Opportunities" %}</h3>
-                    <p>{% trans "Discover scholarships, events, and career opportunities" %}</p>
-                </div>
-            </div>
+        <div class="reddit-hero">
+            <h1 class="reddit-hero-title">{% trans "Association of Cameroonian Students in Lazio" %}</h1>
+            <p class="reddit-hero-subtitle">{% trans "Empowering Cameroonian students in Lazio through community, support, and opportunities" %}</p>
         </div>
     </div>
-</section>
 
-<!-- Features Section -->
-<section class="landing-features">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Our Features" %}</h2>
-            <p class="section-description">{% trans "Everything you need to succeed as a student in Lazio" %}</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "University Search" %}</h3>
-                <p>{% trans "Find universities and study programs in Lazio and Italy" %}</p>
-                <a href="#students" class="btn btn-outline">{% trans "Explore" %}</a>
+    <!-- Main Content with Sidebar -->
+    <div class="reddit-container">
+        <!-- Main Feed -->
+        <div class="reddit-main-feed">
+            <!-- Features Section -->
+            <div class="reddit-section-header">
+                <h2 class="reddit-section-title">{% trans "Our Features" %}</h2>
             </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "Scholarships & Funding" %}</h3>
-                <p>{% trans "Information about scholarships, loans, and funding opportunities" %}</p>
-                <a href="#students" class="btn btn-outline">{% trans "Learn More" %}</a>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "Cultural Exchange" %}</h3>
-                <p>{% trans "Share experiences and connect with the diaspora community" %}</p>
-                <a href="#diaspora" class="btn btn-outline">{% trans "Join" %}</a>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "Guidance & Orientation" %}</h3>
-                <p>{% trans "Get mentorship and guidance from experienced students" %}</p>
-                <a href="#students" class="btn btn-outline">{% trans "Get Started" %}</a>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                        <path d="M21 15l-5-5L5 21"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "Photo & Video Gallery" %}</h3>
-                <p>{% trans "View photos and videos from ASCAI events and activities" %}</p>
-                <a href="#diaspora" class="btn btn-outline">{% trans "View Gallery" %}</a>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                </div>
-                <h3>{% trans "Downloads" %}</h3>
-                <p>{% trans "Access forms, documents, and useful resources" %}</p>
-                <a href="{% url 'documents:list' %}" class="btn btn-outline">{% trans "Download" %}</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Students Section -->
-<section class="landing-section" id="students">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "For Students" %}</h2>
-            <p class="section-description">{% trans "Everything you need to know about studying in Lazio" %}</p>
-        </div>
-        <div class="students-grid">
-            <div class="students-card">
-                <h3>{% trans "Universities in Lazio" %}</h3>
-                <p>{% trans "Discover universities and study programs in the Lazio region" %}</p>
-                <ul class="students-list">
-                    <li>{% trans "University of Rome La Sapienza" %}</li>
-                    <li>{% trans "University of Rome Tor Vergata" %}</li>
-                    <li>{% trans "University of Rome Tre" %}</li>
-                    <li>{% trans "And many more..." %}</li>
-                </ul>
-                <a href="#university-search" class="btn btn-primary">{% trans "Search Universities" %}</a>
-            </div>
-            
-            <div class="students-card">
-                <h3>{% trans "Scholarships & Funding" %}</h3>
-                <p>{% trans "Financial support opportunities for your studies" %}</p>
-                <ul class="students-list">
-                    <li>{% trans "DiSCo Scholarships" %}</li>
-                    <li>{% trans "Erasmus+ Exchange Programs" %}</li>
-                    <li>{% trans "Regional Study Rights" %}</li>
-                    <li>{% trans "Student Loans" %}</li>
-                </ul>
-                <a href="{% url 'events:list' %}" class="btn btn-primary">{% trans "View Opportunities" %}</a>
-            </div>
-            
-            <div class="students-card">
-                <h3>{% trans "Exchange Programs" %}</h3>
-                <p>{% trans "International exchange opportunities" %}</p>
-                <ul class="students-list">
-                    <li>{% trans "Erasmus+ Program" %}</li>
-                    <li>{% trans "Study Abroad Opportunities" %}</li>
-                    <li>{% trans "Cultural Exchange Programs" %}</li>
-                </ul>
-                <a href="{% url 'news:list' %}" class="btn btn-primary">{% trans "Learn More" %}</a>
-            </div>
-        </div>
-        
-        <!-- University Search Tool -->
-        <div class="university-search-section" id="university-search">
-            <h3>{% trans "Find Your University" %}</h3>
-            <div class="search-tool">
-                <input type="text" id="university-search-input" placeholder="{% trans 'Search universities or programs...' %}" class="search-input">
-                <button type="button" class="btn btn-primary">{% trans "Search" %}</button>
-            </div>
-            <p class="search-hint">{% trans "Search for universities, study programs, and courses in Lazio" %}</p>
-        </div>
-    </div>
-</section>
-
-<!-- Diaspora Section -->
-<section class="landing-section landing-diaspora" id="diaspora">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Diaspora" %}</h2>
-            <p class="section-description">{% trans "News, events, testimonials, and success stories from the Cameroonian student community" %}</p>
-        </div>
-        
-        <div class="diaspora-content">
-            <div class="diaspora-main">
-                <!-- News & Events -->
-                <div class="diaspora-section-block">
-                    <h3>{% trans "News & Events" %}</h3>
-                    <div class="news-events-preview">
-                        {% if latest_news %}
-                        <div class="news-preview-list">
-                            {% for news in latest_news|slice:":3" %}
-                            <article class="news-preview-item">
-                                {% if news.featured_image %}
-                                <div class="news-preview-image">
-                                    <img src="{{ news.featured_image.url }}" alt="{{ news.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)';">
-                                </div>
-                                {% endif %}
-                                <div class="news-preview-content">
-                                    <h4><a href="{% url 'news:detail' news.slug %}">{{ news.title }}</a></h4>
-                                    <p class="news-preview-date">{{ news.published_at|date:"d/m/Y"|default:news.created_at|date:"d/m/Y" }}</p>
-                                </div>
-                            </article>
-                            {% endfor %}
-                        </div>
-                        <a href="{% url 'news:list' %}" class="btn btn-outline">{% trans "View All News" %}</a>
-                        {% endif %}
+            <div class="reddit-feature-grid">
+                <div class="reddit-feature-card">
+                    <div class="reddit-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
+                        </svg>
                     </div>
+                    <h3 class="reddit-feature-title">{% trans "University Search" %}</h3>
+                    <p class="reddit-feature-description">{% trans "Find universities and study programs in Lazio and Italy" %}</p>
+                    <a href="#students" class="reddit-btn reddit-btn-outline">{% trans "Explore" %}</a>
                 </div>
                 
-                <!-- Testimonials & Success Stories -->
-                <div class="diaspora-section-block">
-                    <h3>{% trans "Success Stories" %}</h3>
-                    <div class="testimonials-grid">
-                        <div class="testimonial-card">
-                            <div class="testimonial-content">
-                                <p>"{% trans "ASCAI helped me navigate my studies and find my community in Lazio. I'm grateful for the support!" %}"</p>
-                            </div>
-                            <div class="testimonial-author">
-                                <strong>{% trans "Student Member" %}</strong>
-                            </div>
-                        </div>
-                        <div class="testimonial-card">
-                            <div class="testimonial-content">
-                                <p>"{% trans "Through ASCAI, I found scholarship opportunities that made my studies possible." %}"</p>
-                            </div>
-                            <div class="testimonial-author">
-                                <strong>{% trans "Student Member" %}</strong>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="{% url 'forums:category_list' %}" class="btn btn-outline">{% trans "Share Your Story" %}</a>
-                </div>
-            </div>
-            
-            <!-- Upcoming Events Sidebar -->
-            <div class="diaspora-sidebar">
-                <h3>{% trans "Upcoming Events" %}</h3>
-                {% if upcoming_events %}
-                <div class="events-sidebar-list">
-                    {% for event in upcoming_events|slice:":5" %}
-                    <div class="event-sidebar-item">
-                        <div class="event-sidebar-date">
-                            <span class="event-day">{{ event.start_date|date:"d" }}</span>
-                            <span class="event-month">{{ event.start_date|date:"M" }}</span>
-                        </div>
-                        <div class="event-sidebar-content">
-                            <h4><a href="{% url 'events:detail' event.slug %}">{{ event.title }}</a></h4>
-                            <p class="event-sidebar-location">{{ event.location }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <a href="{% url 'events:list' %}" class="btn btn-outline">{% trans "View All Events" %}</a>
-                {% else %}
-                <p>{% trans "No upcoming events at the moment" %}</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Community Section -->
-<section class="landing-section landing-community" id="community">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Community" %}</h2>
-            <p class="section-description">{% trans "Connect, discuss, and engage with the ASCAI community" %}</p>
-        </div>
-        <div class="community-grid">
-            <div class="community-card">
-                <div class="community-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "Forum" %}</h3>
-                <p>{% trans "Join discussions, ask questions, and share knowledge with the community" %}</p>
-                <a href="{% url 'forums:category_list' %}" class="btn btn-primary">{% trans "Visit Forum" %}</a>
-            </div>
-            
-            <div class="community-card">
-                <div class="community-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "Discussion Groups" %}</h3>
-                <p>{% trans "Participate in topic-specific discussion groups and communities" %}</p>
-                <a href="{% url 'forums:category_list' %}" class="btn btn-primary">{% trans "Join Groups" %}</a>
-            </div>
-            
-            <div class="community-card">
-                <div class="community-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                    </svg>
-                </div>
-                <h3>{% trans "Social Networks" %}</h3>
-                <p>{% trans "Connect with us on social media and stay updated" %}</p>
-                <div class="social-links">
-                    <a href="#" class="social-link" aria-label="{% trans 'Instagram' %}" target="_blank" rel="noopener">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                    </a>
-                    <a href="#" class="social-link" aria-label="{% trans 'YouTube' %}" target="_blank" rel="noopener">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
-                    </a>
-                    <a href="#" class="social-link" aria-label="{% trans 'WhatsApp' %}" target="_blank" rel="noopener">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Resources Section -->
-<section class="landing-section landing-resources" id="resources">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Resources" %}</h2>
-            <p class="section-description">{% trans "Useful links and resources for diaspora students" %}</p>
-        </div>
-        <div class="resources-grid">
-            <div class="resources-category">
-                <h3>{% trans "Universities" %}</h3>
-                <ul class="resources-links">
-                    <li><a href="https://www.uniroma1.it" target="_blank" rel="noopener">{% trans "Sapienza University of Rome" %}</a></li>
-                    <li><a href="https://www.uniroma2.it" target="_blank" rel="noopener">{% trans "University of Rome Tor Vergata" %}</a></li>
-                    <li><a href="https://www.uniroma3.it" target="_blank" rel="noopener">{% trans "University of Rome Tre" %}</a></li>
-                    <li><a href="https://www.uniroma4.it" target="_blank" rel="noopener">{% trans "Foro Italico University" %}</a></li>
-                </ul>
-            </div>
-            
-            <div class="resources-category">
-                <h3>{% trans "Government & Organizations" %}</h3>
-                <ul class="resources-links">
-                    <li><a href="https://www.miur.gov.it" target="_blank" rel="noopener">{% trans "Ministry of Education (MIUR)" %}</a></li>
-                    <li><a href="https://www.regione.lazio.it" target="_blank" rel="noopener">{% trans "Lazio Region" %}</a></li>
-                    <li><a href="https://www.studyinitaly.esteri.it" target="_blank" rel="noopener">{% trans "Study in Italy" %}</a></li>
-                </ul>
-            </div>
-            
-            <div class="resources-category">
-                <h3>{% trans "Downloads" %}</h3>
-                <ul class="resources-links">
-                    <li><a href="{% url 'documents:list' %}">{% trans "Forms & Documents" %}</a></li>
-                    <li><a href="{% url 'documents:list' %}">{% trans "Application Forms" %}</a></li>
-                    <li><a href="{% url 'documents:list' %}">{% trans "Reddito Form" %}</a></li>
-                    <li><a href="{% url 'documents:list' %}">{% trans "All Documents" %}</a></li>
-                </ul>
-            </div>
-            
-            <div class="resources-category">
-                <h3>{% trans "Useful Links" %}</h3>
-                <ul class="resources-links">
-                    <li><a href="https://www.erasmusplus.it" target="_blank" rel="noopener">{% trans "Erasmus+ Italy" %}</a></li>
-                    <li><a href="https://www.cimea.it" target="_blank" rel="noopener">{% trans "CIMEA - Information Center" %}</a></li>
-                    <li><a href="{% url 'news:list' %}">{% trans "Scholarship Information" %}</a></li>
-                    <li><a href="{% url 'events:list' %}">{% trans "Events & Opportunities" %}</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Contact Section -->
-<section class="landing-section landing-contact" id="contact">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Contact Us" %}</h2>
-            <p class="section-description">{% trans "Get in touch with ASCAI" %}</p>
-        </div>
-        <div class="contact-grid">
-            <div class="contact-info">
-                <h3>{% trans "Contact Information" %}</h3>
-                <div class="contact-details">
-                    <div class="contact-item">
-                        <strong>{% trans "Email" %}:</strong>
-                        <a href="mailto:info@ascai.it">info@ascai.it</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>{% trans "Student Support" %}:</strong>
-                        <a href="mailto:students@ascai.it">students@ascai.it</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>{% trans "Membership" %}:</strong>
-                        <a href="mailto:membership@ascai.it">membership@ascai.it</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>{% trans "Partnerships" %}:</strong>
-                        <a href="mailto:partnerships@ascai.it">partnerships@ascai.it</a>
-                    </div>
-                </div>
-                <div class="contact-hours">
-                    <h4>{% trans "Office Hours" %}</h4>
-                    <p>{% trans "Monday to Thursday" %}: 9:30 - 16:30</p>
-                    <p>{% trans "Friday" %}: 9:30 - 13:00</p>
-                </div>
-            </div>
-            
-            <div class="contact-form-container">
-                <h3>{% trans "Send us a Message" %}</h3>
-                <form class="contact-form" method="post" action="#contact">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="contact-name">{% trans "Your Name" %}</label>
-                        <input type="text" id="contact-name" name="name" required class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-email">{% trans "Your Email" %}</label>
-                        <input type="email" id="contact-email" name="email" required class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-subject">{% trans "Subject" %}</label>
-                        <input type="text" id="contact-subject" name="subject" required class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-message">{% trans "Message" %}</label>
-                        <textarea id="contact-message" name="message" rows="5" required class="form-control"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">{% trans "Send Message" %}</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- News & Events Section (Keep existing) -->
-<section class="landing-news-events">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Latest News & Events" %}</h2>
-        </div>
-        
-        <div class="news-events-grid">
-            <!-- News Posts -->
-            {% if latest_news %}
-            <div class="news-events-column">
-                <h3 class="section-subtitle">{% trans "Latest News" %}</h3>
-                <div class="news-events-list">
-                    {% for news in latest_news %}
-                    <article class="news-event-card">
-                        {% if news.featured_image %}
-                        <div class="news-event-image">
-                            <img src="{{ news.featured_image.url }}" alt="{{ news.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:white;font-size:0.9rem;\'>Image not available</div>'">
-                        </div>
-                        {% else %}
-                        <div class="news-event-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
-                            {% trans "No image" %}
-                        </div>
-                        {% endif %}
-                        <div class="news-event-content">
-                            <div class="news-event-meta">
-                                <span class="news-event-date">{{ news.published_at|date:"d/m/Y"|default:news.created_at|date:"d/m/Y" }}</span>
-                                {% if news.category %}
-                                <span class="news-event-category">{{ news.category.name }}</span>
-                                {% endif %}
-                            </div>
-                            <h4><a href="{% url 'news:detail' news.slug %}">{{ news.title }}</a></h4>
-                            {% if news.excerpt %}
-                            <p class="news-event-excerpt">{{ news.excerpt|truncatewords:20 }}</p>
-                            {% endif %}
-                        </div>
-                    </article>
-                    {% endfor %}
-                </div>
-                <div class="news-events-actions">
-                    <a href="{% url 'news:list' %}" class="btn btn-secondary">{% trans "View All News" %}</a>
-                </div>
-            </div>
-            {% endif %}
-            
-            <!-- Upcoming Events -->
-            {% if upcoming_events %}
-            <div class="news-events-column">
-                <h3 class="section-subtitle">{% trans "Upcoming Events" %}</h3>
-                <div class="news-events-list">
-                    {% for event in upcoming_events %}
-                    <article class="news-event-card">
-                        {% if event.featured_image %}
-                        <div class="news-event-image">
-                            <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f093fb 0%, #4facfe 100%)'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:white;font-size:0.9rem;\'>Image not available</div>'">
-                        </div>
-                        {% else %}
-                        <div class="news-event-image" style="background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem;">
-                            {% trans "No image" %}
-                        </div>
-                        {% endif %}
-                        <div class="news-event-content">
-                            <div class="news-event-meta">
-                                <span class="news-event-date">{{ event.start_date|date:"d/m/Y H:i" }}</span>
-                                {% if event.category %}
-                                <span class="news-event-category" style="color: {{ event.category.color }};">{{ event.category.name }}</span>
-                                {% endif %}
-                            </div>
-                            <h4><a href="{% url 'events:detail' event.slug %}">{{ event.title }}</a></h4>
-                            <p class="news-event-location">{{ event.location }}</p>
-                            {% if event.is_registration_required %}
-                            <span class="news-event-registration">{% trans "Registration Required" %}</span>
-                            {% endif %}
-                        </div>
-                    </article>
-                    {% endfor %}
-                </div>
-                <div class="news-events-actions">
-                    <a href="{% url 'events:list' %}" class="btn btn-secondary">{% trans "View All Events" %}</a>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
-<!-- Calls/Bandi Section (Keep existing) -->
-<section class="landing-calls">
-    <div class="container">
-        <div class="section-header">
-            <h2>{% trans "Scholarships & Calls" %}</h2>
-        </div>
-        
-        <div class="calls-grid">
-            <!-- Open Calls/Bandi -->
-            {% for event in open_calls %}
-            <div class="call-card call-card-open">
-                <div class="call-header">
-                    <span class="call-status">{% trans "OPEN CALLS" %}</span>
-                </div>
-                <div class="call-image">
-                    {% if event.featured_image %}
-                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'call-image-placeholder\' style=\'background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%);\'><svg width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'white\'><path d=\'M4 19.5A2.5 2.5 0 0 1 6.5 17H20\'></path><path d=\'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\'></path><path d=\'M9 10h6\'></path><path d=\'M9 14h6\'></path></svg></div>'">
-                    {% else %}
-                    <div class="call-image-placeholder" style="background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%);">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="white">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                            <path d="M9 10h6"></path>
-                            <path d="M9 14h6"></path>
+                <div class="reddit-feature-card">
+                    <div class="reddit-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                         </svg>
                     </div>
-                    {% endif %}
+                    <h3 class="reddit-feature-title">{% trans "Scholarships & Funding" %}</h3>
+                    <p class="reddit-feature-description">{% trans "Information about scholarships, loans, and funding opportunities" %}</p>
+                    <a href="#students" class="reddit-btn reddit-btn-outline">{% trans "Learn More" %}</a>
                 </div>
-                <div class="call-content">
-                    <h3>{{ event.title }}</h3>
-                    <p>{{ event.description|truncatewords:20 }}</p>
-                    <a href="{% url 'events:detail' event.slug %}" class="btn btn-primary">{% trans "View Details" %}</a>
-                </div>
-            </div>
-            {% empty %}
-            <div class="call-card call-card-open">
-                <div class="call-header">
-                    <span class="call-status">{% trans "OPEN CALLS" %}</span>
-                </div>
-                <div class="call-image">
-                    <div class="call-image-placeholder" style="background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%);">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="white">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                            <path d="M9 10h6"></path>
-                            <path d="M9 14h6"></path>
-                        </svg>
-                    </div>
-                </div>
-                <div class="call-content">
-                    <h3>{% trans "No open calls at the moment" %}</h3>
-                    <p>{% trans "Check back later for new opportunities" %}</p>
-                    <a href="{% url 'events:list' %}" class="btn btn-primary">{% trans "View All Events" %}</a>
-                </div>
-            </div>
-            {% endfor %}
-            
-            <!-- Closed Calls/Bandi -->
-            {% for event in closed_calls %}
-            <div class="call-card call-card-closed">
-                <div class="call-header">
-                    <span class="call-status">{% trans "CLOSED CALLS" %}</span>
-                </div>
-                <div class="call-image">
-                    {% if event.featured_image %}
-                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'call-image-placeholder\' style=\'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\'><svg width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'white\'><path d=\'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\'></path><circle cx=\'9\' cy=\'7\' r=\'4\'></circle><path d=\'M23 21v-2a4 4 0 0 0-3-3.87\'></path><path d=\'M16 3.13a4 4 0 0 1 0 7.75\'></path></svg></div>'">
-                    {% else %}
-                    <div class="call-image-placeholder" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="white">
+                
+                <div class="reddit-feature-card">
+                    <div class="reddit-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                     </div>
-                    {% endif %}
+                    <h3 class="reddit-feature-title">{% trans "Cultural Exchange" %}</h3>
+                    <p class="reddit-feature-description">{% trans "Share experiences and connect with the diaspora community" %}</p>
+                    <a href="#diaspora" class="reddit-btn reddit-btn-outline">{% trans "Join" %}</a>
                 </div>
-                <div class="call-content">
-                    <h3>{{ event.title }}</h3>
-                    <p>{{ event.description|truncatewords:20 }}</p>
-                    <a href="{% url 'events:detail' event.slug %}" class="btn btn-primary">{% trans "View Details" %}</a>
+                
+                <div class="reddit-feature-card">
+                    <div class="reddit-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h3 class="reddit-feature-title">{% trans "Guidance & Orientation" %}</h3>
+                    <p class="reddit-feature-description">{% trans "Get mentorship and guidance from experienced students" %}</p>
+                    <a href="#students" class="reddit-btn reddit-btn-outline">{% trans "Get Started" %}</a>
+                </div>
+            </div>
+
+            <div class="cameroon-flag-accent"></div>
+
+            <!-- Latest News Section -->
+            {% if latest_news %}
+            <div class="reddit-section-header">
+                <h2 class="reddit-section-title">{% trans "Latest News" %}</h2>
+                <a href="{% url 'news:list' %}" class="reddit-btn reddit-btn-outline">{% trans "View All" %}</a>
+            </div>
+            {% for news in latest_news %}
+            <div class="reddit-post-card" onclick="window.location.href='{% url 'news:detail' news.slug %}'">
+                <div class="reddit-post-vote">
+                    <button class="reddit-vote-button" aria-label="{% trans 'Upvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2L3 9h4v8h6v-8h4L10 2z"/>
+                        </svg>
+                    </button>
+                    <span class="reddit-vote-count">•</span>
+                    <button class="reddit-vote-button downvote" aria-label="{% trans 'Downvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 18l7-7h-4V3H7v8H3l7 7z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="reddit-post-content">
+                    <div class="reddit-post-header">
+                        <span class="reddit-post-subreddit">r/ASCAI</span>
+                        <span>•</span>
+                        <span class="reddit-post-author">{% trans "Posted" %} {{ news.published_at|date:"M d"|default:news.created_at|date:"M d" }}</span>
+                        {% if news.category %}
+                        <span>•</span>
+                        <span>{{ news.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'news:detail' news.slug %}" class="reddit-post-title">{{ news.title }}</a>
+                    {% if news.excerpt %}
+                    <p class="reddit-post-body">{{ news.excerpt|truncatewords:30 }}</p>
+                    {% endif %}
+                    {% if news.featured_image %}
+                    <img src="{{ news.featured_image.url }}" alt="{{ news.title }}" class="reddit-post-image" onerror="this.style.display='none';">
+                    {% endif %}
+                    <div class="reddit-post-footer">
+                        <div class="reddit-post-action">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM2 8a6 6 0 1 1 12 0A6 6 0 0 1 2 8zm6-3a1 1 0 0 0-1 1v2H5a1 1 0 0 0 0 2h2v2a1 1 0 0 0 2 0V9h2a1 1 0 0 0 0-2H9V6a1 1 0 0 0-1-1z"/>
+                            </svg>
+                            <span>{% trans "Comment" %}</span>
+                        </div>
+                        <div class="reddit-post-action">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM1.5 8a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0z"/>
+                                <path d="M8 4.5a.5.5 0 0 0-.5.5v2.5H5a.5.5 0 0 0 0 1h2.5V11a.5.5 0 0 0 1 0V8.5H11a.5.5 0 0 0 0-1H8.5V5a.5.5 0 0 0-.5-.5z"/>
+                            </svg>
+                            <span>{% trans "Share" %}</span>
+                        </div>
+                        <div class="reddit-post-action">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                            </svg>
+                            <span>{% trans "Save" %}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endfor %}
+            {% endif %}
+
+            <div class="cameroon-flag-accent"></div>
+
+            <!-- Upcoming Events Section -->
+            {% if upcoming_events %}
+            <div class="reddit-section-header">
+                <h2 class="reddit-section-title">{% trans "Upcoming Events" %}</h2>
+                <a href="{% url 'events:list' %}" class="reddit-btn reddit-btn-outline">{% trans "View All" %}</a>
+            </div>
+            {% for event in upcoming_events %}
+            <div class="reddit-post-card" onclick="window.location.href='{% url 'events:detail' event.slug %}'">
+                <div class="reddit-post-vote">
+                    <button class="reddit-vote-button" aria-label="{% trans 'Upvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2L3 9h4v8h6v-8h4L10 2z"/>
+                        </svg>
+                    </button>
+                    <span class="reddit-vote-count">•</span>
+                    <button class="reddit-vote-button downvote" aria-label="{% trans 'Downvote' %}">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 18l7-7h-4V3H7v8H3l7 7z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="reddit-post-content">
+                    <div class="reddit-post-header">
+                        <span class="reddit-post-subreddit">r/ASCAI-Events</span>
+                        <span>•</span>
+                        <span class="reddit-post-author">{{ event.start_date|date:"M d, Y H:i" }}</span>
+                        {% if event.category %}
+                        <span>•</span>
+                        <span style="color: {{ event.category.color }};">{{ event.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'events:detail' event.slug %}" class="reddit-post-title">{{ event.title }}</a>
+                    {% if event.description %}
+                    <p class="reddit-post-body">{{ event.description|truncatewords:30 }}</p>
+                    {% endif %}
+                    {% if event.featured_image %}
+                    <img src="{{ event.featured_image.url }}" alt="{{ event.title }}" class="reddit-post-image" onerror="this.style.display='none';">
+                    {% endif %}
+                    <div class="reddit-post-footer">
+                        <div class="reddit-post-action">
+                            <span>📍 {{ event.location }}</span>
+                        </div>
+                        {% if event.is_registration_required %}
+                        <div class="reddit-post-action">
+                            <span style="color: var(--cameroon-red); font-weight: 600;">{% trans "Registration Required" %}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="cameroon-flag-accent"></div>
+
+            <!-- Students Section -->
+            <section id="students">
+                <div class="reddit-section-header">
+                    <h2 class="reddit-section-title">{% trans "For Students" %}</h2>
+                </div>
+                
+                <div class="reddit-feature-grid">
+                    <div class="reddit-feature-card">
+                        <div class="reddit-feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="reddit-feature-title">{% trans "Universities in Lazio" %}</h3>
+                        <p class="reddit-feature-description">{% trans "Discover universities and study programs in the Lazio region" %}</p>
+                        <a href="{% url 'dashboard:students' %}" class="reddit-btn reddit-btn-cameroon">{% trans "Search Universities" %}</a>
+                    </div>
+                    
+                    <div class="reddit-feature-card">
+                        <div class="reddit-feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="reddit-feature-title">{% trans "Scholarships & Funding" %}</h3>
+                        <p class="reddit-feature-description">{% trans "Financial support opportunities for your studies" %}</p>
+                        <a href="{% url 'events:list' %}" class="reddit-btn reddit-btn-cameroon">{% trans "View Opportunities" %}</a>
+                    </div>
+                    
+                    <div class="reddit-feature-card">
+                        <div class="reddit-feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <h3 class="reddit-feature-title">{% trans "Exchange Programs" %}</h3>
+                        <p class="reddit-feature-description">{% trans "International exchange opportunities" %}</p>
+                        <a href="{% url 'news:list' %}" class="reddit-btn reddit-btn-cameroon">{% trans "Learn More" %}</a>
+                    </div>
+                </div>
+
+                <!-- University Search -->
+                {% if universities %}
+                <div class="reddit-search">
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; font-weight: 600;">{% trans "Find Your University" %}</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.5rem; margin-bottom: 1rem;">
+                        {% for university in universities|slice:":6" %}
+                        <div class="reddit-university-card" style="margin-bottom: 0;">
+                            <div class="reddit-university-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="reddit-university-info">
+                                {% if university.url %}
+                                <a href="{{ university.url }}" target="_blank" rel="noopener" class="reddit-university-name">{{ university.name }}</a>
+                                {% else %}
+                                <span class="reddit-university-name">{{ university.name }}</span>
+                                {% endif %}
+                                {% if university.location %}
+                                <div class="reddit-university-location">{{ university.location }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <form method="get" action="{% url 'dashboard:students' %}" style="display: flex; gap: 0.5rem;">
+                        <input type="text" name="search" placeholder="{% trans 'Search universities...' %}" class="reddit-search-input" style="flex: 1;">
+                        <button type="submit" class="reddit-btn reddit-btn-primary">{% trans "Search" %}</button>
+                    </form>
+                    <a href="{% url 'dashboard:students' %}" class="reddit-btn reddit-btn-outline" style="margin-top: 0.5rem; display: inline-block;">{% trans "View All Universities" %}</a>
+                </div>
+                {% endif %}
+            </section>
+
+            <div class="cameroon-flag-accent"></div>
+
+            <!-- Diaspora Section -->
+            <section id="diaspora">
+                <div class="reddit-section-header">
+                    <h2 class="reddit-section-title">{% trans "Diaspora" %}</h2>
+                    <a href="{% url 'dashboard:diaspora' %}" class="reddit-btn reddit-btn-outline">{% trans "View All" %}</a>
+                </div>
+                
+                {% if testimonials %}
+                <div class="reddit-feature-grid">
+                    {% for testimonial in testimonials %}
+                    <div class="reddit-feature-card">
+                        <div class="reddit-feature-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <p class="reddit-feature-description" style="font-style: italic; margin-bottom: 0.5rem;">"{{ testimonial.content|truncatewords:30 }}"</p>
+                        <div style="font-size: 0.875rem; color: var(--reddit-text-secondary);">
+                            <strong>{{ testimonial.display_name }}</strong>
+                            {% if testimonial.display_university %}
+                            <div>{{ testimonial.display_university }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </section>
         </div>
-        
-        {% if open_calls or closed_calls %}
-        <div class="calls-actions">
-            <a href="{% url 'events:list' %}" class="btn btn-outline">{% trans "VIEW ALL" %}</a>
-        </div>
-        {% endif %}
+
+        <!-- Sidebar -->
+        <aside class="reddit-sidebar">
+            <!-- Community Info -->
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-header">
+                    <span>r/ASCAI</span>
+                </div>
+                <div class="reddit-sidebar-content">
+                    <div class="reddit-community-stats">
+                        <div class="reddit-stat">
+                            <div class="reddit-stat-value">ASCAI</div>
+                            <div class="reddit-stat-label">{% trans "Community" %}</div>
+                        </div>
+                        <div class="reddit-stat">
+                            <div class="reddit-stat-value">{{ upcoming_events|length|default:"0" }}</div>
+                            <div class="reddit-stat-label">{% trans "Events" %}</div>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--reddit-text-secondary); margin: 1rem 0;">{% trans "Empowering Cameroonian students in Lazio through community, support, and opportunities" %}</p>
+                    <a href="{% url 'members:apply' %}" class="reddit-btn reddit-btn-cameroon" style="width: 100%; justify-content: center; margin-top: 1rem;">{% trans "Join Community" %}</a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-header">
+                    <span>{% trans "Quick Links" %}</span>
+                </div>
+                <div class="reddit-sidebar-content">
+                    <a href="{% url 'dashboard:students' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">1</span>
+                        <span class="reddit-sidebar-text">{% trans "Students" %}</span>
+                    </a>
+                    <a href="{% url 'dashboard:diaspora' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">2</span>
+                        <span class="reddit-sidebar-text">{% trans "Diaspora" %}</span>
+                    </a>
+                    <a href="{% url 'forums:category_list' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">3</span>
+                        <span class="reddit-sidebar-text">{% trans "Community Forum" %}</span>
+                    </a>
+                    <a href="{% url 'dashboard:resources' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">4</span>
+                        <span class="reddit-sidebar-text">{% trans "Resources" %}</span>
+                    </a>
+                    <a href="{% url 'dashboard:contact' %}" class="reddit-sidebar-item">
+                        <span class="reddit-sidebar-number">5</span>
+                        <span class="reddit-sidebar-text">{% trans "Contact" %}</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Upcoming Events Sidebar -->
+            {% if upcoming_events %}
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-header">
+                    <span>{% trans "Upcoming Events" %}</span>
+                </div>
+                <div class="reddit-sidebar-content">
+                    {% for event in upcoming_events|slice:":5" %}
+                    <a href="{% url 'events:detail' event.slug %}" class="reddit-sidebar-item">
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.875rem; font-weight: 600; color: var(--reddit-text); margin-bottom: 0.25rem;">{{ event.title|truncatewords:8 }}</div>
+                            <div style="font-size: 0.75rem; color: var(--reddit-text-secondary);">{{ event.start_date|date:"M d, Y" }}</div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                    <a href="{% url 'events:list' %}" class="reddit-btn reddit-btn-outline" style="width: 100%; justify-content: center; margin-top: 0.5rem;">{% trans "View All" %}</a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Scholarships & Calls -->
+            {% if open_calls %}
+            <div class="reddit-sidebar-card">
+                <div class="reddit-sidebar-header">
+                    <span>{% trans "Open Calls" %}</span>
+                </div>
+                <div class="reddit-sidebar-content">
+                    {% for event in open_calls|slice:":3" %}
+                    <a href="{% url 'events:detail' event.slug %}" class="reddit-sidebar-item">
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.875rem; font-weight: 600; color: var(--reddit-text); margin-bottom: 0.25rem;">{{ event.title|truncatewords:6 }}</div>
+                            <div style="font-size: 0.75rem; color: var(--cameroon-red); font-weight: 600;">{% trans "OPEN" %}</div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </aside>
     </div>
-</section>
+</div>
 {% endblock %}
