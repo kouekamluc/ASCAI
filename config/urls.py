@@ -22,6 +22,8 @@ urlpatterns = [
     path("forums/", include("apps.forums.urls")),
     path("messaging/", include("apps.messaging.urls")),
     # path("payments/", include("apps.payments.urls")),
+    # Health check endpoint (also available at /health/ via dashboard app)
+    path("health/", include("apps.dashboard.urls")),
 ]
 
 # Serve media files in development

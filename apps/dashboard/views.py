@@ -807,3 +807,60 @@ def admin_dashboard_api_view(request):
     }
     
     return JsonResponse(response_data)
+
+
+def health_check_view(request):
+    """
+    Health check endpoint for monitoring and load balancers.
+    Returns 200 if all services are healthy, 503 if any service is down.
+    """
+    from django.db import connection
+    from django.conf import settings
+    import redis
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    status = {
+        'status': 'healthy',
+        'checks': {},
+        'timestamp': timezone.now().isoformat(),
+    }
+    
+    # Database check
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        status['checks']['database'] = 'ok'
+    except Exception as e:
+        status['checks']['database'] = f'error: {str(e)}'
+        status['status'] = 'unhealthy'
+        logger.error(f"Health check: Database error - {str(e)}")
+    
+    # Redis check
+    try:
+        redis_url = getattr(settings, 'REDIS_URL', 'redis://127.0.0.1:6379/0')
+        r = redis.from_url(redis_url, socket_connect_timeout=2)
+        r.ping()
+        status['checks']['redis'] = 'ok'
+    except Exception as e:
+        status['checks']['redis'] = f'error: {str(e)}'
+        status['status'] = 'unhealthy'
+        logger.error(f"Health check: Redis error - {str(e)}")
+    
+    # Cache check
+    try:
+        from django.core.cache import cache
+        cache.set('health_check', 'ok', 10)
+        if cache.get('health_check') == 'ok':
+            status['checks']['cache'] = 'ok'
+        else:
+            status['checks']['cache'] = 'error: cache test failed'
+            status['status'] = 'unhealthy'
+    except Exception as e:
+        status['checks']['cache'] = f'error: {str(e)}'
+        status['status'] = 'unhealthy'
+        logger.error(f"Health check: Cache error - {str(e)}")
+    
+    # Return appropriate status code
+    http_status = 200 if status['status'] == 'healthy' else 503
+    return JsonResponse(status, status=http_status)
