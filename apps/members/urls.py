@@ -25,6 +25,8 @@ urlpatterns = [
     path("badges/award/<int:member_id>/", views.award_badge_to_member, name="award_badge"),
     path("badges/remove/<int:achievement_id>/", views.remove_badge_from_member, name="remove_badge"),
     path("badges/check/<int:member_id>/", views.check_member_badges, name="check_badges"),
+    # Bulk email
+    path("bulk-email/", views.bulk_email, name="bulk_email"),
     # Payment routes
     path("pay/", views.pay_membership, name="pay_membership"),
     path("payment/<int:payment_id>/confirm/", views.payment_confirmation, name="payment_confirmation"),

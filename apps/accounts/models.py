@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from apps.core.utils import optimize_image
 
 
 class UserManager(BaseUserManager):
@@ -98,6 +99,19 @@ class User(AbstractUser):
     def is_member(self):
         """Check if user is a member."""
         return self.role in [self.Role.MEMBER, self.Role.BOARD, self.Role.ADMIN]
+    
+    def save(self, *args, **kwargs):
+        """Override save to optimize profile picture."""
+        # Optimize profile picture if provided
+        if self.profile_picture and hasattr(self.profile_picture, 'file'):
+            try:
+                optimized_image = optimize_image(self.profile_picture, max_size=(400, 400))
+                self.profile_picture = optimized_image
+            except Exception:
+                # If optimization fails, continue with original
+                pass
+        
+        super().save(*args, **kwargs)
 
 
 class FailedLoginAttempt(models.Model):

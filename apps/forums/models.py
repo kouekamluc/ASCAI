@@ -9,7 +9,9 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.utils import timezone
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 from ckeditor.fields import RichTextField
+from apps.core.utils import sanitize_html
 
 # Import User model for role choices
 from apps.accounts.models import User
@@ -155,6 +157,18 @@ class Thread(models.Model):
         # Use update() to avoid triggering signals
         Thread.objects.filter(pk=self.pk).update(last_activity=new_activity)
         self.last_activity = new_activity
+    
+    def clean(self):
+        """Validate and sanitize content."""
+        super().clean()
+        # Sanitize HTML content
+        if self.content:
+            self.content = sanitize_html(self.content)
+    
+    def save(self, *args, **kwargs):
+        """Override save to sanitize content."""
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 class Reply(models.Model):
@@ -200,8 +214,16 @@ class Reply(models.Model):
     def __str__(self):
         return f"Reply by {self.author.email} to {self.thread.title[:50]}"
     
+    def clean(self):
+        """Validate and sanitize content."""
+        super().clean()
+        # Sanitize HTML content
+        if self.content:
+            self.content = sanitize_html(self.content)
+    
     def save(self, *args, **kwargs):
-        """Override save to handle edited flag."""
+        """Override save to handle edited flag and sanitize content."""
+        self.full_clean()
         if self.pk:
             self.is_edited = True
         super().save(*args, **kwargs)

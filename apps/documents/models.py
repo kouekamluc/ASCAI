@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from apps.core.validators import validate_document_file
 import os
 
 
@@ -260,6 +261,12 @@ class Document(models.Model):
         return user.is_admin() or (
             user.is_board_member() and user == self.uploader
         )
+    
+    def clean(self):
+        """Validate document file."""
+        super().clean()
+        if self.file:
+            validate_document_file(self.file)
 
     def get_file_extension(self):
         """Get file extension."""

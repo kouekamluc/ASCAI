@@ -44,15 +44,34 @@ def create_reply_notification(sender, instance, created, **kwargs):
     
     # Send email notification
     try:
+        from django.template.loader import render_to_string
+        from django.contrib.sites.models import Site
+        
+        site = Site.objects.get_current()
+        protocol = "https" if not settings.DEBUG else "http"
+        thread_url = f"{protocol}://{site.domain}{instance.thread.get_absolute_url()}"
+        
+        context = {
+            "recipient": instance.thread.author,
+            "thread": instance.thread,
+            "reply": instance,
+            "thread_url": thread_url,
+        }
+        
+        html_message = render_to_string("forums/emails/reply_notification.html", context)
+        plain_message = _("You received a new reply to your thread \"%(thread)s\" from %(user)s.\n\n%(content)s\n\nView: %(url)s") % {
+            "thread": instance.thread.title,
+            "user": instance.author.full_name,
+            "content": instance.content[:500],
+            "url": thread_url
+        }
+        
         send_mail(
-            subject=_("New Reply to Your Thread"),
-            message=_("You received a new reply to your thread \"%(thread)s\" from %(user)s.\n\n%(content)s") % {
-                "thread": instance.thread.title,
-                "user": instance.author.full_name,
-                "content": instance.content[:500]
-            },
+            subject=_("New Reply to Your Thread: %(thread)s") % {"thread": instance.thread.title},
+            message=plain_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[instance.thread.author.email],
+            html_message=html_message,
             fail_silently=True,
         )
         # Mark notification as emailed

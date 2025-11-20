@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.urls import reverse
+from django.core.exceptions import ValidationError
+from apps.core.utils import sanitize_html, optimize_image
 
 
 class NewsCategory(models.Model):
@@ -107,6 +109,29 @@ class NewsPost(models.Model):
     
     def get_absolute_url(self):
         return reverse("news:detail", kwargs={"slug": self.slug})
+    
+    def clean(self):
+        """Validate and sanitize content."""
+        super().clean()
+        # Sanitize HTML content
+        if self.content:
+            self.content = sanitize_html(self.content)
+    
+    def save(self, *args, **kwargs):
+        """Override save to sanitize content and optimize images."""
+        # Sanitize content
+        self.full_clean()
+        
+        # Optimize featured image if provided
+        if self.featured_image and hasattr(self.featured_image, 'file'):
+            try:
+                optimized_image = optimize_image(self.featured_image)
+                self.featured_image = optimized_image
+            except Exception:
+                # If optimization fails, continue with original
+                pass
+        
+        super().save(*args, **kwargs)
     
     def can_view(self, user):
         """Check if user can view this post."""

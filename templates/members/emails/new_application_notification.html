@@ -1,0 +1,35 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "New Membership Application - ASCAI" %}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #1B5E20;">{% trans "New Membership Application" %}</h2>
+        <p>{% trans "Hello" %} {{ admin.full_name }},</p>
+        <p>{% trans "A new membership application has been submitted:" %}</p>
+        
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p><strong>{% trans "Applicant" %}:</strong> {{ applicant.full_name }}</p>
+            <p><strong>{% trans "Email" %}:</strong> {{ applicant.email }}</p>
+            <p><strong>{% trans "Application Date" %}:</strong> {{ application.application_date|date:"F d, Y" }}</p>
+        </div>
+        
+        <p>
+            <a href="{{ application_url }}" style="background: #1B5E20; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+                {% trans "Review Application" %}
+            </a>
+        </p>
+        
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+        
+        <p style="font-size: 12px; color: #666;">
+            {% trans "Best regards," %}<br>
+            <strong>{% trans "ASCAI Platform" %}</strong>
+        </p>
+    </div>
+</body>
+</html>
+

@@ -79,3 +79,12 @@ daphne==4.0.0
 # Production Server
 gunicorn==21.2.0
 
+# Content Sanitization
+bleach==6.1.0
+
+# File Validation
+python-magic==0.4.27
+
+# Utilities
+django-extensions==3.2.3
+

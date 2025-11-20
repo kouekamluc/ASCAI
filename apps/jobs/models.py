@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+from apps.core.validators import validate_resume_file
 
 
 class JobPosting(models.Model):
@@ -141,6 +143,17 @@ class JobApplication(models.Model):
     def __str__(self):
         return f"{self.applicant.full_name} - {self.job.title}"
 
+    def clean(self):
+        """Validate resume file."""
+        super().clean()
+        if self.resume:
+            validate_resume_file(self.resume)
+    
+    def save(self, *args, **kwargs):
+        """Override save to validate resume."""
+        self.full_clean()
+        super().save(*args, **kwargs)
+    
     def get_resume_url(self):
         """Get the URL of the resume file."""
         if self.resume:

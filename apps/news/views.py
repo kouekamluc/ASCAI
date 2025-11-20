@@ -51,10 +51,26 @@ def news_list(request):
     if category_type:
         posts = posts.filter(category_type=category_type)
     
-    # Pagination
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    # Caching for news list (10 minutes)
+    from django.core.cache import cache
+    cache_key = f'news_list_{request.GET.urlencode()}_{request.user.id if request.user.is_authenticated else "anon"}'
+    cached_result = cache.get(cache_key)
+    
+    if cached_result is None:
+        # Pagination
+        paginator = Paginator(posts, 25)  # Increased to 25 per page
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        
+        # Cache metadata
+        cache.set(cache_key, {
+            'page_number': page_obj.number,
+            'num_pages': page_obj.paginator.num_pages,
+        }, 600)  # 10 minutes
+    else:
+        paginator = Paginator(posts, 25)
+        page_number = request.GET.get("page", cached_result.get('page_number', 1))
+        page_obj = paginator.get_page(page_number)
     
     context = {
         "page_obj": page_obj,

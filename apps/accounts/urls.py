@@ -23,6 +23,19 @@ urlpatterns = [
         views.resend_verification_email,
         name="resend_verification",
     ),
+    path(
+        "password-reset/",
+        views.password_reset_request,
+        name="password_reset",
+    ),
+    path(
+        "password-reset-confirm/<uidb64>/<token>/",
+        views.password_reset_confirm,
+        name="password_reset_confirm",
+    ),
+    path("sessions/", views.session_list, name="session_list"),
+    path("sessions/<str:session_key>/delete/", views.session_delete, name="session_delete"),
+    path("sessions/delete-all/", views.session_delete_all, name="session_delete_all"),
 ]
 
 

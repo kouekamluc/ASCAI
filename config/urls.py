@@ -11,6 +11,9 @@ from django.views.i18n import set_language
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("i18n/setlang/", set_language, name="set_language"),
+    # django-allauth URLs
+    path("accounts/", include("allauth.urls")),
+    # Custom accounts URLs (must come after allauth to override if needed)
     path("accounts/", include("apps.accounts.urls")),
     # Add other app URLs here as they are created
     path("", include("apps.dashboard.urls")),
@@ -22,6 +25,8 @@ urlpatterns = [
     path("forums/", include("apps.forums.urls")),
     path("messaging/", include("apps.messaging.urls")),
     # path("payments/", include("apps.payments.urls")),
+    # API endpoints
+    path("api/", include("apps.api.urls")),
     # Health check endpoint (also available at /health/ via dashboard app)
     path("health/", include("apps.dashboard.urls")),
 ]

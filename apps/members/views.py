@@ -19,6 +19,7 @@ from .forms import (
     MemberAdminForm,
     MemberApplicationForm,
     MemberApplicationReviewForm,
+    BulkEmailForm,
 )
 from .badge_utils import award_badge, check_and_award_badges
 from .payment_utils import create_membership_payment, complete_membership_payment, MEMBERSHIP_FEE
@@ -82,10 +83,29 @@ def member_directory(request):
         members = members.filter(status=Member.MembershipStatus.ACTIVE)
         members = members.filter(profile_public=True)
     
-    # Pagination
-    paginator = Paginator(members, 20)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    # Caching for member list (5 minutes)
+    from django.core.cache import cache
+    cache_key = f'member_list_{request.GET.urlencode()}_{request.user.id if request.user.is_authenticated else "anon"}'
+    cached_result = cache.get(cache_key)
+    
+    if cached_result is None:
+        # Pagination
+        paginator = Paginator(members, 25)  # Increased to 25 per page
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        
+        # Cache the page object (serialize key data only)
+        cache.set(cache_key, {
+            'page_number': page_obj.number,
+            'num_pages': page_obj.paginator.num_pages,
+            'has_next': page_obj.has_next(),
+            'has_previous': page_obj.has_previous(),
+        }, 300)  # 5 minutes
+    else:
+        # Recreate paginator for cached page
+        paginator = Paginator(members, 25)
+        page_number = request.GET.get("page", cached_result.get('page_number', 1))
+        page_obj = paginator.get_page(page_number)
     
     # Get badges for members (for display) - only if there are members
     member_badges_dict = {}

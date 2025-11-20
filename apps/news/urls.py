@@ -4,10 +4,13 @@ URL configuration for news app.
 
 from django.urls import path
 from . import views
+from .feeds import LatestNewsFeed
 
 app_name = "news"
 
 urlpatterns = [
+    # RSS Feed
+    path("feed/", LatestNewsFeed(), name="feed"),
     path("", views.news_list, name="list"),
     path("create/", views.news_create, name="create"),
     path("<slug:slug>/", views.news_detail, name="detail"),

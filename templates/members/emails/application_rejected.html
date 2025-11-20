@@ -1,0 +1,33 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Application Update - ASCAI" %}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #1B5E20;">{% trans "Membership Application Update" %}</h2>
+        <p>{% trans "Hello" %} {{ applicant.full_name }},</p>
+        <p>{% trans "Thank you for your interest in joining ASCAI." %}</p>
+        <p>{% trans "We regret to inform you that your membership application could not be approved at this time." %}</p>
+        
+        {% if application.review_notes %}
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p><strong>{% trans "Review Notes" %}:</strong></p>
+            <p>{{ application.review_notes }}</p>
+        </div>
+        {% endif %}
+        
+        <p>{% trans "If you have any questions, please contact us." %}</p>
+        
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+        
+        <p style="font-size: 12px; color: #666;">
+            {% trans "Best regards," %}<br>
+            <strong>{% trans "ASCAI Team" %}</strong>
+        </p>
+    </div>
+</body>
+</html>
+

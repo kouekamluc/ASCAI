@@ -15,6 +15,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
@@ -253,3 +254,189 @@ def change_password_view(request):
         form = CustomPasswordChangeForm(request.user)
 
     return render(request, "accounts/change_password.html", {"form": form})
+
+
+@require_http_methods(["GET", "POST"])
+@csrf_protect
+@ratelimit(key="ip", rate="3/h", method="POST", block=True)
+def password_reset_request(request):
+    """Password reset request view."""
+    if request.user.is_authenticated:
+        return redirect("dashboard:home")
+    
+    if request.method == "POST":
+        email = request.POST.get("email", "").lower().strip()
+        if email:
+            try:
+                user = User.objects.get(email=email, is_active=True)
+                # Generate password reset token
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                
+                # Send password reset email
+                current_site = get_current_site(request)
+                protocol = "https" if request.is_secure() else "http"
+                reset_url = f"{protocol}://{current_site.domain}{reverse('accounts:password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
+                
+                subject = _("Password Reset Request - ASCAI")
+                message = render_to_string(
+                    "accounts/emails/password_reset.html",
+                    {
+                        "user": user,
+                        "reset_url": reset_url,
+                        "domain": current_site.domain,
+                        "protocol": protocol,
+                    },
+                )
+                
+                send_mail(
+                    subject=subject,
+                    message="",  # Plain text version
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    html_message=message,
+                    fail_silently=False,
+                )
+                
+                logger.info(f"Password reset requested for {user.email} from IP {request.META.get('REMOTE_ADDR')}")
+                messages.success(
+                    request,
+                    _("If an account exists with this email, a password reset link has been sent.")
+                )
+                return redirect("accounts:login")
+            except User.DoesNotExist:
+                # Don't reveal if email exists (security)
+                messages.success(
+                    request,
+                    _("If an account exists with this email, a password reset link has been sent.")
+                )
+                return redirect("accounts:login")
+        else:
+            messages.error(request, _("Please enter your email address."))
+    
+    return render(request, "accounts/password_reset_request.html")
+
+
+@require_http_methods(["GET", "POST"])
+@csrf_protect
+@ratelimit(key="ip", rate="5/h", method="POST", block=True)
+def password_reset_confirm(request, uidb64, token):
+    """Password reset confirmation view."""
+    if request.user.is_authenticated:
+        return redirect("dashboard:home")
+    
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid, is_active=True)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == "POST":
+            password1 = request.POST.get("password1", "")
+            password2 = request.POST.get("password2", "")
+            
+            if not password1 or not password2:
+                messages.error(request, _("Please fill in both password fields."))
+            elif password1 != password2:
+                messages.error(request, _("Passwords do not match."))
+            elif len(password1) < 8:
+                messages.error(request, _("Password must be at least 8 characters long."))
+            else:
+                user.set_password(password1)
+                user.save()
+                logger.info(f"Password reset successful for {user.email} from IP {request.META.get('REMOTE_ADDR')}")
+                messages.success(request, _("Your password has been reset successfully. Please login with your new password."))
+                return render(request, "accounts/password_reset_success.html")
+        
+        return render(request, "accounts/password_reset_confirm.html", {"uidb64": uidb64, "token": token})
+    else:
+        logger.warning(f"Invalid password reset token from IP {request.META.get('REMOTE_ADDR')}")
+        messages.error(request, _("The password reset link is invalid or has expired."))
+        return render(request, "accounts/password_reset_invalid.html")
+
+
+@login_required
+@require_http_methods(["GET"])
+def session_list(request):
+    """View active sessions for the current user."""
+    from django.contrib.sessions.models import Session
+    from django.utils import timezone
+    
+    # Get all sessions for current user
+    sessions = []
+    for session in Session.objects.all():
+        try:
+            data = session.get_decoded()
+            if data.get('_auth_user_id') == str(request.user.pk):
+                sessions.append({
+                    'session_key': session.session_key,
+                    'expire_date': session.expire_date,
+                    'is_current': session.session_key == request.session.session_key,
+                })
+        except Exception:
+            continue
+    
+    # Sort by expire date (most recent first)
+    sessions.sort(key=lambda x: x['expire_date'], reverse=True)
+    
+    context = {
+        'sessions': sessions,
+        'current_session_key': request.session.session_key,
+    }
+    
+    return render(request, "accounts/session_list.html", context)
+
+
+@login_required
+@require_http_methods(["POST"])
+def session_delete(request, session_key):
+    """Delete a specific session (logout from device)."""
+    from django.contrib.sessions.models import Session
+    
+    # Prevent deleting current session
+    if session_key == request.session.session_key:
+        messages.error(request, _("You cannot delete your current session. Please use logout instead."))
+        return redirect("accounts:session_list")
+    
+    try:
+        session = Session.objects.get(session_key=session_key)
+        # Verify this session belongs to the current user
+        data = session.get_decoded()
+        if data.get('_auth_user_id') == str(request.user.pk):
+            session.delete()
+            messages.success(request, _("Session deleted successfully."))
+        else:
+            messages.error(request, _("Permission denied."))
+    except Session.DoesNotExist:
+        messages.error(request, _("Session not found."))
+    
+    return redirect("accounts:session_list")
+
+
+@login_required
+@require_http_methods(["POST"])
+def session_delete_all(request):
+    """Delete all sessions except current one (logout from all devices)."""
+    from django.contrib.sessions.models import Session
+    
+    deleted_count = 0
+    for session in Session.objects.all():
+        try:
+            data = session.get_decoded()
+            if data.get('_auth_user_id') == str(request.user.pk):
+                if session.session_key != request.session.session_key:
+                    session.delete()
+                    deleted_count += 1
+        except Exception:
+            continue
+    
+    if deleted_count > 0:
+        messages.success(
+            request,
+            _("Logged out from %(count)d device(s).") % {"count": deleted_count}
+        )
+    else:
+        messages.info(request, _("No other active sessions found."))
+    
+    return redirect("accounts:session_list")

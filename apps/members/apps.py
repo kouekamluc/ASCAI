@@ -8,3 +8,7 @@ class MembersConfig(AppConfig):
     def ready(self):
         """Import signals when app is ready."""
         import apps.members.signals  # noqa
+    
+    def ready(self):
+        """Import signals when app is ready."""
+        import apps.members.signals  # noqa
