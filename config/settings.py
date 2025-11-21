@@ -107,6 +107,7 @@ INSTALLED_APPS = [
     "ckeditor",
     "ckeditor_uploader",
     "django_htmx",
+    "corsheaders",
     
     # django-allauth for social authentication
     "allauth",
@@ -136,6 +137,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -199,70 +201,99 @@ if IS_PRODUCTION and ("localhost" in REDIS_URL or "127.0.0.1" in REDIS_URL):
         "with proper authentication. Set REDIS_URL environment variable."
     )
 
-# Parse Redis URL for channels_redis
-# Format: redis://host:port/db or redis://host:port
+# Parse Redis URL properly to preserve password/auth
+# Format: redis://[:password@]host:port/db or redis://host:port/db
 try:
-    redis_url_clean = REDIS_URL.replace("redis://", "").replace("rediss://", "")
-    if "/" in redis_url_clean:
-        redis_host_port, redis_db = redis_url_clean.split("/", 1)
-    else:
-        redis_host_port = redis_url_clean
-        redis_db = "0"
+    from urllib.parse import urlparse
+    parsed_redis = urlparse(REDIS_URL)
     
-    if ":" in redis_host_port:
-        redis_host, redis_port = redis_host_port.split(":", 1)
-        redis_port = int(redis_port)
-    else:
-        redis_host = redis_host_port
-        redis_port = 6379
+    # Extract components
+    redis_host = parsed_redis.hostname or "127.0.0.1"
+    redis_port = parsed_redis.port or 6379
+    redis_password = parsed_redis.password
+    redis_db = parsed_redis.path.lstrip("/") if parsed_redis.path else "0"
     
-    REDIS_HOST = redis_host
-    REDIS_PORT = redis_port
-except Exception:
-    # Fallback to defaults if parsing fails
-    REDIS_HOST = "127.0.0.1"
-    REDIS_PORT = 6379
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(REDIS_HOST, REDIS_PORT)],
-        },
-    },
-}
-
-# Cache configuration (Redis)
-# Use different Redis database for caching (db 1 instead of 0 for channels)
-# Fall back to local memory cache if Redis is not available (development)
-try:
-    import redis
-    redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, socket_connect_timeout=2)
-    redis_client.ping()
-    # Redis is available, use it for caching
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.redis.RedisCache",
-            "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
-            "KEY_PREFIX": "ascai",
-            "TIMEOUT": 300,  # Default 5 minutes
+    # Build Redis connection config for channels_redis
+    if redis_password:
+        # channels_redis supports password via URL format
+        redis_channels_url = f"redis://:{redis_password}@{redis_host}:{redis_port}/{redis_db}"
+        CHANNEL_LAYERS = {
+            "default": {
+                "BACKEND": "channels_redis.core.RedisChannelLayer",
+                "CONFIG": {
+                    "hosts": [redis_channels_url],
+                },
+            },
         }
+    else:
+        CHANNEL_LAYERS = {
+            "default": {
+                "BACKEND": "channels_redis.core.RedisChannelLayer",
+                "CONFIG": {
+                    "hosts": [(redis_host, redis_port)],
+                },
+            },
+        }
+    
+    # For cache, use full URL with password if available
+    cache_db = "1"  # Use db 1 for cache (db 0 for channels)
+    if redis_password:
+        cache_location = f"redis://:{redis_password}@{redis_host}:{redis_port}/{cache_db}"
+    else:
+        cache_location = f"redis://{redis_host}:{redis_port}/{cache_db}"
+    
+    # Test Redis connection
+    try:
+        import redis
+        if redis_password:
+            redis_client = redis.from_url(REDIS_URL, socket_connect_timeout=2)
+        else:
+            redis_client = redis.Redis(host=redis_host, port=redis_port, socket_connect_timeout=2)
+        redis_client.ping()
+        # Redis is available, use it for caching
+        CACHES = {
+            "default": {
+                "BACKEND": "django.core.cache.backends.redis.RedisCache",
+                "LOCATION": cache_location,
+                "KEY_PREFIX": "ascai",
+                "TIMEOUT": 300,  # Default 5 minutes
+            }
+        }
+    except Exception:
+        # Redis not available, use local memory cache
+        CACHES = {
+            "default": {
+                "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+                "LOCATION": "ascai-cache",
+                "KEY_PREFIX": "ascai",
+                "TIMEOUT": 300,  # Default 5 minutes
+            }
+        }
+        if IS_DEVELOPMENT:
+            warnings.warn(
+                "Redis is not available. Using local memory cache instead. "
+                "This is fine for development but not recommended for production."
+            )
+    
+except Exception as e:
+    # Fallback to defaults if parsing fails
+    warnings.warn(f"Failed to parse REDIS_URL: {e}. Using defaults.")
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("127.0.0.1", 6379)],
+            },
+        },
     }
-except Exception:
-    # Redis not available (ImportError, ConnectionError, or other), use local memory cache
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
             "LOCATION": "ascai-cache",
             "KEY_PREFIX": "ascai",
-            "TIMEOUT": 300,  # Default 5 minutes
+            "TIMEOUT": 300,
         }
     }
-    if IS_DEVELOPMENT:
-        warnings.warn(
-            "Redis is not available. Using local memory cache instead. "
-            "This is fine for development but not recommended for production."
-        )
 
 # Support DATABASE_URL (e.g., postgres://user:pass@host:port/dbname?sslmode=require)
 raw_database_url = get_env_config("DATABASE_URL", "")
@@ -412,6 +443,37 @@ LOCALE_PATHS = [
 TIME_ZONE = "Europe/Rome"
 
 USE_I18N = True
+
+# Celery Configuration
+# Get Celery broker and result backend from environment variables
+CELERY_BROKER_URL = get_env_config("CELERY_BROKER_URL", REDIS_URL.replace("/0", "/1") if "/0" in REDIS_URL else f"{REDIS_URL}/1")
+CELERY_RESULT_BACKEND = get_env_config("CELERY_RESULT_BACKEND", CELERY_BROKER_URL)
+CELERY_TASK_DEFAULT_QUEUE = get_env_config("CELERY_TASK_DEFAULT_QUEUE", "default")
+CELERY_TASK_DEFAULT_EXCHANGE = get_env_config("CELERY_TASK_DEFAULT_EXCHANGE", "default")
+CELERY_TASK_DEFAULT_ROUTING_KEY = get_env_config("CELERY_TASK_DEFAULT_ROUTING_KEY", "default")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = True
+CELERY_TASK_ACKS_LATE = True
+CELERY_TASK_REJECT_ON_WORKER_LOST = True
+CELERY_WORKER_PREFETCH_MULTIPLIER = 4
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 1000
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes hard limit
+CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes soft limit
+CELERY_RESULT_EXPIRES = 3600  # 1 hour
+CELERY_TASK_ROUTES = {
+    "apps.events.tasks.*": {"queue": "events"},
+    "apps.messaging.tasks.*": {"queue": "messaging"},
+}
+CELERY_BEAT_SCHEDULE = {
+    "send-event-reminders": {
+        "task": "apps.events.tasks.send_event_reminders_batch",
+        "schedule": 86400.0,  # Run daily
+        "options": {"queue": "events"},
+    },
+}
 USE_L10N = True  # Enable locale-aware formatting for dates, numbers, and times
 
 USE_TZ = True
@@ -434,6 +496,28 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# AWS S3 Storage Configuration (for production)
+if IS_PRODUCTION:
+    AWS_ACCESS_KEY_ID = get_env_config("AWS_ACCESS_KEY_ID", None)
+    AWS_SECRET_ACCESS_KEY = get_env_config("AWS_SECRET_ACCESS_KEY", None)
+    AWS_STORAGE_BUCKET_NAME = get_env_config("AWS_STORAGE_BUCKET_NAME", None)
+    AWS_S3_REGION_NAME = get_env_config("AWS_S3_REGION_NAME", "eu-central-1")
+    AWS_S3_CUSTOM_DOMAIN = get_env_config("AWS_S3_CUSTOM_DOMAIN", None)
+    AWS_DEFAULT_ACL = get_env_config("AWS_DEFAULT_ACL", "private")
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=86400",
+    }
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_QUERYSTRING_AUTH = True
+    
+    # Use S3 for media files if credentials are provided
+    if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and AWS_STORAGE_BUCKET_NAME:
+        DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+        if AWS_S3_CUSTOM_DOMAIN:
+            MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+        else:
+            MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/media/"
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -441,15 +525,31 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SITE_ID = 1
 
 # Email backend - load from .env
-EMAIL_BACKEND = get_env_config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+# In production, default to SMTP backend if not specified
+if IS_PRODUCTION:
+    default_email_backend = get_env_config("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+else:
+    default_email_backend = get_env_config("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+
+EMAIL_BACKEND = default_email_backend
 DEFAULT_FROM_EMAIL = get_env_config("DEFAULT_FROM_EMAIL", "noreply@ascai.it")
 
-# Additional email settings from .env (optional)
+# Additional email settings from .env
 EMAIL_HOST = get_env_config("EMAIL_HOST", None)
 EMAIL_PORT = get_env_config("EMAIL_PORT", None, cast=int)
 EMAIL_USE_TLS = get_env_config("EMAIL_USE_TLS", None, cast=lambda v: v.lower() == "true" if v else None)
+EMAIL_USE_SSL = get_env_config("EMAIL_USE_SSL", None, cast=lambda v: v.lower() == "true" if v else None)
 EMAIL_HOST_USER = get_env_config("EMAIL_HOST_USER", None)
 EMAIL_HOST_PASSWORD = get_env_config("EMAIL_HOST_PASSWORD", None)
+
+# Validate email settings in production
+if IS_PRODUCTION and EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend":
+    if not EMAIL_HOST or not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
+        import warnings
+        warnings.warn(
+            "Production email settings incomplete. Set EMAIL_HOST, EMAIL_HOST_USER, "
+            "and EMAIL_HOST_PASSWORD in environment variables."
+        )
 
 # File Upload Settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
@@ -657,4 +757,30 @@ REST_FRAMEWORK = {
         'user': '1000/hour',
     },
 }
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS = get_env_config("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000", cast=Csv) if Csv else [
+    origin.strip() for origin in get_env_config("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",") if origin.strip()
+]
+CORS_ALLOW_CREDENTIALS = get_env_config("CORS_ALLOW_CREDENTIALS", "True", cast=lambda v: v.lower() == "true")
+CORS_ALLOW_ALL_ORIGINS = get_env_config("CORS_ALLOW_ALL_ORIGINS", "False" if IS_PRODUCTION else "True", cast=lambda v: v.lower() == "true")
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 

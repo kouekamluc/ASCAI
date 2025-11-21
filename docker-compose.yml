@@ -52,9 +52,8 @@ services:
              python manage.py collectstatic --noinput &&
              python manage.py compilemessages &&
              gunicorn config.wsgi:application
+             --config gunicorn_config.py
              --bind 0.0.0.0:8000
-             --workers 4
-             --timeout 30
              --access-logfile /app/logs/gunicorn_access.log
              --error-logfile /app/logs/gunicorn_error.log
              --log-level info"

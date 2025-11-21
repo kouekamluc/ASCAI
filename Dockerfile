@@ -1,5 +1,23 @@
 # Multi-stage Dockerfile for ASCAI Platform
-# Stage 1: Build stage
+# Stage 1: Frontend build stage
+FROM node:20-alpine as frontend-builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+COPY tailwind.config.js postcss.config.js ./
+
+# Install Node dependencies
+RUN npm ci --only=production
+
+# Copy source files
+COPY static/src/tailwind.css static/src/
+
+# Build Tailwind CSS
+RUN npm run build
+
+# Stage 2: Python build stage
 FROM python:3.11-slim as builder
 
 # Set environment variables
@@ -22,7 +40,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
-# Stage 2: Runtime stage
+# Stage 3: Runtime stage
 FROM python:3.11-slim
 
 # Set environment variables
@@ -53,16 +71,22 @@ WORKDIR /app
 # Copy application code
 COPY --chown=ascai:ascai . .
 
+# Copy built Tailwind CSS from frontend builder
+COPY --from=frontend-builder --chown=ascai:ascai /app/static/css/tailwind-built.css static/css/tailwind-built.css
+
 # Switch to non-root user
 USER ascai
 
 # Expose port
 EXPOSE 8000
 
+# Make start.sh executable
+RUN chmod +x start.sh
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/health/ || exit 1
 
-# Default command (can be overridden)
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "30"]
+# Default command (runs migrations, collectstatic, and starts Gunicorn)
+CMD ["./start.sh"]
 

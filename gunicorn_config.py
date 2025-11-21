@@ -24,9 +24,6 @@ def post_fork(server, worker):
     worker.log.info("Database connections closed after worker fork.")
 
 
-# Log Gunicorn errors to stdout/stderr so Render can capture them
-errorlog = "-"
-accesslog = "-"
 """
 Gunicorn configuration file for ASCAI platform.
 """
@@ -34,7 +31,7 @@ import multiprocessing
 import os
 
 # Server socket
-bind = os.getenv("GUNICORN_BIND", "127.0.0.1:8000")
+bind = os.getenv("GUNICORN_BIND", "0.0.0.0:8000")
 backlog = 2048
 
 # Worker processes
@@ -45,8 +42,16 @@ timeout = 30
 keepalive = 2
 
 # Logging
-accesslog = os.getenv("GUNICORN_ACCESS_LOG", "logs/gunicorn_access.log")
-errorlog = os.getenv("GUNICORN_ERROR_LOG", "logs/gunicorn_error.log")
+# Use stdout/stderr in Docker/container environments, files otherwise
+if os.getenv("DJANGO_ENVIRONMENT") == "production" or os.path.exists("/.dockerenv"):
+    # In Docker/production, log to stdout/stderr for container log aggregation
+    accesslog = "-"
+    errorlog = "-"
+else:
+    # In development, log to files
+    accesslog = os.getenv("GUNICORN_ACCESS_LOG", "logs/gunicorn_access.log")
+    errorlog = os.getenv("GUNICORN_ERROR_LOG", "logs/gunicorn_error.log")
+
 loglevel = os.getenv("GUNICORN_LOG_LEVEL", "info")
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" %(D)s'
 

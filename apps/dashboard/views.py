@@ -812,7 +812,8 @@ def admin_dashboard_api_view(request):
 def health_check_view(request):
     """
     Health check endpoint for monitoring and load balancers.
-    Returns 200 if all services are healthy, 503 if any service is down.
+    Returns 200 if critical services (database) are healthy.
+    Redis and cache failures are reported but don't fail the health check.
     """
     from django.db import connection
     from django.conf import settings
@@ -826,7 +827,9 @@ def health_check_view(request):
         'timestamp': timezone.now().isoformat(),
     }
     
-    # Database check
+    critical_failed = False
+    
+    # Database check (CRITICAL - must pass)
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
@@ -834,9 +837,10 @@ def health_check_view(request):
     except Exception as e:
         status['checks']['database'] = f'error: {str(e)}'
         status['status'] = 'unhealthy'
+        critical_failed = True
         logger.error(f"Health check: Database error - {str(e)}")
     
-    # Redis check
+    # Redis check (NON-CRITICAL - report but don't fail)
     try:
         redis_url = getattr(settings, 'REDIS_URL', 'redis://127.0.0.1:6379/0')
         r = redis.from_url(redis_url, socket_connect_timeout=2)
@@ -844,10 +848,10 @@ def health_check_view(request):
         status['checks']['redis'] = 'ok'
     except Exception as e:
         status['checks']['redis'] = f'error: {str(e)}'
-        status['status'] = 'unhealthy'
-        logger.error(f"Health check: Redis error - {str(e)}")
+        # Redis failure is non-critical - app can work without it (with degraded functionality)
+        logger.warning(f"Health check: Redis error - {str(e)}")
     
-    # Cache check
+    # Cache check (NON-CRITICAL - report but don't fail)
     try:
         from django.core.cache import cache
         cache.set('health_check', 'ok', 10)
@@ -855,12 +859,12 @@ def health_check_view(request):
             status['checks']['cache'] = 'ok'
         else:
             status['checks']['cache'] = 'error: cache test failed'
-            status['status'] = 'unhealthy'
+            logger.warning("Health check: Cache test failed")
     except Exception as e:
         status['checks']['cache'] = f'error: {str(e)}'
-        status['status'] = 'unhealthy'
-        logger.error(f"Health check: Cache error - {str(e)}")
+        # Cache failure is non-critical
+        logger.warning(f"Health check: Cache error - {str(e)}")
     
-    # Return appropriate status code
-    http_status = 200 if status['status'] == 'healthy' else 503
+    # Return 200 if database is healthy (critical), 503 only if database fails
+    http_status = 503 if critical_failed else 200
     return JsonResponse(status, status=http_status)
