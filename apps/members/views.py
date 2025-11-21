@@ -24,6 +24,7 @@ from .forms import (
 from .badge_utils import award_badge, check_and_award_badges
 from .payment_utils import create_membership_payment, complete_membership_payment, MEMBERSHIP_FEE
 from .payment_forms import MembershipPaymentForm, ManualPaymentConfirmationForm
+from .tasks import send_bulk_email
 from apps.dashboard.models import Payment
 from django.utils import timezone
 
@@ -241,6 +242,65 @@ def bulk_update_status(request):
         messages.error(request, _("Invalid request."))
     
     return redirect("members:directory")
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def bulk_email(request):
+    """Send bulk email to members."""
+    if not (request.user.is_admin() or request.user.is_board_member()):
+        messages.error(request, _("Permission denied."))
+        return redirect("members:directory")
+    
+    if request.method == "POST":
+        form = BulkEmailForm(request.POST)
+        if form.is_valid():
+            recipients_choice = form.cleaned_data["recipients"]
+            subject = form.cleaned_data["subject"]
+            message = form.cleaned_data["message"]
+            send_as_html = form.cleaned_data.get("send_as_html", True)
+            
+            # Determine recipient list based on selection
+            if recipients_choice == "all":
+                members = Member.objects.filter(status=Member.MembershipStatus.ACTIVE)
+            elif recipients_choice == "students":
+                members = Member.objects.filter(
+                    status=Member.MembershipStatus.ACTIVE,
+                    category=Member.MemberCategory.STUDENT
+                )
+            elif recipients_choice == "alumni":
+                members = Member.objects.filter(
+                    status=Member.MembershipStatus.ACTIVE,
+                    category=Member.MemberCategory.ALUMNI
+                )
+            elif recipients_choice == "honorary":
+                members = Member.objects.filter(
+                    status=Member.MembershipStatus.ACTIVE,
+                    category=Member.MemberCategory.HONORARY
+                )
+            elif recipients_choice == "custom":
+                members = form.cleaned_data["custom_recipients"]
+            else:
+                members = Member.objects.none()
+            
+            # Get email addresses
+            recipient_emails = [member.user.email for member in members if member.user.email]
+            
+            if recipient_emails:
+                # Send email asynchronously using Celery task
+                send_bulk_email.delay(subject, message, recipient_emails, send_as_html)
+                messages.success(
+                    request,
+                    _("Bulk email is being sent to %(count)d recipients.") % {"count": len(recipient_emails)}
+                )
+            else:
+                messages.warning(request, _("No recipients found for the selected criteria."))
+            
+            return redirect("members:directory")
+    else:
+        form = BulkEmailForm()
+    
+    return render(request, "members/bulk_email.html", {"form": form})
 
 
 @login_required
