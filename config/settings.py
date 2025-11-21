@@ -71,41 +71,24 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_env_config("DEBUG", "False" if IS_PRODUCTION else "True", cast=lambda v: v.lower() == "true")
 
-# Parse ALLOWED_HOSTS from .env file
-# Ensure it's always a list
-if USE_DECOUPLE and Csv is not None:
-    # Use python-decouple's Csv cast
-    if IS_PRODUCTION:
-        try:
-            hosts_value = config("ALLOWED_HOSTS", cast=Csv)
-        except Exception:
-            raise ValueError("ALLOWED_HOSTS must be set in .env file for production")
-    else:
-        hosts_value = config("ALLOWED_HOSTS", default="localhost,127.0.0.1,0.0.0.0", cast=Csv)
-    
-    # Csv cast should return a list, but ensure it's actually a list
-    if isinstance(hosts_value, list):
-        ALLOWED_HOSTS = [h.strip() for h in hosts_value if h.strip()]
-    elif isinstance(hosts_value, str):
-        ALLOWED_HOSTS = [h.strip() for h in hosts_value.split(",") if h.strip()]
-    else:
-        # Fallback if Csv returns something unexpected
-        ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"] if IS_DEVELOPMENT else []
+# Parse ALLOWED_HOSTS from environment variables (works with or without python-decouple)
+allowed_hosts_str = get_env_config("ALLOWED_HOSTS", "")
+if allowed_hosts_str:
+    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_str.split(",") if h.strip()]
 else:
-    # Fallback when python-decouple is not available
-    if IS_PRODUCTION:
-        hosts_str = get_env_config("ALLOWED_HOSTS")
-        ALLOWED_HOSTS = [h.strip() for h in hosts_str.split(",") if h.strip()]
-    else:
-        hosts_str = get_env_config("ALLOWED_HOSTS", "localhost,127.0.0.1,0.0.0.0")
-        ALLOWED_HOSTS = [h.strip() for h in hosts_str.split(",") if h.strip()]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+
+# Ensure Render hostname is always allowed in production deployments
+RENDER_DOMAIN = "ascai.onrender.com"
+if RENDER_DOMAIN not in ALLOWED_HOSTS:
+    if IS_PRODUCTION or IS_DEVELOPMENT:
+        ALLOWED_HOSTS.append(RENDER_DOMAIN)
 
 # Final safety check - ensure ALLOWED_HOSTS is always a list
 if not isinstance(ALLOWED_HOSTS, (list, tuple)):
     if isinstance(ALLOWED_HOSTS, str):
         ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS.split(",") if h.strip()]
     else:
-        # If it's not a list, tuple, or string, use default
         ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"] if IS_DEVELOPMENT else []
 
 # Application definition
