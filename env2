@@ -1,66 +1,123 @@
-# Django Environment Configuration (Render-ready)
+# Django Environment Configuration (Render/Production-ready)
 #
 # Copy this file to .env (or paste into Render's Environment tab) and replace
 # placeholder values with your real credentials. All variables mirror
 # config/settings.py so no additional changes are needed.
 
-# --- Core Django ---
-SECRET_KEY=v5acly$1r@lzqz6kpg%91&dp$kw&ulk^&1=_v&ujf-u)&8dv8u
+# ============================================================================
+# CORE DJANGO SETTINGS
+# ============================================================================
+SECRET_KEY=your-secret-key-here-generate-with-python-manage.py-shell-from-django.core.management.utils-import-get_random_secret_key-print-get_random_secret_key
 DEBUG=False
 DJANGO_ENVIRONMENT=production
-ALLOWED_HOSTS=your-domain.com,www.your-domain.com
+ALLOWED_HOSTS=your-domain.com,www.your-domain.com,ascai.onrender.com
 
-# --- Database (use whichever block fits your setup) ---
-# Option A: Render Postgres connection string
+# ============================================================================
+# DATABASE CONFIGURATION
+# ============================================================================
+# Option A: Render Postgres connection string (RECOMMENDED)
 DATABASE_URL=postgres://user:password@dpg-yourdb.render.com:5432/ascai?sslmode=require
 
 # Option B: Individual fields (leave DATABASE_URL empty when using these)
-DB_NAME=ASCAI
-DB_USER=ascai_user
-DB_PASSWORD=replace-with-db-password
-DB_HOST=dpg-yourdb.render.com
-DB_PORT=5432
-DB_SSLMODE=require
+# DB_NAME=ASCAI
+# DB_USER=ascai_user
+# DB_PASSWORD=replace-with-db-password
+# DB_HOST=dpg-yourdb.render.com
+# DB_PORT=5432
+# DB_SSLMODE=require
 
-# --- Email ---
+# ============================================================================
+# EMAIL CONFIGURATION (REQUIRED FOR PRODUCTION)
+# ============================================================================
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
-EMAIL_HOST_USER=your-email@example.com
-EMAIL_HOST_PASSWORD=app-specific-password
+EMAIL_USE_SSL=False
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-specific-password
 DEFAULT_FROM_EMAIL=noreply@your-domain.com
 
-# --- AWS S3 (optional) ---
+# ============================================================================
+# AWS S3 STORAGE (OPTIONAL - for media files in production)
+# ============================================================================
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_STORAGE_BUCKET_NAME=
 AWS_S3_REGION_NAME=eu-central-1
+AWS_S3_CUSTOM_DOMAIN=
+AWS_DEFAULT_ACL=private
 
-# --- Stripe / PayPal (optional) ---
+# ============================================================================
+# REDIS & CELERY CONFIGURATION
+# ============================================================================
+# Redis URL (for Channels and Cache)
+REDIS_URL=redis://default:password@redis-host.render.com:6379/0
+
+# Celery Configuration
+# Note: If not set, will default to REDIS_URL with /1 database
+CELERY_BROKER_URL=redis://default:password@redis-host.render.com:6379/1
+CELERY_RESULT_BACKEND=redis://default:password@redis-host.render.com:6379/1
+CELERY_TASK_DEFAULT_QUEUE=default
+
+# ============================================================================
+# CORS CONFIGURATION (REQUIRED FOR API ACCESS)
+# ============================================================================
+# Comma-separated list of allowed origins
+CORS_ALLOWED_ORIGINS=https://your-domain.com,https://www.your-domain.com,https://admin.your-domain.com
+CORS_ALLOW_CREDENTIALS=True
+CORS_ALLOW_ALL_ORIGINS=False
+
+# ============================================================================
+# PAYMENT GATEWAYS (OPTIONAL)
+# ============================================================================
+# Stripe
 STRIPE_PUBLISHABLE_KEY=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
+
+# PayPal
 PAYPAL_CLIENT_ID=
 PAYPAL_CLIENT_SECRET=
 PAYPAL_MODE=live
 
-# --- Redis / Celery ---
-REDIS_URL=redis://default:password@redis-host.render.com:6379/0
-CELERY_BROKER_URL=${REDIS_URL}
-CELERY_RESULT_BACKEND=${REDIS_URL}
-
-# --- CORS / Site ---
-CORS_ALLOWED_ORIGINS=https://your-domain.com,https://admin.your-domain.com
-SITE_URL=https://your-domain.com
-
-# --- Logging ---
-DJANGO_LOG_LEVEL=INFO
-
-# --- Google OAuth ---
+# ============================================================================
+# GOOGLE OAUTH (OPTIONAL - for social authentication)
+# ============================================================================
 GOOGLE_OAUTH_CLIENT_ID=
 GOOGLE_OAUTH_CLIENT_SECRET=
 
-# --- Testing DB (optional override) ---
+# ============================================================================
+# SITE CONFIGURATION
+# ============================================================================
+SITE_URL=https://your-domain.com
+
+# ============================================================================
+# LOGGING
+# ============================================================================
+DJANGO_LOG_LEVEL=INFO
+
+# ============================================================================
+# SECURITY SETTINGS (automatically enabled in production)
+# ============================================================================
+# These are automatically set when DJANGO_ENVIRONMENT=production
+# SECURE_SSL_REDIRECT=True
+# SESSION_COOKIE_SECURE=True
+# CSRF_COOKIE_SECURE=True
+# SECURE_HSTS_SECONDS=31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+# SECURE_HSTS_PRELOAD=True
+
+# ============================================================================
+# TESTING (OPTIONAL)
+# ============================================================================
 TEST_DB_NAME=test_ASCAI
 
+# ============================================================================
+# NOTES
+# ============================================================================
+# 1. Generate SECRET_KEY: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+# 2. For Gmail: Use App Password, not your regular password
+# 3. For Render: Use the internal Redis/Postgres connection strings from your service dashboard
+# 4. CORS_ALLOWED_ORIGINS: Add all domains that will access your API
+# 5. AWS S3: Only needed if you want to store media files in S3 instead of local storage

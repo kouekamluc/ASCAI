@@ -49,12 +49,13 @@ ENV PYTHONUNBUFFERED=1 \
     PATH="/home/ascai/.local/bin:$PATH" \
     DJANGO_SETTINGS_MODULE=config.settings
 
-# Install runtime dependencies
+# Install runtime dependencies including gettext for translations
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
     libpq-dev \
     libmagic1 \
     curl \
+    gettext \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user

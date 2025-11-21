@@ -440,6 +440,12 @@ LOCALE_PATHS = [
     BASE_DIR / "locale",
 ]
 
+# Ensure locale files are found
+import os
+if not os.path.exists(BASE_DIR / "locale"):
+    import warnings
+    warnings.warn("Locale directory not found. Translations may not work properly.")
+
 TIME_ZONE = "Europe/Rome"
 
 USE_I18N = True
