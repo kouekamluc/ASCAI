@@ -65,10 +65,7 @@ openpyxl==3.1.5
 # PDF Generation
 reportlab==4.2.0
 
-# Security
-django-ratelimit==4.1.0
-
-# API Rate Limiting
+# Security & Rate Limiting
 django-ratelimit==4.1.0
 
 # Real-time Communication

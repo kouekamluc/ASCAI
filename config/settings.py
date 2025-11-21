@@ -5,6 +5,7 @@ Django settings for ASCAI platform.
 from pathlib import Path
 import os
 import warnings
+from urllib.parse import urlparse, parse_qs, unquote
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -156,6 +157,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
@@ -278,34 +280,52 @@ except Exception:
             "This is fine for development but not recommended for production."
         )
 
-# Get database configuration from .env file
-# All values should be set in .env file
-DB_NAME = get_env_config("DB_NAME", "ASCAI")
-DB_USER = get_env_config("DB_USER", "postgres")
-DB_PASSWORD = get_env_config("DB_PASSWORD")  # No default - must be set in .env
-DB_HOST = get_env_config("DB_HOST", "localhost")
-DB_PORT = get_env_config("DB_PORT", "5432", cast=int)
+# Support DATABASE_URL (e.g., postgres://user:pass@host:port/dbname?sslmode=require)
+raw_database_url = get_env_config("DATABASE_URL", "")
+db_password_env = get_env_config("DB_PASSWORD", "")
 
-# Require database password in all environments
+if raw_database_url:
+    try:
+        parsed_db_url = urlparse(raw_database_url)
+        if parsed_db_url.scheme not in ("postgres", "postgresql"):
+            raise ValueError("Only postgres:// URLs are supported.")
+        DB_NAME = unquote(parsed_db_url.path.lstrip("/")) or "postgres"
+        DB_USER = unquote(parsed_db_url.username) if parsed_db_url.username else ""
+        DB_PASSWORD = (
+            unquote(parsed_db_url.password)
+            if parsed_db_url.password
+            else db_password_env
+        )
+        DB_HOST = parsed_db_url.hostname or "localhost"
+        DB_PORT = int(parsed_db_url.port) if parsed_db_url.port else 5432
+        query_params = parse_qs(parsed_db_url.query)
+        url_sslmode = query_params.get("sslmode", [None])[0]
+    except Exception as exc:
+        raise ValueError(f"Invalid DATABASE_URL: {exc}") from exc
+else:
+    # Get database configuration from individual environment variables
+    DB_NAME = get_env_config("DB_NAME", "ASCAI")
+    DB_USER = get_env_config("DB_USER", "postgres")
+    DB_HOST = get_env_config("DB_HOST", "localhost")
+    DB_PORT = get_env_config("DB_PORT", "5432", cast=int)
+    DB_PASSWORD = db_password_env
+    url_sslmode = None
+
+# Require database password in all environments unless DATABASE_URL provided it
 if not DB_PASSWORD:
     raise ValueError(
-        "DB_PASSWORD environment variable must be set! "
-        "Database credentials cannot be hardcoded. "
-        "Set DB_PASSWORD in your .env file or environment variables."
+        "Database password missing. Set DB_PASSWORD or include the password "
+        "directly in DATABASE_URL."
     )
 
-# Determine SSL mode based on environment
-# Production: require SSL for secure connections
-# Development: prefer SSL but allow non-SSL
-if IS_PRODUCTION:
-    default_sslmode = "require"
-    # In production, prefer verify-full for maximum security (requires CA certificate)
-    # Fall back to require if verify-full is not configured
+# Determine SSL mode
+if url_sslmode:
+    sslmode = url_sslmode
+elif IS_PRODUCTION:
     sslmode = get_env_config("DB_SSLMODE", "require")
     if sslmode not in ["require", "verify-ca", "verify-full"]:
         sslmode = "require"
 else:
-    default_sslmode = "prefer"
     sslmode = get_env_config("DB_SSLMODE", "prefer")
 
 DATABASES = {

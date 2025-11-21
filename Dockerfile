@@ -22,9 +22,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
-# Install production dependencies
-RUN pip install --user --no-cache-dir gunicorn
-
 # Stage 2: Runtime stage
 FROM python:3.11-slim
 
@@ -38,6 +35,7 @@ ENV PYTHONUNBUFFERED=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
     libpq-dev \
+    libmagic1 \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
