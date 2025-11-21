@@ -22,6 +22,11 @@ def post_fork(server, worker):
         conn.close()
 
     worker.log.info("Database connections closed after worker fork.")
+
+
+# Log Gunicorn errors to stdout/stderr so Render can capture them
+errorlog = "-"
+accesslog = "-"
 """
 Gunicorn configuration file for ASCAI platform.
 """
