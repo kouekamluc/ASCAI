@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles shared across the site */
+:root {
+    --cameroon-green: #2D5016;
+    --cameroon-red: #CE1126;
+    --cameroon-yellow: #FCD116;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
