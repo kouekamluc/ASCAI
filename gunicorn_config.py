@@ -1,4 +1,28 @@
 """
+Gunicorn configuration for ASCAI.
+
+Ensures each worker closes inherited Django DB connections after forking to
+avoid SSL errors ("decryption failed or bad record mac") when using pooled
+connections with PostgreSQL.
+"""
+
+from django.db import connections
+
+
+def post_fork(server, worker):
+    """
+    Called by Gunicorn in each worker process immediately after forking.
+
+    Closing inherited connections forces Django to establish fresh ones per
+    worker, preventing the SSL corruption that occurs when multiple workers
+    share the same connection handle.
+    """
+
+    for conn in connections.all():
+        conn.close()
+
+    worker.log.info("Database connections closed after worker fork.")
+"""
 Gunicorn configuration file for ASCAI platform.
 """
 import multiprocessing
