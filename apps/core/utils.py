@@ -39,15 +39,13 @@ def sanitize_html(content):
         'span': ['class'],
     }
     
-    # Allowed CSS styles (optional, for more control)
-    allowed_styles = []
-    
     # Sanitize content
+    # Note: In bleach 6.x, the 'styles' parameter was removed from clean()
+    # If style sanitization is needed, use Cleaner class instead
     cleaned = bleach.clean(
         content,
         tags=allowed_tags,
         attributes=allowed_attributes,
-        styles=allowed_styles,
         strip=True,  # Strip disallowed tags
     )
     
